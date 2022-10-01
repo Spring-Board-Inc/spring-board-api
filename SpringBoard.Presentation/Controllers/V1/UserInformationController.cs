@@ -41,7 +41,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            var result = baseResult.GetResult<UserInformation?>();
+            var result = baseResult.GetResult<UserInformationToReturn?>();
             return Ok(result);
         }
 
@@ -58,7 +58,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
         ///<response code="500">Server error. If the server did not understand the request.</response>
         [HttpPost, Route("{userId}")]
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -90,7 +90,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
         ///<response code="500">Server error. If the server did not understand the request.</response>
         [HttpPut, Route("{id}")]
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -116,7 +116,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
         ///<response code="500">Server error. If the server did not understand the request.</response>
         [HttpDelete, Route("{id}")]
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -148,7 +148,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
         ///<response code="500">Server error. If the server did not understand the request.</response>
         [HttpPost, Route("{userInfoId}/education")]
-        [Authorize(Roles = "Applicant")]
+        //[Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -176,7 +176,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
         ///<response code="500">Server error. If the server did not understand the request.</response>
         [HttpPatch, Route("{userInfoId}/education/{id}")]
-        [Authorize(Roles = "Applicant")]
+        //[Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -203,7 +203,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
         ///<response code="500">Server error. If the server did not understand the request.</response>
         [HttpDelete, Route("{userInfoId}/education/{id}")]
-        [Authorize(Roles = "Applicant")]
+        //[Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

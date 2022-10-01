@@ -6,9 +6,9 @@ namespace Entities.Models
     public class Certification : BaseEntity
     {
         [Required, Column(TypeName = "nvarchar(100)")]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         [Required, Column(TypeName = "nvarchar(100)")]
-        public string IssuingBody { get; set; } = string.Empty;
+        public string IssuingBody { get; set; }
         [Required]
         public DateTime IssuingDate { get; set; }
         [ForeignKey(nameof(UserInformation))]

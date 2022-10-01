@@ -28,7 +28,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Register([FromBody] UserForRegistrationDto userForRegistration)
+        public async Task<IActionResult> Register([FromForm] UserForRegistrationDto userForRegistration)
         {
             var role = ((ERoles)userForRegistration.RoleIndex).ToString();
             var origin = HttpContext.Request.Headers["Origin"];

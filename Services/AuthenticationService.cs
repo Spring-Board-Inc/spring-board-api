@@ -23,22 +23,22 @@ namespace Services
     {
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _mailService;
         private readonly IRepositoryManager _repositoryManager;
-        private readonly SignInManager<User> _signInManager;
-        private User? _user;
+        private readonly SignInManager<AppUser> _signInManager;
+        private AppUser? _user;
 
         public AuthenticationService
             (
             ILoggerManager logger, 
             IMapper mapper,
-            UserManager<User> userManager, 
+            UserManager<AppUser> userManager, 
             IConfiguration configuration,
             IEmailService mailService,
             IRepositoryManager repositoryManager,
-            SignInManager<User> signInManager
+            SignInManager<AppUser> signInManager
             )
         {
             _logger = logger;
@@ -55,7 +55,12 @@ namespace Services
             if (user != null)
                 return new NotFoundResponse(ResponseMessages.UserNotFound);
 
-            user = _mapper.Map<User>(userForRegistration);
+            userForRegistration.Gender = Commons.Capitalize(userForRegistration.Gender);
+            var isCorrectGender = Enum.IsDefined(typeof(EGender), userForRegistration.Gender);
+            if (!isCorrectGender)
+                return new BadRequestResponse(ResponseMessages.InvalidGender);
+
+            user = _mapper.Map<AppUser>(userForRegistration);
             user.UserName = userForRegistration.Email;
 
             var result = await _userManager.CreateAsync(user, userForRegistration.Password);
@@ -232,7 +237,7 @@ namespace Services
         }
         private async Task<List<Claim>> GetClaims()
         {
-            var claims = new List<Claim>{ new Claim(ClaimTypes.Name, _user.UserName) };
+            var claims = new List<Claim>{ new Claim(ClaimTypes.Name, _user.UserName), new Claim(ClaimTypes.NameIdentifier, _user.Id) };
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles)
             {

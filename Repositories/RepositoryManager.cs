@@ -17,6 +17,7 @@ namespace Repositories
         private readonly Lazy<IJobRepository> _jobRepository;
         private readonly Lazy<IJobTypeRepository> _jobTypeRepository;
         private readonly Lazy<IUserSkillRepository> _userSkillRepository;
+        private readonly Lazy<IUserJobRepository> _userJobRepository;
 
         public RepositoryManager(RepositoryContext repositoryContext)
         {
@@ -45,6 +46,8 @@ namespace Repositories
                 JobRepository(repositoryContext));
             _userSkillRepository = new Lazy<IUserSkillRepository>(() => new
                 UserSkillRepository(repositoryContext));
+            _userJobRepository = new Lazy<IUserJobRepository>(() => new
+                UserJobRepository(repositoryContext));
         }
        
         public ILocationRepository Location => _locationRepository.Value;
@@ -59,6 +62,9 @@ namespace Repositories
         public IJobRepository Job => _jobRepository.Value;
         public IJobTypeRepository JobType => _jobTypeRepository.Value;
         public IUserSkillRepository UserSkill => _userSkillRepository.Value;
+
+        public IUserJobRepository UserJob => _userJobRepository.Value;
+
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
     }
 }

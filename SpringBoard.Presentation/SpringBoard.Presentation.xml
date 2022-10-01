@@ -184,6 +184,88 @@
             <response code="403">Forbidden. Server refuses to authorize the request.</response>
             <response code="500">Server error. If the server did not understand the request.</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Update(System.Guid,Shared.DataTransferObjects.JobRequestObject)">
+            <summary>End-point to create a job</summary>
+            <param  name="id">The id of the job to update</param>
+            <param name="request"></param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="400">Bad request. If the request is not valid.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Delete(System.Guid)">
+            <summary>End-point to create a job</summary>
+            <param name="id"></param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="400">Bad request. If the request is not valid.</response>
+            <response code = "404" > Not.If the resource is not found.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get paginated list of jobs.</summary>
+            <param name="searchParameters"></param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="404">Not. If the resource is not found.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(Shared.RequestFeatures.JobSearchParams)">
+            <summary>End-point to get paginated list of jobs filtered by location, company, job type and industry.</summary>
+            <param name="searchParameters"></param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.GetApplicants(System.Guid,Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get paginated list of applicants that applied for a particular job</summary>
+            <param name="jobId">The id of the job for which the applicants applied for.</param>
+            <param name="searchParameters"></param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(System.Guid,Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get paginated list of jobs posted by a company</summary>
+            <param name="companyId">The id of the company that posted the job.</param>
+            <param name="searchParameters"></param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(System.Guid)">
+            <summary>End-point to get job by id</summary>
+            <param name="id">The id of the job to get.</param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(System.String,Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get job by by applicant</summary>
+            <param name="applicantId">The id of the user for which we want to get the job applied for.</param>
+            <param name="searchParams"></param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Apply(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>End point for user to submit job applications</summary>
+            <param name="jobId">The id of the job the user is applying for</param>
+            <param name="cv">The CV of the Applicant.</param>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="404">Not found. If resource not found</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.JobTypeController.CreateJobType(Shared.DataTransferObjects.JobTypeRequestObject)">
             <summary>
             End-point to create job type

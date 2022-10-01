@@ -7,12 +7,12 @@ namespace Entities.Models
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         [ForeignKey(nameof(Users))]
-        public string UserId { get; set; } = string.Empty;
-        public User? Users { get; set; }
+        public string UserId { get; set; }
+        public AppUser? Users { get; set; }
         [Required]
-        public string Value { get; set; } = string.Empty;
+        public string Value { get; set; }
         [Required]
-        public string Type { get; set; } = string.Empty;
+        public string Type { get; set; }
         public DateTime ExpiresAt { get; set; } = DateTime.Now.AddDays(7);
     }
 }

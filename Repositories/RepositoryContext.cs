@@ -5,7 +5,7 @@ using Repositories.Configurations;
 
 namespace Repositories
 {
-    public class RepositoryContext : IdentityDbContext<User>
+    public class RepositoryContext : IdentityDbContext<AppUser>
     {
         public RepositoryContext(DbContextOptions<RepositoryContext> options) : base(options)
         {
@@ -17,6 +17,8 @@ namespace Repositories
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.Entity<UserSkill>()
                 .HasKey(us => new { us.UserInformationId, us.SkillId });
+            modelBuilder.Entity<UserJob>()
+                .HasKey(uj => new { uj.JobId, uj.UserId});
         }
 
         public DbSet<Certification>? Certifications { get; set; }
@@ -31,5 +33,6 @@ namespace Repositories
         public DbSet<WorkExperience>? WorkExperiences { get; set; }
         public DbSet<Token>? Tokens { get; set; }
         public DbSet<UserSkill>? UserSkills { get; set; }
+        public DbSet<UserJob>? UserJobs { get; set; }
     }
 }

@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Entities.Enums;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models
 {
-    public class User : IdentityUser
+    public class AppUser : IdentityUser
     {
         [Required, Column(TypeName = "nvarchar(80)")]
-        public string FirstName { get; set; } = string.Empty;
+        public string FirstName { get; set; }
         [Required, Column(TypeName = "nvarchar(80)")]
-        public string LastName { get; set; } = string.Empty;
+        public string LastName { get; set; }
+        public string Gender { get; set; }
         public bool IsActive { get; set; } = false;
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }

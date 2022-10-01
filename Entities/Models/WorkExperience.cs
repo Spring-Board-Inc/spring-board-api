@@ -6,11 +6,11 @@ namespace Entities.Models
     public class WorkExperience : BaseEntity
     {
         [Required, Column(TypeName = "nvarchar(100)")]
-        public string Company { get; set; } = string.Empty;
+        public string Company { get; set; }
         [Required, Column(TypeName = "nvarchar(80)")]
-        public string Location { get; set; } = string.Empty;
+        public string Location { get; set; }
         [Required, Column(TypeName = "nvarchar(50)")]
-        public string Designation { get; set; } = string.Empty;
+        public string Designation { get; set; }
         [Required, Column(TypeName = "nvarchar(450)")]
         public string? Descriptions { get; set; }
         [Required]

@@ -24,5 +24,6 @@ namespace Entities.Models
         [ForeignKey(nameof(Type))]
         public Guid TypeId { get; set; }
         public JobType? Type { get; set; }
+        public int NumberOfApplicants { get; set; } = 0;
     }
 }

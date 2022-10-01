@@ -4,7 +4,7 @@ namespace Repositories.Extensions
 {
     public static class RepositoryExtensions
     {
-        public static IQueryable<Location> SearchLocation(this IQueryable<Location> locations, string searchTerm)
+        public static IQueryable<Location> Search(this IQueryable<Location> locations, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return locations;
@@ -13,7 +13,7 @@ namespace Repositories.Extensions
             return locations.Where(l => l.State.ToLower().Contains(lowerCaseTerm) || l.Town.ToLower().Contains(lowerCaseTerm));
         }
 
-        public static IQueryable<Company> SearchCompany(this IQueryable<Company> companies, string searchTerm)
+        public static IQueryable<Company> Search(this IQueryable<Company> companies, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return companies;
@@ -22,7 +22,7 @@ namespace Repositories.Extensions
             return companies.Where(c => c.Name.ToLower().Contains(lowerCaseTerm));
         }
 
-        public static IQueryable<Job> SearchJob(this IQueryable<Job> jobs, string searchTerm)
+        public static IQueryable<Job> Search(this IQueryable<Job> jobs, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return jobs;
@@ -31,7 +31,7 @@ namespace Repositories.Extensions
             return jobs.Where(j => j.Title.ToLower().Contains(lowerCaseTerm));
         }
 
-        public static IQueryable<Industry> SearchIndustry(this IQueryable<Industry> industries, string searchTerm)
+        public static IQueryable<Industry> Search(this IQueryable<Industry> industries, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return industries;
@@ -40,7 +40,7 @@ namespace Repositories.Extensions
             return industries.Where(i => i.Name.ToLower().Contains(lowerCaseTerm));
         }
 
-        public static IQueryable<User> SearchUser(this IQueryable<User> users, string searchTerm)
+        public static IQueryable<AppUser> Search(this IQueryable<AppUser> users, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return users;

@@ -17,6 +17,7 @@ namespace Repositories
 
         public async Task<Job?> FindJobAsync(Guid id, bool trackChanges) =>
             await FindByCondition(j => j.Id.Equals(id), trackChanges)
+                    .Include(j => j.Company)
                     .FirstOrDefaultAsync();
 
         public async Task<IEnumerable<Job>> FindJobsAsync(bool trackChanges) =>

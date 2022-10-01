@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SpringBoardApi.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,6 +30,7 @@ namespace SpringBoardApi.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(80)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(80)", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -68,7 +69,8 @@ namespace SpringBoardApi.Migrations
                     LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PublicId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,7 +84,8 @@ namespace SpringBoardApi.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,7 +99,8 @@ namespace SpringBoardApi.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -111,11 +115,41 @@ namespace SpringBoardApi.Migrations
                     Town = table.Column<string>(type: "nvarchar(80)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(80)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Locations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Skills",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(30)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skills", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserJobs",
+                columns: table => new
+                {
+                    JobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserJobs", x => new { x.JobId, x.UserId });
                 });
 
             migrationBuilder.CreateTable(
@@ -257,7 +291,8 @@ namespace SpringBoardApi.Migrations
                     State = table.Column<string>(type: "nvarchar(80)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(80)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -277,12 +312,17 @@ namespace SpringBoardApi.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(80)", nullable: false),
                     Descriptions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SalaryLowerRange = table.Column<double>(type: "float", nullable: true),
+                    SalaryUpperRange = table.Column<double>(type: "float", nullable: true),
+                    ClosingDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IndustryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NumberOfApplicants = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -323,7 +363,8 @@ namespace SpringBoardApi.Migrations
                     IssuingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -344,13 +385,14 @@ namespace SpringBoardApi.Migrations
                     School = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(80)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    Course = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    LevelOfEducation = table.Column<int>(type: "int", nullable: false),
+                    Major = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    LevelOfEducation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -364,43 +406,19 @@ namespace SpringBoardApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skills",
+                name: "UserSkills",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(30)", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false),
                     UserInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    SkillId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Skill = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Level = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skills", x => x.Id);
+                    table.PrimaryKey("PK_UserSkills", x => new { x.UserInformationId, x.SkillId });
                     table.ForeignKey(
-                        name: "FK_Skills_UserInformation_UserInformationId",
-                        column: x => x.UserInformationId,
-                        principalTable: "UserInformation",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserDocuments",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserDocuments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserDocuments_UserInformation_UserInformationId",
+                        name: "FK_UserSkills_UserInformation_UserInformationId",
                         column: x => x.UserInformationId,
                         principalTable: "UserInformation",
                         principalColumn: "Id",
@@ -420,7 +438,8 @@ namespace SpringBoardApi.Migrations
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -438,10 +457,10 @@ namespace SpringBoardApi.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6263af40-51cd-4728-8fa8-273b4d4167d4", "3dd18717-cdc8-4ca4-9101-84b084afdd53", "Administrator", "ADMINISTRATOR" },
-                    { "9fad9ff5-cf97-4576-ad44-77e4417a863b", "60768fd5-14f9-4325-bc20-99cb18353287", "SuperAdministrator", "SUPERADMINISTRATOR" },
-                    { "b32d9b61-16b3-4bd6-9cde-b9e8edb470d3", "70595063-379b-4960-a686-3639454dcc7c", "Employer", "EMPLOYER" },
-                    { "c5a479fa-2b8b-485f-a458-286ad21582ef", "b15575e1-334a-42ea-a232-71149598685f", "Applicant", "APPLICANT" }
+                    { "406a95ba-061e-4d57-ab6a-1d594a633399", "08c322ef-0484-4a33-b6d3-7e3a8cabe3c4", "Employer", "EMPLOYER" },
+                    { "4299d543-7305-4263-b1ed-ebe2171f24da", "059b2deb-24b5-41b3-8b21-20ce87741793", "SuperAdministrator", "SUPERADMINISTRATOR" },
+                    { "b20d93c8-4a91-457d-84da-ae2293904af2", "b11aed0b-7982-4a5b-b2b7-1e4301bfeb20", "Administrator", "ADMINISTRATOR" },
+                    { "e32f6e1e-d575-409d-8348-33e12b01e421", "6f5aa10c-1dce-492e-b72e-8704e6b4268a", "Applicant", "APPLICANT" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -514,19 +533,9 @@ namespace SpringBoardApi.Migrations
                 column: "TypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Skills_UserInformationId",
-                table: "Skills",
-                column: "UserInformationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tokens_UserId",
                 table: "Tokens",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserDocuments_UserInformationId",
-                table: "UserDocuments",
-                column: "UserInformationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserInformation_UserId",
@@ -573,7 +582,10 @@ namespace SpringBoardApi.Migrations
                 name: "Tokens");
 
             migrationBuilder.DropTable(
-                name: "UserDocuments");
+                name: "UserJobs");
+
+            migrationBuilder.DropTable(
+                name: "UserSkills");
 
             migrationBuilder.DropTable(
                 name: "WorkExperiences");

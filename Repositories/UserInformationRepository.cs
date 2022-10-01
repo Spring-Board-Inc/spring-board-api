@@ -14,6 +14,7 @@ namespace Repositories
         public void DeleteUserInformation(UserInformation userInformation) => Delete(userInformation);
         public async Task<UserInformation?> FindUserInformationAsync(string userId, bool trackChanges) =>
             await FindByCondition(ui => ui.UserId.Equals(userId), trackChanges)
+                    .Include(ui => ui.User)
                     .Include(ui => ui.Educations)
                     .Include(ui => ui.Certifications)
                     .Include(ui => ui.WorkExperiences)
@@ -28,5 +29,13 @@ namespace Repositories
 
         public IQueryable<UserInformation> FindUserInformation(string userId, bool trackChanges) =>
             FindByCondition(ui => ui.UserId.Equals(userId), trackChanges);
+
+        public IQueryable<UserInformation> FindUserInformation(bool trackChanges) =>
+            FindAll(trackChanges)
+            .Include(ui => ui.User)
+            .Include(ui => ui.Educations)
+            .Include(ui => ui.Certifications)
+            .Include(ui => ui.WorkExperiences)
+            .Include(ui => ui.UserSkills);
     }
 }

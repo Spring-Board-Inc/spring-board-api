@@ -7,13 +7,13 @@ namespace Entities.Models
     public class Education : BaseEntity
     {
         [Required, Column(TypeName = "nvarchar(100)")]
-        public string School { get; set; } = string.Empty;
+        public string School { get; set; }
         [Required, Column(TypeName = "nvarchar(80)")]
-        public string City { get; set; } = string.Empty;
+        public string City { get; set; }
         [Required, Column(TypeName = "nvarchar(100)")]
-        public string Country { get; set; } = string.Empty;
+        public string Country { get; set; }
         [Required, Column(TypeName = "nvarchar(100)")]
-        public string Major { get; set; } = string.Empty;
+        public string Major { get; set; }
         public string LevelOfEducation { get; set; }
         [Required]
         public DateTime StartDate { get; set; }

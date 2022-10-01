@@ -49,14 +49,20 @@ namespace Services
             var userCertifications = _repositoryManager.Certification.FindCertifications(userInfoId, true).OrderByDescending(ui => ui.IssuingDate);
             var userSkills = _repositoryManager.UserSkill.FindUserSkills(userInfoId, true);
 
-            var userInfoToReturn = await (from userInfo in userInfoQuery
-                                    join userEducation in userEducations on userInfo.Id equals userEducation.UserInformationId
-                                    join userWorkExperience in userWorkExperiences on userInfo.Id equals userWorkExperience.UserInformationId
-                                    join userCertification in userCertifications on userInfo.Id equals userCertification.UserInformationId
-                                    join userSkill in userSkills on userInfo.Id equals userSkill.UserInformationId
-                                    select userInfo).FirstOrDefaultAsync();
+            var userInfoToReturn = await (
+                                        from userInfo in userInfoQuery
+                                        join userEducation in userEducations on userInfo.Id equals userEducation.UserInformationId into ue
+                                        from userEducation in ue.DefaultIfEmpty()
+                                        join userWorkExperience in userWorkExperiences on userInfo.Id equals userWorkExperience.UserInformationId into uw
+                                        from userWorkExperience in uw.DefaultIfEmpty()
+                                        join userCertification in userCertifications on userInfo.Id equals userCertification.UserInformationId into uc
+                                        from userCertification in uc.DefaultIfEmpty()
+                                        join userSkill in userSkills on userInfo.Id equals userSkill.UserInformationId into us
+                                        from userSkill in us.DefaultIfEmpty()
+                                        select userInfo).FirstOrDefaultAsync();
 
-            return new ApiOkResponse<UserInformation?>(userInfoToReturn);
+            var data = _mapper.Map<UserInformationToReturn>(userInfoToReturn);
+            return new ApiOkResponse<UserInformationToReturn?>(data);
         }
 
         public async Task<ApiBaseResponse> Update(Guid id, UserInformationDto dto)

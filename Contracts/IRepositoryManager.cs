@@ -14,6 +14,7 @@
         IJobRepository Job { get; }
         IJobTypeRepository JobType { get; }
         IUserSkillRepository UserSkill { get; }
+        IUserJobRepository UserJob { get; }
         Task SaveAsync();
     }
 }

@@ -23,7 +23,7 @@ namespace Repositories
             var endDate = locationParameters.EndDate == DateTime.MaxValue ? locationParameters.EndDate : locationParameters.EndDate.AddDays(1);
             return await FindAll(trackChanges)
                                 .Where(l => l.CreatedAt >= locationParameters.StartDate && l.CreatedAt <= endDate)
-                                .SearchLocation(locationParameters.SearchBy)
+                                .Search(locationParameters.SearchBy)
                                 .OrderByDescending(l => l.CreatedAt)
                                 .ThenBy(l => l.State)
                                 .ToListAsync();

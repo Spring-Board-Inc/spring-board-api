@@ -58,8 +58,14 @@ namespace Shared.Helpers
         public static readonly string CompanyNotFound = "Company not found.";
         public static readonly string CompanyDeleted = "Company successfully deleted.";
         public static readonly string CompanyUpdateFailed = "Company details update failed.";
-        public static readonly string NoFileChosen;
-        public static readonly string InvalidSalaryRange;
-        public static readonly string InvalidClosingDate;
+        public static readonly string NoFileChosen = "Please choose a file.";
+        public static readonly string InvalidSalaryRange = "Invalid salary range.";
+        public static readonly string InvalidClosingDate = "Closing date must be later than today's date";
+        public static readonly string JobNotFound = "Job not found.";
+        public static readonly string JobDeleted = "Job successfully deleted.";
+        public static readonly string JobExpired = "This job no longer accepting applications.";
+        public static readonly string ApplicationSuccessful = "Application successfully submitted.";
+        public static readonly string AlreadyApplied = "You already applied for this job.";
+        public static readonly string InvalidGender;
     }
 }

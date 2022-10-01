@@ -11,5 +11,6 @@ namespace Contracts
         Task<bool> UserInformationExists(string userId);
         Task<UserInformation?> FindUserInformationAsync(Guid id, bool trackChanges);
         IQueryable<UserInformation> FindUserInformation(string userId, bool trackChanges);
+        IQueryable<UserInformation> FindUserInformation(bool trackChanges);
     }
 }

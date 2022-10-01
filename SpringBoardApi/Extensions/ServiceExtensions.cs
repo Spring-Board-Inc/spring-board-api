@@ -144,7 +144,7 @@ namespace SpringBoardApi.Extensions
                 opts.UseSqlServer(configuration.GetConnectionString("Default")));
 
         public static void ConfigureIdentity(this IServiceCollection services) =>
-            services.AddIdentity<User, IdentityRole>(opt =>
+            services.AddIdentity<AppUser, IdentityRole>(opt =>
             {
                 opt.SignIn.RequireConfirmedEmail = false;
                 opt.User.RequireUniqueEmail = true;

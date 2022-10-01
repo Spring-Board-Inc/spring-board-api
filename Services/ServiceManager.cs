@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Repositories;
@@ -29,11 +30,12 @@ namespace Services
             ILoggerManager logger,
             IMapper mapper,
             IConfiguration config,
-            UserManager<User> userManager,
+            UserManager<AppUser> userManager,
             IEmailService emailService,
-            SignInManager<User> signInManager,
+            SignInManager<AppUser> signInManager,
             ICloudinaryService cloudinaryService,
-            RepositoryContext repositoryContext
+            RepositoryContext repositoryContext,
+            IHttpContextAccessor httpContextAccessor
             )
         {
             _locationService = new Lazy<ILocationService>(() => new
@@ -55,7 +57,7 @@ namespace Services
             _certificationService = new Lazy<ICertificationService>(() => new
                 CertificationService(repositoryManager, mapper));
             _jobService = new Lazy<IJobService>(() => new
-                JobService(repositoryManager, mapper));
+                JobService(repositoryManager, mapper, httpContextAccessor, emailService));
             _jobTypeService = new Lazy<IJobTypeService>(() => new
                 JobTypeService(repositoryManager, mapper));
             _companyService = new Lazy<ICompanyService>(() => new

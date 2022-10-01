@@ -19,7 +19,7 @@ namespace Services
     {
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IRepositoryManager _repositoryManager;
         private readonly ICloudinaryService _cloudinaryService;
@@ -30,7 +30,7 @@ namespace Services
         (
             ILoggerManager logger,
             IMapper mapper,
-            UserManager<User> userManager,
+            UserManager<AppUser> userManager,
             IConfiguration configuration,
             IRepositoryManager repositoryManager,
             ICloudinaryService cloudinaryService,

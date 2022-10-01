@@ -6,11 +6,11 @@ namespace Entities.Models
     public class Company : BaseEntity
     {
         [Required, Column(TypeName = "nvarchar(100)")]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         [Required, EmailAddress, Column(TypeName = "nvarchar(100)")]
-        public string Email { get; set; } = string.Empty;
-        public string LogoUrl { get; set; } = string.Empty;
-        public string PublicId { get; set; } = string.Empty;
+        public string Email { get; set; }
+        public string LogoUrl { get; set; }
+        public string PublicId { get; set; }
         public ICollection<Job>? Jobs { get; set; }
     }
 }
