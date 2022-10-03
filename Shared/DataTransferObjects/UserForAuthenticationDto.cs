@@ -9,5 +9,6 @@ namespace Shared.DataTransferObjects
         [Required(ErrorMessage = "Password name is required")]
         public string? Password { get; init; }
         public bool RememberMe { get; init; }
+        public bool IsValidParams => !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(UserName);
     }
 }

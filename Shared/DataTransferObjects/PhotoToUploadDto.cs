@@ -7,5 +7,6 @@ namespace Shared.DataTransferObjects
     {
         [Required]
         public IFormFile Photo { get; set; }
+        public bool IsValidParams => Photo.Length > 0;
     }
 }

@@ -7,9 +7,9 @@ namespace Shared.DataTransferObjects
     public class SendTokenEmailDto
     {
         public AppUser User { get; set; }
-        public string Subject { get; set; } = string.Empty;
+        public string Subject { get; set; }
         public StringValues Origin { get; set; }
         public EToken TokenType { get; set; }
-        public string Token { get; set; } = string.Empty;
+        public string Token { get; set; }
     }
 }

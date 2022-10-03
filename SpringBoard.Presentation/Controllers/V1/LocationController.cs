@@ -120,7 +120,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteLocation(Guid id)
         {
-            var baseResult = await _service.Location.Delete(id, trackChanges: false);
+            var baseResult = await _service.Location.Delete(id, trackChanges: true);
             if(!baseResult.Success)
                 return ProcessError(baseResult);
 
@@ -148,7 +148,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateLocation(Guid id, [FromBody] LocationForUpdateDto location)
+        public async Task<IActionResult> UpdateLocation(Guid id, [FromForm] LocationForUpdateDto location)
         {
             var baseResult = await _service.Location.Update(id, location, trackChanges: true);
             if (!baseResult.Success)

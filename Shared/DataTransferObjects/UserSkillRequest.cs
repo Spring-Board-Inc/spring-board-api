@@ -6,5 +6,6 @@ namespace Shared.DataTransferObjects
     {
         [Required]
         public string Level { get; set; }
+        public bool IsValidParams => !string.IsNullOrWhiteSpace(Level);
     }
 }

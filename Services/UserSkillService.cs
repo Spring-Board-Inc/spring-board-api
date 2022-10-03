@@ -22,6 +22,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(Guid userInfoId, Guid skillId, UserSkillRequest request)
         {
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             request.Level = Commons.Capitalize(request.Level);
 
             if (
@@ -60,6 +63,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid userInfoId, Guid skillId, UserSkillRequest request)
         {
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             request.Level = Commons.Capitalize(request.Level);
 
             if (

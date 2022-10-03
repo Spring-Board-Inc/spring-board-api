@@ -6,5 +6,6 @@ namespace Shared.DataTransferObjects
     {
         [Required]
         public string? JobType { get; set; }
+        public bool IsValidParams => !string.IsNullOrWhiteSpace(JobType);
     }
 }

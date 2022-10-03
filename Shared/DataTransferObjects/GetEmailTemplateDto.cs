@@ -2,8 +2,8 @@
 {
     public class GetEmailTemplateDto
     {
-        public string Url { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
+        public string Url { get; set; }
+        public string FirstName { get; set; }
         public int TemplateType { get; set; }
     }
 }

@@ -133,7 +133,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("{jobId}/applicants")]
-        public async Task<IActionResult> GetApplicants(Guid jobId, [FromQuery] SearchParameters searchParameters)
+        public async Task<IActionResult> GetApplicants(Guid jobId, [FromQuery]SearchParameters searchParameters)
         {
             return Ok((await _service.Job.GetApplicants(jobId, searchParameters)).GetResult<PaginatedListDto<ApplicantInformation>>());
         }
@@ -149,7 +149,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("company-jobs/{companyId}")]
-        public async Task<IActionResult> Get(Guid companyId, [FromQuery] SearchParameters searchParameters)
+        public async Task<IActionResult> Get(Guid companyId, [FromQuery]SearchParameters searchParameters)
         {
             return Ok((await _service.Job.Get(companyId, searchParameters)).GetResult<PaginatedListDto<JobToReturnDto>>());
         }

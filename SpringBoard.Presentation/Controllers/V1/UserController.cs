@@ -224,7 +224,7 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateNames(string userId, [FromBody] UserNamesForUpdateDto request)
+    public async Task<IActionResult> UpdateNames(string userId, [FromForm] UserNamesForUpdateDto request)
     {
         var baseResult = await _service.User.UpdateUserNames(userId, request);
         if (!baseResult.Success)

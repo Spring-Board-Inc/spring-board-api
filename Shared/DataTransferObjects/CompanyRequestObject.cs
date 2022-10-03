@@ -10,5 +10,7 @@ namespace Shared.DataTransferObjects
         [Required, EmailAddress]
         public string Email { get; set; }
         public IFormFile? Logo { get; set; }
+        public bool IsValidFile => Logo?.Length > 0;
+        public bool IsValidParams => !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Name);
     }
 }

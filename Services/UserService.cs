@@ -154,6 +154,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> UpdateUserNames(string userId, UserNamesForUpdateDto request)
         {
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return new NotFoundResponse(ResponseMessages.UserNotFound);

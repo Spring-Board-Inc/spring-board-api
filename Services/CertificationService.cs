@@ -21,7 +21,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(Guid userInfoId, CertificationRequest request)
         {
-            if(request == null)
+            if(!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             Certification certification = _mapper.Map<Certification>(request);
@@ -36,7 +36,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, CertificationRequest request)
         {
-            if (request == null)
+            if (request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var certificationForUpdate = await _repository.Certification.FindCertification(id, true);

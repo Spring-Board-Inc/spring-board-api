@@ -34,7 +34,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateSkill(SkillRequest request)
+        public async Task<IActionResult> CreateSkill([FromForm] SkillRequest request)
         {
             var baseResult = await _service.Skill.Create(request);
             if (!baseResult.Success)
@@ -61,7 +61,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateSkill(Guid id, SkillRequest request)
+        public async Task<IActionResult> UpdateSkill(Guid id, [FromForm] SkillRequest request)
         {
             var baseResult = await _service.Skill.Update(id, request);
             if (!baseResult.Success)

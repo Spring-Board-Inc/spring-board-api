@@ -63,7 +63,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserInfo(string userId, UserInformationDto dto)
+        public async Task<IActionResult> CreateUserInfo(string userId, [FromForm]UserInformationDto dto)
         {
             var exists = await _service.UserInformation.Exists(userId);
             if (exists)
@@ -95,7 +95,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserInfo(Guid id, UserInformationDto dto)
+        public async Task<IActionResult> UpdateUserInfo(Guid id, [FromForm]UserInformationDto dto)
         {
             var baseResult = await _service.UserInformation.Update(id, dto);
             if (!baseResult.Success)
@@ -153,7 +153,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserEducation(Guid userInfoId, EducationForCreationDto request)
+        public async Task<IActionResult> CreateUserEducation(Guid userInfoId, [FromForm]EducationForCreationDto request)
         {
             var baseResult = await _service.Education.Create(userInfoId, request);
             if(!baseResult.Success)
@@ -181,7 +181,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserEducations(Guid id, EducationForUpdateDto request)
+        public async Task<IActionResult> UpdateUserEducations(Guid id, [FromForm]EducationForUpdateDto request)
         {
             var baseResult = await _service.Education.Update(id, request);
             if (!baseResult.Success)
@@ -237,7 +237,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateWorkExperience(Guid userInfoId, WorkExperienceRequest request)
+        public async Task<IActionResult> CreateWorkExperience(Guid userInfoId, [FromForm]WorkExperienceRequest request)
         {
             var baseResult = await _service.WorkExperience.Create(userInfoId, request);
             if (!baseResult.Success)
@@ -264,7 +264,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateWorkExperience(Guid id, WorkExperienceRequest request)
+        public async Task<IActionResult> UpdateWorkExperience(Guid id, [FromForm]WorkExperienceRequest request)
         {
             var baseResult = await _service.WorkExperience.Update(id, request);
             if (!baseResult.Success)
@@ -316,7 +316,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserSkill(Guid userInfoId, Guid skillId, UserSkillRequest request)
+        public async Task<IActionResult> CreateUserSkill(Guid userInfoId, Guid skillId, [FromForm]UserSkillRequest request)
         {
             var baseResult = await _service.UserSkill.Create(userInfoId, skillId, request);
             if (!baseResult.Success)
@@ -342,7 +342,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserSkill(Guid userInfoId, Guid skillId, UserSkillRequest request)
+        public async Task<IActionResult> UpdateUserSkill(Guid userInfoId, Guid skillId, [FromForm]UserSkillRequest request)
         {
             var baseResult = await _service.UserSkill.Update(userInfoId, skillId, request);
             if (!baseResult.Success)
@@ -395,7 +395,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateCertification(Guid userInfoId, CertificationRequest request)
+        public async Task<IActionResult> CreateCertification(Guid userInfoId, [FromForm]CertificationRequest request)
         {
             var baseResult = await _service.Certification.Create(userInfoId, request);
             if (!baseResult.Success)
@@ -420,7 +420,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateCertification(Guid id, CertificationRequest request)
+        public async Task<IActionResult> UpdateCertification(Guid id, [FromForm]CertificationRequest request)
         {
             var baseResult = await _service.Certification.Update(id, request);
             if (!baseResult.Success)
