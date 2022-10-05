@@ -41,7 +41,7 @@ namespace SpringBoardApi.Extensions
             services.AddControllers(config => {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
-                config.CacheProfiles.Add("120SecondsDuration", new CacheProfile
+                config.CacheProfiles.Add("60SecondsDuration", new CacheProfile
                 {
                     Duration = 120
                 });
@@ -156,7 +156,7 @@ namespace SpringBoardApi.Extensions
         public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
             services.AddHttpCacheHeaders((expirationOpt) =>
             {
-                expirationOpt.MaxAge = 120;
+                expirationOpt.MaxAge = 60;
                 expirationOpt.CacheLocation = CacheLocation.Private;
             },(validationOpt) =>
             {
@@ -170,7 +170,7 @@ namespace SpringBoardApi.Extensions
                 new RateLimitRule
                 {
                     Endpoint = "*",
-                    Limit = 50,
+                    Limit = 20,
                     Period = "5m"
                 }
              };
