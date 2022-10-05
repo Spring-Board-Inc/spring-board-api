@@ -14,5 +14,6 @@ namespace Shared.DataTransferObjects
         public string State { get; set; }
         [Required]
         public string Country { get; set; }
+        public bool IsValidParams => !string.IsNullOrWhiteSpace(Street) && !string.IsNullOrWhiteSpace(Town) && !string.IsNullOrWhiteSpace(PostalCode) && !string.IsNullOrWhiteSpace(State) && !string.IsNullOrWhiteSpace(Country);
     }
 }

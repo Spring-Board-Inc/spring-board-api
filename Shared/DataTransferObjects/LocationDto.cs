@@ -8,7 +8,17 @@ namespace Shared.DataTransferObjects
         string State
         );
 
-    public record LocationForCreationDto(string Town, string State);
+    public record LocationForCreationDto
+    {
+        public string Town { get; set; }
+        public string State { get; set; }
+        public bool IsValidParams => !string.IsNullOrWhiteSpace(Town) && !string.IsNullOrWhiteSpace(State);
+    }
 
-    public record LocationForUpdateDto(string Town, string State);
+    public record LocationForUpdateDto
+    {
+        public string Town { get; set; }
+        public string State { get; set; }
+        public bool IsValidParams => !string.IsNullOrWhiteSpace(Town) && !string.IsNullOrWhiteSpace(State);
+    }
 }

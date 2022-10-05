@@ -29,7 +29,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> Create(IndustryRequestObject request)
+        public async Task<IActionResult> Create([FromForm]IndustryRequestObject request)
         {
             var baseResult = await _service.Industry.Create(request);
             if(!baseResult.Success)
@@ -110,7 +110,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(Guid id, IndustryRequestObject request)
+        public async Task<IActionResult> Update(Guid id, [FromForm]IndustryRequestObject request)
         {
             var baseResult = await _service.Industry.Update(id, request);
             if (!baseResult.Success)

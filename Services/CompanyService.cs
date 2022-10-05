@@ -24,9 +24,12 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(CompanyRequestObject request)
         {
+            if(!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var uploadResult = new PhotoUploadResultDto(string.Empty, string.Empty);
 
-            if(request.Logo?.Length > 0)
+            if(request.IsValidFile)
             {
                 var validationResult = Commons.ValidateImageFile(request.Logo);
                 if (!validationResult.Successful)
@@ -67,6 +70,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, CompanyRequestObject request)
         {
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var companyForUpdate = await _repository.Company.FindCompanyAsync(id, true);
             if (companyForUpdate == null)
                 return new NotFoundResponse(ResponseMessages.CompanyNotFound);
@@ -74,7 +80,7 @@ namespace Services
             _mapper.Map(request, companyForUpdate);
             companyForUpdate.UpdatedAt = DateTime.Now;
 
-            if(request.Logo?.Length > 0)
+            if(request.IsValidFile)
             {
                 var validationResult = Commons.ValidateImageFile(request.Logo);
                 if (!validationResult.Successful)

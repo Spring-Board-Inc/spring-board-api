@@ -14,8 +14,9 @@ namespace Shared.DataTransferObjects
         public string? Descriptions { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public bool IsValidDateRange => EndDate != null && EndDate > StartDate;
-        public bool IsValidStartDate => StartDate < DateTime.Now;
+        public DateTime? EndDate { get; set; } = null;
+        public bool IsValidDateRange => (EndDate == null && StartDate <= DateTime.Now) || EndDate > StartDate;
+        public bool IsValidEntries => !string.IsNullOrWhiteSpace(Company) && !string.IsNullOrWhiteSpace(Location) && !string.IsNullOrWhiteSpace(Designation) && !string.IsNullOrWhiteSpace(Descriptions);
+        public bool IsValidParams => IsValidDateRange && IsValidEntries;
     }
 }

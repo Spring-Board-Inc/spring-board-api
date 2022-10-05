@@ -30,7 +30,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateJobType(JobTypeRequestObject request)
+        public async Task<IActionResult> CreateJobType([FromForm]JobTypeRequestObject request)
         {
             var baseResult = await _service.JobType.Create(request);
             if (!baseResult.Success)
@@ -112,7 +112,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateJobType(Guid id, JobTypeRequestObject request)
+        public async Task<IActionResult> UpdateJobType(Guid id, [FromForm] JobTypeRequestObject request)
         {
             var baseResult = await _service.JobType.Update(id, request);
             if (!baseResult.Success)

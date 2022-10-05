@@ -42,6 +42,9 @@ namespace Services
             if (!request.IsValidClosingDate)
                 return new BadRequestResponse(ResponseMessages.InvalidClosingDate);
 
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var job = _mapper.Map<Job>(request);
 
             await _repository.Job.CreateJobAsync(job);
@@ -58,6 +61,9 @@ namespace Services
 
             if (!request.IsValidClosingDate)
                 return new BadRequestResponse(ResponseMessages.InvalidClosingDate);
+
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var jobForUpdate = await _repository.Job.FindJobAsync(id, true);
             if (jobForUpdate == null)
@@ -214,13 +220,16 @@ namespace Services
             
             var message = ApplicationMessage(job, userInfo);
         
-            await _emailService.SendMailAsync(new ApplicationRequestParameters
+            var isSent = await _emailService.SendMailAsync(new ApplicationRequestParameters
             {
                 To = job.Company.Email,
                 Subject = $"{userInfo.User.FirstName} {userInfo.User.LastName}: Application for the position of {job.Title}",
                 Message = message,
                 File = cv
             });
+
+            if (!isSent)
+                return new BadRequestResponse(ResponseMessages.ApplicationFailed);
 
             var userJob = new UserJob { UserId = applicantId, JobId = jobId };
             job.NumberOfApplicants++;

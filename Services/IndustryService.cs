@@ -21,7 +21,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(IndustryRequestObject request)
         {
-            if (request == null || string.IsNullOrWhiteSpace(request.Industry))
+            if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var industry = _mapper.Map<Industry>(request);
@@ -47,7 +47,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, IndustryRequestObject request)
         {
-            if (request == null || string.IsNullOrWhiteSpace(request.Industry))
+            if (request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var industry = await _repository.Industry.FindIndustryAsync(id, true);

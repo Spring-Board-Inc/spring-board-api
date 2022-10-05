@@ -51,9 +51,15 @@ namespace Services
         }
         public async Task<ApiBaseResponse> RegisterUser(UserForRegistrationDto userForRegistration, string role, StringValues origin)
         {
+            if (!userForRegistration.IsPasswordMatched)
+                return new BadRequestResponse(ResponseMessages.ConfirmPassword);
+
+            if (!userForRegistration.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByEmailAsync(userForRegistration.Email);
             if (user != null)
-                return new NotFoundResponse(ResponseMessages.UserNotFound);
+                return new BadRequestResponse(ResponseMessages.EmailTaken);
 
             userForRegistration.Gender = Commons.Capitalize(userForRegistration.Gender);
             var isCorrectGender = Enum.IsDefined(typeof(EGender), userForRegistration.Gender);
@@ -72,7 +78,7 @@ namespace Services
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            await SendEmailTokenToUser(
+            var response = await SendEmailTokenToUser(
                 new SendTokenEmailDto 
                 {
                     User = user,
@@ -81,16 +87,16 @@ namespace Services
                     Subject = "Confirm Email", 
                     TokenType = EToken.ConfirmEmail 
                 });  
-            return new ApiOkResponse<IdentityResult>(result);
+            return response.Success ? new ApiOkResponse<IdentityResult>(result) : response;
         }
 
         public async Task<ApiBaseResponse> ConfirmEmail(EmailConfirmationRequestParameters request)
         {
             var user = await _userManager.FindByIdAsync(request.UserId);
             if (user == null)
-                return new UserNotFoundResponse(ResponseMessages.UserNotFound);
+                return new NotFoundResponse(ResponseMessages.UserNotFound);
 
-            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(request.Token), EToken.ConfirmEmail.ToString())))
+            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(request.Token))))
                 return new BadRequestResponse(ResponseMessages.InvalidToken);
 
             var result = await _userManager.ConfirmEmailAsync(user, Uri.UnescapeDataString(request.Token));
@@ -103,6 +109,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> ValidateUser(UserForAuthenticationDto userForAuth)
         {
+            if(!userForAuth.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             _user = await _userManager.FindByNameAsync(userForAuth.UserName);
             var signinResult = await _signInManager.PasswordSignInAsync(_user, userForAuth.Password, userForAuth.RememberMe, false);
             var result = (_user != null && _user.IsActive && signinResult.Succeeded);
@@ -154,6 +163,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> ResetPassword(ResetPasswordDto resetPasswordDto, StringValues origin)
         {
+            if(!resetPasswordDto.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
 
             if (user == null || !user.EmailConfirmed)
@@ -161,7 +173,7 @@ namespace Services
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            await SendEmailTokenToUser(
+            var response = await SendEmailTokenToUser(
                 new SendTokenEmailDto 
                 { 
                     User = user, 
@@ -170,16 +182,23 @@ namespace Services
                     Subject = "Reset Password", 
                     TokenType = EToken.ResetPassword 
                 });
-            return new ApiOkResponse<string>(ResponseMessages.PasswordResetSuccessful);
+
+            return response.Success ? new ApiOkResponse<string>(ResponseMessages.PasswordResetSuccessful) : response;
         }
 
         public async Task<ApiBaseResponse> ChangeForgottenPassword(ChangeForgottenPasswordDto changePasswordDto)
         {
+            if (!changePasswordDto.IsPasswordMatched)
+                return new BadRequestResponse(ResponseMessages.PasswordMismatch);
+
+            if (!changePasswordDto.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByIdAsync(changePasswordDto.UserId);
             if (user == null)
                 return new NotFoundResponse(ResponseMessages.UserNotFound);
 
-            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(changePasswordDto.Token), EToken.ResetPassword.ToString())))
+            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(changePasswordDto.Token))))
                 return new BadRequestResponse(ResponseMessages.InvalidToken);
 
             var changePassword = await _userManager.ResetPasswordAsync(user, Uri.UnescapeDataString(changePasswordDto.Token), changePasswordDto.NewPassword);
@@ -191,6 +210,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> ChangePassword(string userId, ChangePasswordDto passwordDto)
         {
+            if (!passwordDto.IsPasswordMatched)
+                return new BadRequestResponse(ResponseMessages.PasswordMismatch);
+
             var user = await _userManager.FindByIdAsync(userId);
             var changedPassword = await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
             
@@ -202,7 +224,7 @@ namespace Services
 
         #region Private Methods
 
-        private async Task<bool> IsTokenConfirmed(string token, string tokenType)
+        private async Task<bool> IsTokenConfirmed(string token)
         {
             var tokenEntity = await _repositoryManager.Token.GetToken(token, true);
             if (tokenEntity == null)
@@ -323,17 +345,7 @@ namespace Services
                     TemplateType = (int)tokenEmailDto.TokenType
                 });
 
-            if (message == null)
-            {
-                var userToDelete = await _userManager.FindByIdAsync(tokenEmailDto.User.Id);
-                if (userToDelete != null)
-                {
-                    await _userManager.DeleteAsync(userToDelete);
-                    return new BadRequestResponse(ResponseMessages.RegistrationFailed);
-                }
-            }
-
-            await _mailService.SendMailAsync(
+            bool isSent = await _mailService.SendMailAsync(
                 new EmailRequestParameters 
                 { 
                     To = tokenEmailDto.User.Email, 
@@ -341,17 +353,33 @@ namespace Services
                     Subject = tokenEmailDto.Subject 
                 });
 
-            var tokenEntity = new Token 
-                { 
-                    UserId = tokenEmailDto.User.Id, 
-                    Value = tokenEmailDto.Token, 
-                    Type = tokenEmailDto.TokenType.ToString(), 
-                    ExpiresAt = DateTime.Now.AddHours(1) 
+            if (!isSent)
+            {
+                if(tokenEmailDto.TokenType == EToken.ConfirmEmail)
+                {
+                    var userToDelete = await _userManager.FindByIdAsync(tokenEmailDto.User.Id);
+                    if (userToDelete != null)
+                    {
+                        await _userManager.DeleteAsync(userToDelete);
+                        return new BadRequestResponse(ResponseMessages.RegistrationFailed);
+                    }
+                }
+                return new BadRequestResponse(ResponseMessages.PasswordResetFailed);
+            }
+            else
+            {
+                var tokenEntity = new Token
+                {
+                    UserId = tokenEmailDto.User.Id,
+                    Value = tokenEmailDto.Token,
+                    Type = tokenEmailDto.TokenType.ToString(),
+                    ExpiresAt = DateTime.Now.AddHours(1)
                 };
-            await _repositoryManager.Token.CreateToken(tokenEntity);
-            await _repositoryManager.SaveAsync();
+                await _repositoryManager.Token.CreateToken(tokenEntity);
+                await _repositoryManager.SaveAsync();
+            }
 
-            return new ApiOkResponse<bool>(true);
+            return new ApiOkResponse<bool>(isSent);
         }
 
         private string GetEmailTemplate(GetEmailTemplateDto emailTemplateDto)

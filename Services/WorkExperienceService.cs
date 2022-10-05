@@ -25,7 +25,10 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(Guid userInfoId, WorkExperienceRequest request)
         {
-            if(request == null)
+            if(!request.IsValidDateRange)
+                return new BadRequestResponse(ResponseMessages.InvalidDateRange);
+
+            if(!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var workExperience = _mapper.Map<WorkExperience>(request);
@@ -40,7 +43,10 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, WorkExperienceRequest request)
         {
-            if (request == null)
+            if (!request.IsValidDateRange)
+                return new BadRequestResponse(ResponseMessages.InvalidDateRange);
+
+            if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var workExperienceForUpdate = await _repository.WorkExperience.FindWorkExperienceAsync(id, true);

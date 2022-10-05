@@ -24,7 +24,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(string userId, UserInformationDto dto)
         {
-            if (dto == null)
+            if (!dto.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var userInformation = _mapper.Map<UserInformation>(dto);
@@ -38,16 +38,16 @@ namespace Services
 
         public async Task<ApiBaseResponse> Get(string userId)
         {
-            var userInfoQuery = _repositoryManager.UserInformation.FindUserInformation(userId, true);
+            var userInfoQuery = _repositoryManager.UserInformation.FindUserInformation(userId, false);
             if (userInfoQuery == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
 
             var userInfoId = await userInfoQuery.Select(ui => ui.Id).FirstOrDefaultAsync();
 
-            var userEducations = _repositoryManager.Education.GetEducations(userInfoId, true).OrderByDescending(ui => ui.StartDate);
-            var userWorkExperiences = _repositoryManager.WorkExperience.FindExperiences(userInfoId, true).OrderByDescending(ui => ui.StartDate);
-            var userCertifications = _repositoryManager.Certification.FindCertifications(userInfoId, true).OrderByDescending(ui => ui.IssuingDate);
-            var userSkills = _repositoryManager.UserSkill.FindUserSkills(userInfoId, true);
+            var userEducations = _repositoryManager.Education.GetEducations(userInfoId, false).OrderByDescending(ui => ui.StartDate);
+            var userWorkExperiences = _repositoryManager.WorkExperience.FindExperiences(userInfoId, false).OrderByDescending(ui => ui.StartDate);
+            var userCertifications = _repositoryManager.Certification.FindCertifications(userInfoId, false).OrderByDescending(ui => ui.IssuingDate);
+            var userSkills = _repositoryManager.UserSkill.FindUserSkills(userInfoId, false);
 
             var userInfoToReturn = await (
                                         from userInfo in userInfoQuery
@@ -67,6 +67,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, UserInformationDto dto)
         {
+            if (!dto.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var userInformation = await _repositoryManager.UserInformation.FindUserInformationAsync(id, true);
             if (userInformation == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);

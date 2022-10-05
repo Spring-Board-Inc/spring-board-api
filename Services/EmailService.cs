@@ -1,13 +1,10 @@
 ﻿using Mailjet.Client;
 using Mailjet.Client.Resources;
-using MailKit.Security;
 using Microsoft.Extensions.Configuration;
-using MimeKit;
 using Newtonsoft.Json.Linq;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.RequestFeatures;
-using System.Net.Mail;
 
 namespace Services
 {
@@ -22,8 +19,11 @@ namespace Services
             _client = client;
         }
         
-        public async Task SendMailAsync(EmailRequestParameters requestParameters)
+        public async Task<bool> SendMailAsync(EmailRequestParameters requestParameters)
         {
+            if(!requestParameters.IsValidParams)
+                return requestParameters.IsValidParams;
+
             var emails = new List<string>() { requestParameters.To };
             try
             {
@@ -61,22 +61,20 @@ namespace Services
             }
             catch (Exception)
             {
-                throw;
+                return false;
             }
+            return requestParameters.IsValidParams;
         }
 
-        public async Task SendMailAsync(ApplicationRequestParameters requestParameters)
+        public async Task<bool> SendMailAsync(ApplicationRequestParameters requestParameters)
         {
-            var base64String = string.Empty;
-            if(requestParameters.File.Length > 0)
-            {
-                using(var stream = new MemoryStream())
-                {
-                    requestParameters.File.CopyTo(stream);
-                    var fileBytes = stream.ToArray();
-                    base64String = Convert.ToBase64String(fileBytes);
-                }
-            }
+            if (!requestParameters.IsValidParams)
+                return requestParameters.IsValidParams;
+
+            using var stream = new MemoryStream();
+            requestParameters.File.CopyTo(stream);
+            var fileBytes = stream.ToArray();
+            var base64String = Convert.ToBase64String(fileBytes);
 
             var emails = new List<string>() { requestParameters.To };
             try
@@ -125,8 +123,9 @@ namespace Services
             }
             catch (Exception)
             {
-                throw;
+                return false;
             }
+            return requestParameters.IsValidParams;
         }
         
         public string? GetConfirmEmailTemplate(string emailLink, string name)

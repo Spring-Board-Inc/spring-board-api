@@ -30,6 +30,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(LocationForCreationDto location)
         {
+            if (!location.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var locationEntity = _mapper.Map<Location>(location);
             await _repository.Location.CreateLocationAsync(locationEntity);
             await _repository.SaveAsync();
@@ -63,6 +66,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid locationId, LocationForUpdateDto locationForUpdate, bool trackChanges)
         {
+            if (!locationForUpdate.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var locationEntity = await _repository.Location.GetLocationAsync(locationId, trackChanges);
             if (locationEntity is null)
                 return new NotFoundResponse(ResponseMessages.NoLocationFound);

@@ -84,7 +84,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto user)
+        public async Task<IActionResult> Authenticate([FromForm] UserForAuthenticationDto user)
         {
             var baseResult = await _service.Authentication.ValidateUser(user);
             if(!baseResult.Success)
@@ -111,7 +111,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordDto resetPasswordDto)
         {
             var origin = HttpContext.Request.Headers["Origin"];
             var baseResult = await _service.Authentication.ResetPassword(resetPasswordDto, origin);
@@ -138,7 +138,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangeForgottenPasswordDto changePasswordDto)
+        public async Task<IActionResult> ChangePassword([FromForm] ChangeForgottenPasswordDto changePasswordDto)
         {
             var baseResult = await _service.Authentication.ChangeForgottenPassword(changePasswordDto);
             if (!baseResult.Success)
@@ -166,7 +166,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangePassword(string userId, [FromBody] ChangePasswordDto changePasswordDto)
+        public async Task<IActionResult> ChangePassword(string userId, [FromForm] ChangePasswordDto changePasswordDto)
         {
             var baseResult = await _service.Authentication.ChangePassword(userId, changePasswordDto);
             if (!baseResult.Success)

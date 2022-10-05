@@ -8,5 +8,6 @@ namespace Shared.DataTransferObjects
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
+        public bool IsValidParams => !string.IsNullOrWhiteSpace(FirstName) && !string.IsNullOrWhiteSpace(LastName);
     }
 }

@@ -22,6 +22,12 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(Guid userInfoId, EducationForCreationDto request)
         {
+            if(!request.IsValidDateRange)
+                return new BadRequestResponse(ResponseMessages.InvalidDateRange);
+
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var levelOfEducation = ((ELevel)request.Level).ToString();
             var education = _mapper.Map<Education>(request);
             education.LevelOfEducation = levelOfEducation;
@@ -52,6 +58,12 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, EducationForUpdateDto request)
         {
+            if (!request.IsValidDateRange)
+                return new BadRequestResponse(ResponseMessages.InvalidDateRange);
+
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var educationForUpdate = await _repositoryManager.Education.GetEducationAsync(id, true);
             if (educationForUpdate == null)
                 return new NotFoundResponse(ResponseMessages.EducationNotFound);

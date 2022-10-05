@@ -26,7 +26,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(SkillRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Description))
+            if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var skill = _mapper.Map<Skill>(request);
@@ -40,7 +40,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, SkillRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Description))
+            if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var skillToUpdate = await _repository.Skills.FindSkillAsync(id, true);
