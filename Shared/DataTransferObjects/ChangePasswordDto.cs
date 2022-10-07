@@ -4,11 +4,11 @@ namespace Shared.DataTransferObjects
 {
     public class ChangePasswordDto
     {
-        [Required]
+        [Required(ErrorMessage = $"{nameof(CurrentPassword)} is required")]
         public string CurrentPassword { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(NewPassword)} is required")]
         public string NewPassword { get; set; }
-        [Required, Compare("NewPassword")]
+        [Required(ErrorMessage = $"{nameof(ConfirmNewPassword)} is required"), Compare("NewPassword")]
         public string ConfirmNewPassword { get; set; }
         public bool IsPasswordMatched => NewPassword.Equals(ConfirmNewPassword);
     }

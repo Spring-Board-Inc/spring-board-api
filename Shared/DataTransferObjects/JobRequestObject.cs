@@ -4,20 +4,20 @@ namespace Shared.DataTransferObjects
 {
     public class JobRequestObject
     {
-        [Required]
+        [Required(ErrorMessage = $"{nameof(Title)} is required")]
         public string Title { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(Descriptions)} is required")]
         public string? Descriptions { get; set; }
         public double? SalaryLowerRange { get; set; } = 0;
         public double? SalaryUpperRange { get; set; } = 0;
         public DateTime? ClosingDate { get; set; } = null;
-        [Required]
+        [Required(ErrorMessage = $"{nameof(CompanyId)} is required")]
         public Guid CompanyId { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(IndustryId)} is required")]
         public Guid IndustryId { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(LocationId)} is required")]
         public Guid LocationId { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(TypeId)} is required")]
         public Guid TypeId { get; set; }
         public bool IsValidSalaryRange => SalaryUpperRange >= SalaryLowerRange;
         public bool IsValidClosingDate => ClosingDate == null || ClosingDate > DateTime.Now;

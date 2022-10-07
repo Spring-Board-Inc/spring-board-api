@@ -4,7 +4,7 @@ namespace Shared.DataTransferObjects
 {
     public class SkillRequest
     {
-        [Required(AllowEmptyStrings = false)]
+        [Required(ErrorMessage = $"{nameof(Description)} is required")]
         public string Description { get; set; }
         public bool IsValidParams => !string.IsNullOrWhiteSpace(Description);
     }
