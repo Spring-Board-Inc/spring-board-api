@@ -51,6 +51,12 @@ namespace Services
         }
         public async Task<ApiBaseResponse> RegisterUser(UserForRegistrationDto userForRegistration, string role, StringValues origin)
         {
+            if (!userForRegistration.IsPasswordMatched)
+                return new BadRequestResponse(ResponseMessages.PasswordConfirmPasswordNotMatched);
+
+            if (!userForRegistration.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByEmailAsync(userForRegistration.Email);
             if (user != null)
                 return new NotFoundResponse(ResponseMessages.UserNotFound);
@@ -86,6 +92,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> ConfirmEmail(EmailConfirmationRequestParameters request)
         {
+            if(!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByIdAsync(request.UserId);
             if (user == null)
                 return new UserNotFoundResponse(ResponseMessages.UserNotFound);
@@ -103,6 +112,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> ValidateUser(UserForAuthenticationDto userForAuth)
         {
+            if (!userForAuth.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             _user = await _userManager.FindByNameAsync(userForAuth.Email);
             var signinResult = await _signInManager.PasswordSignInAsync(_user, userForAuth.Password, userForAuth.RememberMe, false);
             var result = (_user != null && _user.IsActive && signinResult.Succeeded);
@@ -154,6 +166,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> ResetPassword(ResetPasswordDto resetPasswordDto, StringValues origin)
         {
+            if(!resetPasswordDto.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
 
             if (user == null || !user.EmailConfirmed)
@@ -175,6 +190,12 @@ namespace Services
 
         public async Task<ApiBaseResponse> ChangeForgottenPassword(ChangeForgottenPasswordDto changePasswordDto)
         {
+            if (!changePasswordDto.IsPasswordMatched)
+                return new BadRequestResponse(ResponseMessages.PasswordConfirmPasswordNotMatched);
+
+            if (!changePasswordDto.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByIdAsync(changePasswordDto.UserId);
             if (user == null)
                 return new NotFoundResponse(ResponseMessages.UserNotFound);
@@ -191,6 +212,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> ChangePassword(string userId, ChangePasswordDto passwordDto)
         {
+            if (!passwordDto.IsPasswordMatched)
+                return new BadRequestResponse(ResponseMessages.PasswordConfirmPasswordNotMatched);
+
             var user = await _userManager.FindByIdAsync(userId);
             var changedPassword = await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
             
