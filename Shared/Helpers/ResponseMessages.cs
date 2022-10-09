@@ -66,7 +66,11 @@ namespace Shared.Helpers
         public static readonly string JobExpired = "This job no longer accepting applications.";
         public static readonly string ApplicationSuccessful = "Application successfully submitted.";
         public static readonly string AlreadyApplied = "You already applied for this job.";
-        public static readonly string InvalidGender;
-        public static readonly string PasswordConfirmPasswordNotMatched;
+        public static readonly string InvalidGender = "Invalid gender";
+        public static readonly string PasswordConfirmPasswordNotMatched = "Password and Confirm Password must be the same.";
+        public static readonly string ApplicationFailed = "Job application failed. Please try again.";
+        public static readonly string UnexpectedError = "An unexpected error occurred. Please try again.";
+        public static readonly string NoUserWithEmail = "No registered user with the specified email address";
+        internal static readonly string InvalidDocumentFormat = "Invalid document type. Must be one of PDF, DOC or DOCX";
     }
 }

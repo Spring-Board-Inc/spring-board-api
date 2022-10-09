@@ -122,7 +122,7 @@ namespace SpringBoardApi.Extensions
             services.AddHttpClient<IMailjetClient, MailjetClient>(client =>
             {
                 var apiKey = Environment.GetEnvironmentVariable("MAILJETAPIKEY");
-                var apiSecret = Environment.GetEnvironmentVariable("MAILJETAPISECRET");
+                var apiSecret = Environment.GetEnvironmentVariable("MAILJETSECRET");
                 client.UseBasicAuthentication(apiKey, apiSecret);
             });
 

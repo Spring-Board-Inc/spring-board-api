@@ -12,6 +12,7 @@ using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
 using Shared.RequestFeatures;
+using System.Security.Claims;
 
 namespace Services
 {
@@ -24,6 +25,7 @@ namespace Services
         private readonly IRepositoryManager _repositoryManager;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly RepositoryContext _repositoryContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         const int PHOTO_MAX_ALLOWABLE_SIZE = 1000000;
 
         public UserService
@@ -34,7 +36,8 @@ namespace Services
             IConfiguration configuration,
             IRepositoryManager repositoryManager,
             ICloudinaryService cloudinaryService,
-            RepositoryContext repositoryContext
+            RepositoryContext repositoryContext,
+            IHttpContextAccessor httpContextAccessor
         )
         {
             _logger = logger;
@@ -44,6 +47,7 @@ namespace Services
             _repositoryManager = repositoryManager;
             _cloudinaryService = cloudinaryService;
             _repositoryContext = repositoryContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ApiBaseResponse> Get(string id)
@@ -184,27 +188,22 @@ namespace Services
             return new ApiOkResponse<string>(ResponseMessages.PhotoDeletionSuccessful);
         }
 
-        #region Private Methods
-        //private ApiBaseResponse ValidateImageFile(IFormFile photo)
-        //{
-        //    var fileFormats = new string[] { ".png", ".jpg", ".jpeg" };
-        //    var isCorrectFormat = false;
-        //    foreach (var f in fileFormats)
-        //    {
-        //        if (photo.FileName.EndsWith(f))
-        //        {
-        //            isCorrectFormat = true;
-        //            break;
-        //        }
-        //    }
-        //    if (!isCorrectFormat)
-        //        return new BadRequestResponse(ResponseMessages.InvalidImageFormat);
+        public string? GetUserId()
+        {
+            ClaimsPrincipal? userClaim = _httpContextAccessor.HttpContext?.User;
+            return userClaim?.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
 
-        //    if (photo.Length > PHOTO_MAX_ALLOWABLE_SIZE)
-        //        return new BadRequestResponse(ResponseMessages.FileTooLarge);
+        public string? GetUserEmail()
+        {
+            ClaimsPrincipal? userClaim = _httpContextAccessor.HttpContext?.User;
+            return userClaim?.FindFirstValue(ClaimTypes.Name);
+        }
 
-        //    return new ApiOkResponse<bool>(true);
-        //}
-        #endregion
+        public async Task<bool> IsInRole(string userId, string role)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            return await _userManager.IsInRoleAsync(user, role);
+        }
     }
 }

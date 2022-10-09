@@ -10,9 +10,11 @@ namespace Entities.Enums
         PostBasic,
         [Description("Diploma")]
         Diploma,
-        [Description("Graduate")]
-        Graduate,
-        [Description("Post Graduate")]
-        PostGraduate
+        [Description("Bachelor Degree")]
+        Bachelor,
+        [Description("Master Degree")]
+        Master,
+        [Description("Ph.D")]
+        PhD
     }
 }

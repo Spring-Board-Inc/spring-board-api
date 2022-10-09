@@ -38,30 +38,29 @@ namespace Services
 
         public async Task<ApiBaseResponse> Get(string userId)
         {
-            var userInfoQuery = _repositoryManager.UserInformation.FindUserInformation(userId, false);
-            if (userInfoQuery == null)
+            var userInfo = await _repositoryManager.UserInformation.FindUserInformation(userId, false)
+                                                    .FirstOrDefaultAsync();
+            if (userInfo == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
 
-            var userInfoId = await userInfoQuery.Select(ui => ui.Id).FirstOrDefaultAsync();
+            var userEducations = await _repositoryManager.Education.GetEducations(userInfo.Id, false)
+                                                   .OrderByDescending(ui => ui.StartDate)
+                                                   .ToListAsync();
+            var userWorkExperiences = await _repositoryManager.WorkExperience.FindExperiences(userInfo.Id, false)
+                                                   .OrderByDescending(ui => ui.StartDate)
+                                                   .ToListAsync();
+            var userCertifications = await _repositoryManager.Certification.FindCertifications(userInfo.Id, false)
+                                                   .OrderByDescending(ui => ui.IssuingDate)
+                                                   .ToListAsync();
+            var userSkills = await _repositoryManager.UserSkill.FindUserSkills(userInfo.Id, false)
+                                                   .ToListAsync();
 
-            var userEducations = _repositoryManager.Education.GetEducations(userInfoId, false).OrderByDescending(ui => ui.StartDate);
-            var userWorkExperiences = _repositoryManager.WorkExperience.FindExperiences(userInfoId, false).OrderByDescending(ui => ui.StartDate);
-            var userCertifications = _repositoryManager.Certification.FindCertifications(userInfoId, false).OrderByDescending(ui => ui.IssuingDate);
-            var userSkills = _repositoryManager.UserSkill.FindUserSkills(userInfoId, false);
+            userInfo.Educations = userEducations;
+            userInfo.WorkExperiences = userWorkExperiences;
+            userInfo.Certifications = userCertifications;
+            userInfo.UserSkills = userSkills;
 
-            var userInfoToReturn = await (
-                                        from userInfo in userInfoQuery
-                                        join userEducation in userEducations on userInfo.Id equals userEducation.UserInformationId into ue
-                                        from userEducation in ue.DefaultIfEmpty()
-                                        join userWorkExperience in userWorkExperiences on userInfo.Id equals userWorkExperience.UserInformationId into uw
-                                        from userWorkExperience in uw.DefaultIfEmpty()
-                                        join userCertification in userCertifications on userInfo.Id equals userCertification.UserInformationId into uc
-                                        from userCertification in uc.DefaultIfEmpty()
-                                        join userSkill in userSkills on userInfo.Id equals userSkill.UserInformationId into us
-                                        from userSkill in us.DefaultIfEmpty()
-                                        select userInfo).FirstOrDefaultAsync();
-
-            var data = _mapper.Map<UserInformationToReturn>(userInfoToReturn);
+            var data = _mapper.Map<UserInformationToReturn>(userInfo);
             return new ApiOkResponse<UserInformationToReturn?>(data);
         }
 

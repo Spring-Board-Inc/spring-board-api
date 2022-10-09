@@ -21,7 +21,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(JobTypeRequestObject request)
         {
-            if(request.IsValidParams)
+            if(!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var jobType = _mapper.Map<JobType>(request);
@@ -47,7 +47,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, JobTypeRequestObject request)
         {
-            if (request.IsValidParams)
+            if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var jobType = await _repository.JobType.FindJobTypeAsync(id, true);

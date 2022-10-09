@@ -78,7 +78,7 @@ namespace Services
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            await SendEmailTokenToUser(
+            var isSent = await SendEmailTokenToUser(
                 new SendTokenEmailDto 
                 {
                     User = user,
@@ -86,7 +86,11 @@ namespace Services
                     Origin = origin, 
                     Subject = "Confirm Email", 
                     TokenType = EToken.ConfirmEmail 
-                });  
+                }); 
+            
+            if(!isSent.Success)
+                return new BadRequestResponse(ResponseMessages.UnexpectedError);
+
             return new ApiOkResponse<IdentityResult>(result);
         }
 
@@ -116,11 +120,14 @@ namespace Services
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             _user = await _userManager.FindByNameAsync(userForAuth.Email);
+            if (_user == null)
+                return new UserNotFoundResponse(ResponseMessages.NoUserWithEmail);
+
             var signinResult = await _signInManager.PasswordSignInAsync(_user, userForAuth.Password, userForAuth.RememberMe, false);
             var result = (_user != null && _user.IsActive && signinResult.Succeeded);
             if (!result)
             {
-                _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed. Wrong username, password or user not activated yet.");
+                _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed. Wrong password or user not activated yet.");
                 if (_user == null)
                     return new NotFoundResponse(ResponseMessages.UserNotFound);
                 else if (!_user.IsActive)
@@ -156,11 +163,11 @@ namespace Services
             var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
             var user = await _userManager.FindByNameAsync(principal.Identity.Name);
 
-            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null || user.RefreshToken != tokenDto.RefreshToken)
                 return new BadRequestResponse(ResponseMessages.InvalidToken);
 
             _user = user;
-            var token = await CreateToken(populateExp: false);
+            var token = await CreateToken(populateExp: true);
             return new ApiOkResponse<TokenDto>(token);
         }
 
@@ -176,7 +183,7 @@ namespace Services
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            await SendEmailTokenToUser(
+            var isSent = await SendEmailTokenToUser(
                 new SendTokenEmailDto 
                 { 
                     User = user, 
@@ -185,6 +192,10 @@ namespace Services
                     Subject = "Reset Password", 
                     TokenType = EToken.ResetPassword 
                 });
+
+            if(!isSent.Success)
+                return new BadRequestResponse(ResponseMessages.PasswordResetFailed);
+
             return new ApiOkResponse<string>(ResponseMessages.PasswordResetSuccessful);
         }
 
@@ -277,7 +288,7 @@ namespace Services
             (
             issuer: jwtSettings["ValidIssuer"],
             claims: claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["Expires"])),
+            expires: DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["Expires"])),
             signingCredentials: signingCredentials
             );
             return tokenOptions;
@@ -357,13 +368,16 @@ namespace Services
                 }
             }
 
-            await _mailService.SendMailAsync(
+            var isSent = await _mailService.SendMailAsync(
                 new EmailRequestParameters 
                 { 
                     To = tokenEmailDto.User.Email, 
                     Message = message, 
                     Subject = tokenEmailDto.Subject 
                 });
+
+            if (!isSent)
+                return new BadRequestResponse(ResponseMessages.UnexpectedError);
 
             var tokenEntity = new Token 
                 { 

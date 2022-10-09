@@ -12,6 +12,7 @@ namespace Services
     {
         private readonly IConfiguration _config;
         private readonly IMailjetClient _client;
+        private const string EMAIL_ADDRESS = "ojotobar@gmail.com";
 
         public EmailService(IConfiguration config, IMailjetClient client)
         {
@@ -37,7 +38,7 @@ namespace Services
                             {
                                 "From",new JObject
                                 {
-                                    {"Email","ojotobar@gmail.com"},
+                                    {"Email",EMAIL_ADDRESS},
                                     {"Name", "Spring Board Inc."}
                                 }
                             },
@@ -89,7 +90,7 @@ namespace Services
                             {
                                 "From",new JObject
                                 {
-                                    {"Email","ojotobar@gmail.com"},
+                                    {"Email",EMAIL_ADDRESS},
                                     {"Name", "Spring Board Inc."}
                                 }
                             },

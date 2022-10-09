@@ -192,6 +192,10 @@ namespace SpringBoardApi.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
@@ -602,29 +606,29 @@ namespace SpringBoardApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4299d543-7305-4263-b1ed-ebe2171f24da",
-                            ConcurrencyStamp = "059b2deb-24b5-41b3-8b21-20ce87741793",
+                            Id = "fcc9b0ea-531f-4d6c-91b4-b584381dddbf",
+                            ConcurrencyStamp = "7e9d7c23-bbb9-4cf9-af2c-534fea157eaa",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "b20d93c8-4a91-457d-84da-ae2293904af2",
-                            ConcurrencyStamp = "b11aed0b-7982-4a5b-b2b7-1e4301bfeb20",
+                            Id = "b0543b06-d785-42d8-bd8f-9b04b4d908be",
+                            ConcurrencyStamp = "75acdbe8-697e-4235-b135-9072afd3de5d",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "406a95ba-061e-4d57-ab6a-1d594a633399",
-                            ConcurrencyStamp = "08c322ef-0484-4a33-b6d3-7e3a8cabe3c4",
+                            Id = "9f50efa7-da7f-4d97-90a4-d216a8e0c831",
+                            ConcurrencyStamp = "c53b857f-590b-40d1-9416-56da04eb762c",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "e32f6e1e-d575-409d-8348-33e12b01e421",
-                            ConcurrencyStamp = "6f5aa10c-1dce-492e-b72e-8704e6b4268a",
+                            Id = "031ad853-ca2a-47e3-965d-d873b7cde803",
+                            ConcurrencyStamp = "2480d279-070b-4ae3-bcdd-6975fe07f754",
                             Name = "Applicant",
                             NormalizedName = "APPLICANT"
                         });

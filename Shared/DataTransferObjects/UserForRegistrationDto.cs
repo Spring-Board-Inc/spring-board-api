@@ -16,6 +16,7 @@ namespace Shared.DataTransferObjects
         public string? Email { get; init; }
         [Phone]
         public string? PhoneNumber { get; init; }
+        [Required]
         public int RoleIndex { get; set; } = 0;
         [Required]
         public string Gender { get; set; }

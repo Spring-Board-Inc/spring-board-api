@@ -5,6 +5,7 @@ using Entities.Response;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
+using Shared.RequestFeatures;
 
 namespace Services
 {
@@ -22,7 +23,7 @@ namespace Services
             _cloudinary = cloudinary;
         }
 
-        public async Task<ApiBaseResponse> Create(CompanyRequestObject request)
+        public async Task<ApiBaseResponse> Create(string userId, CompanyRequestObject request)
         {
             if(!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
@@ -43,6 +44,7 @@ namespace Services
             var company = _mapper.Map<Company>(request);
             company.LogoUrl = uploadResult.Url;
             company.PublicId = uploadResult.PublicId;
+            company.UserId = userId;
 
             await _repository.Company.CreateCompanyAsync(company);
             await _repository.SaveAsync();
@@ -101,10 +103,15 @@ namespace Services
             return new ApiOkResponse<CompanyToReturnDto>(companyToReturn);
         }
 
-        public async Task<IEnumerable<CompanyToReturnDto>> Get()
+        public async Task<ApiBaseResponse> Get(string userId, bool isEmployer, SearchParameters parameters)
         {
             var companies = await _repository.Company.FindCompaniesAsync(false);
-            return _mapper.Map<IEnumerable<CompanyToReturnDto>>(companies);
+            if(isEmployer)
+                companies.Where(x => x.UserId == userId);
+
+            var companiesToReturn = _mapper.Map<IEnumerable<CompanyToReturnDto>>(companies);
+            var pagedData = PagedList<CompanyToReturnDto>.Paginate(companiesToReturn, parameters.PageNumber, parameters.PageSize);
+            return new ApiOkResponse<PaginatedListDto<CompanyToReturnDto>>(pagedData);
         }
 
         public async Task<ApiBaseResponse> Get(Guid id)

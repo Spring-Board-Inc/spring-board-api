@@ -12,6 +12,7 @@ namespace SpringBoard.Presentation.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/user-info")]
     [ApiController]
+    [Authorize]
     public class UserInformationController : ApiControllerBase
     {
         private readonly IServiceManager _service;
@@ -20,19 +21,21 @@ namespace SpringBoard.Presentation.Controllers.V1
 
         #region User Information
         ///<summary>
-        ///End-point to get user information
+        ///End-point to get user information by user id
         ///</summary>
-        ///<param name="userId"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<param name="userId">The user id</param>
+        ///<returns>User information object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error.</response>
         [HttpGet, Route("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUserInfo(string userId)
@@ -46,21 +49,22 @@ namespace SpringBoard.Presentation.Controllers.V1
         }
 
         ///<summary>
-        ///End-point to create user information
+        ///End-point to create a new user information
         ///</summary>
         ///<param name="userId"></param>
         ///<param name="dto"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Created user info object</returns>
+        ///<response code="201">Created</response>
+        ///<response code="404">Not found</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized.</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPost, Route("{userId}")]
-        //[Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateUserInfo(string userId, [FromForm]UserInformationDto dto)
@@ -74,25 +78,26 @@ namespace SpringBoard.Presentation.Controllers.V1
                 return ProcessError(baseResult);
 
             var result = baseResult.GetResult<UserInformationToReturnDto>();
-            return Ok(result);
+            return Created(nameof(GetUserInfo), result);
         }
 
         ///<summary>
         ///End-point to update user information
         ///</summary>
-        ///<param name="id"></param>
+        ///<param name="id">The id of the user info object to update</param>
         ///<param name="dto"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Updated user info object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPut, Route("{id}")]
-        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateUserInfo(Guid id, [FromForm]UserInformationDto dto)
@@ -108,18 +113,18 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<summary>
         ///End-point to delete user information
         ///</summary>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<param name="id">The id of the user info to delete</param>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpDelete, Route("{id}")]
-        //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteUserInfo(Guid id)
         {
@@ -140,17 +145,19 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///</summary>
         ///<param name="userInfoId"></param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Created education object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPost, Route("{userInfoId}/education")]
-        //[Authorize(Roles = "Applicant")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateUserEducation(Guid userInfoId, [FromForm]EducationForCreationDto request)
@@ -168,17 +175,19 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///</summary>
         ///<param name="id"></param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPatch, Route("{userInfoId}/education/{id}")]
-        //[Authorize(Roles = "Applicant")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateUserEducations(Guid id, [FromForm]EducationForUpdateDto request)
@@ -195,18 +204,18 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///End-point to delete education profile for a user
         ///</summary>
         ///<param name="id"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpDelete, Route("{userInfoId}/education/{id}")]
-        //[Authorize(Roles = "Applicant")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteUserEducations(Guid id)
         {
@@ -227,14 +236,18 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///</summary>
         ///<param name="userInfoId"></param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Work experience object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPost, Route("{userInfoId}/experience")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateWorkExperience(Guid userInfoId, [FromForm]WorkExperienceRequest request)
@@ -253,16 +266,20 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///</summary>
         ///<param name="id">This is the work experience unique id</param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPut, Route("{userInfoId}/experience/{id}")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateWorkExperience(Guid id, [FromForm]WorkExperienceRequest request)
         {
@@ -278,14 +295,17 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///End-point to delete user work experience
         ///</summary>
         ///<param name="id">This is the work experience unique id</param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpDelete, Route("{userInfoId}/experience/{id}")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteWorkExperience(Guid id)
         {
@@ -306,14 +326,19 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<param name="userInfoId"></param>
         ///<param name="skillId"></param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>User skill object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPost, Route("{userInfoId}/skill/{skillId}")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateUserSkill(Guid userInfoId, Guid skillId, [FromForm]UserSkillRequest request)
@@ -332,14 +357,19 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<param name="userInfoId"></param>
         ///<param name="skillId"></param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="404">Not found</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPut, Route("{userInfoId}/skill/{skillId}")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateUserSkill(Guid userInfoId, Guid skillId, [FromForm]UserSkillRequest request)
@@ -357,15 +387,18 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///</summary>
         ///<param name="userInfoId"></param>
         ///<param name="skillId"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpDelete, Route("{userInfoId}/skill/{skillId}")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteUserSkill(Guid userInfoId, Guid skillId)
         {
@@ -385,15 +418,20 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///</summary>
         ///<param name="userInfoId"></param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Certification object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="404">Not found</response>
+        ///<response code="500">Server error</response>
         [HttpPost, Route("{userInfoId}/certification")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateCertification(Guid userInfoId, [FromForm]CertificationRequest request)
         {
@@ -410,14 +448,19 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///</summary>
         ///<param name="id"></param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="204">No content. Everything is ok.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found.</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpPut, Route("{userInfoId}/certification/{id}")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateCertification(Guid id, [FromForm]CertificationRequest request)
@@ -434,14 +477,18 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///End-point to create user certification
         ///</summary>
         ///<param name="id"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpDelete, Route("{userInfoId}/certification/{id}")]
+        [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteCertification(Guid id)
         {

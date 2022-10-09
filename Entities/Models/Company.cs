@@ -11,6 +11,7 @@ namespace Entities.Models
         public string Email { get; set; }
         public string LogoUrl { get; set; }
         public string PublicId { get; set; }
+        public string UserId { get; set; }
         public ICollection<Job>? Jobs { get; set; }
     }
 }
