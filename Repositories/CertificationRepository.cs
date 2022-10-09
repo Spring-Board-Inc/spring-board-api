@@ -23,7 +23,7 @@ namespace Repositories
             await FindByCondition(ct => ct.UserInformationId.Equals(userInfoId), trackChanges)
                      .ToListAsync();
 
-        public IQueryable<Certification?> FindCertifications(Guid userInfoId, bool trackChanges) =>
+        public IQueryable<Certification> FindCertifications(Guid userInfoId, bool trackChanges) =>
             FindByCondition(ct => ct.UserInformationId.Equals(userInfoId), trackChanges)
                 .OrderByDescending(ct => ct.IssuingDate);
     }

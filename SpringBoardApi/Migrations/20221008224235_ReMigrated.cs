@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SpringBoardApi.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class ReMigrated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -68,6 +68,7 @@ namespace SpringBoardApi.Migrations
                     Email = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PublicId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
@@ -457,10 +458,10 @@ namespace SpringBoardApi.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "406a95ba-061e-4d57-ab6a-1d594a633399", "08c322ef-0484-4a33-b6d3-7e3a8cabe3c4", "Employer", "EMPLOYER" },
-                    { "4299d543-7305-4263-b1ed-ebe2171f24da", "059b2deb-24b5-41b3-8b21-20ce87741793", "SuperAdministrator", "SUPERADMINISTRATOR" },
-                    { "b20d93c8-4a91-457d-84da-ae2293904af2", "b11aed0b-7982-4a5b-b2b7-1e4301bfeb20", "Administrator", "ADMINISTRATOR" },
-                    { "e32f6e1e-d575-409d-8348-33e12b01e421", "6f5aa10c-1dce-492e-b72e-8704e6b4268a", "Applicant", "APPLICANT" }
+                    { "031ad853-ca2a-47e3-965d-d873b7cde803", "2480d279-070b-4ae3-bcdd-6975fe07f754", "Applicant", "APPLICANT" },
+                    { "9f50efa7-da7f-4d97-90a4-d216a8e0c831", "c53b857f-590b-40d1-9416-56da04eb762c", "Employer", "EMPLOYER" },
+                    { "b0543b06-d785-42d8-bd8f-9b04b4d908be", "75acdbe8-697e-4235-b135-9072afd3de5d", "Administrator", "ADMINISTRATOR" },
+                    { "fcc9b0ea-531f-4d6c-91b4-b584381dddbf", "7e9d7c23-bbb9-4cf9-af2c-534fea157eaa", "SuperAdministrator", "SUPERADMINISTRATOR" }
                 });
 
             migrationBuilder.CreateIndex(

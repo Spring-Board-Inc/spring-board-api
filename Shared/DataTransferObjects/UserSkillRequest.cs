@@ -4,7 +4,7 @@ namespace Shared.DataTransferObjects
 {
     public class UserSkillRequest
     {
-        [Required]
+        [Required(ErrorMessage = $"{nameof(Level)} is required")]
         public string Level { get; set; }
         public bool IsValidParams => !string.IsNullOrWhiteSpace(Level);
     }

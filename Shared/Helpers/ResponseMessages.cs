@@ -10,7 +10,7 @@ namespace Shared.Helpers
         public static readonly string UserNotFound = "User not found.";
         public static readonly string InvalidToken = "The token is invalid.";
         public static readonly string Unauthorized = "You are not authorized to perform this operation.";
-        public static readonly string EmailTaken = "This email is already taken. Please use another email or log in.";
+        public static readonly string EmailTaken = "This email is taken.";
         public static readonly string UpdateSuccessful = "Update successful.";
         public static readonly string DeleteSuccessful = "Record successfully deleted.";
         public static readonly string PasswordResetSuccessful = "Password successfully reset.";
@@ -38,7 +38,7 @@ namespace Shared.Helpers
         public static readonly string EducationNotFound = "Education profile not found.";
         public static readonly string EducationDeleted = "Education profile successfully deleted";
         public static readonly string EducationUpdated = "Education profile successfully updated.";
-        public static readonly string InvalidRequest = "Invalid request. Please check your input(s) and try again.";
+        public static readonly string InvalidRequest = "Invalid request.";
         public static readonly string WorkExperienceNotFound = "Work experience not found";
         public static readonly string WorkExperienceUpdated = "Work experience details updated successfully.";
         public static readonly string WorkExperienceDeleted = "Work experience record deleted successfully.";
@@ -66,10 +66,11 @@ namespace Shared.Helpers
         public static readonly string JobExpired = "This job no longer accepting applications.";
         public static readonly string ApplicationSuccessful = "Application successfully submitted.";
         public static readonly string AlreadyApplied = "You already applied for this job.";
-        public static readonly string InvalidGender = "Invalid gender option.";
-        public static readonly string InvalidFileSize = "Please, choose a valid file.";
+        public static readonly string InvalidGender = "Invalid gender";
+        public static readonly string PasswordConfirmPasswordNotMatched = "Password and Confirm Password must be the same.";
         public static readonly string ApplicationFailed = "Job application failed. Please try again.";
-        public static readonly string PasswordMismatch;
-        public static readonly string ConfirmPassword = "Password and Confirm password do not match.";
+        public static readonly string UnexpectedError = "An unexpected error occurred. Please try again.";
+        public static readonly string NoUserWithEmail = "No registered user with the specified email address";
+        internal static readonly string InvalidDocumentFormat = "Invalid document type. Must be one of PDF, DOC or DOCX";
     }
 }

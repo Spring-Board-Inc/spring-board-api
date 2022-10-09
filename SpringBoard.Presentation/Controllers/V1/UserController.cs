@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Shared.DataTransferObjects;
@@ -9,6 +10,7 @@ using SpringBoard.Presentation.Controllers.V1.Extensions;
 [ApiVersion("1.0")]
 [Route("api/users")]
 [ApiController]
+[Authorize]
 public class UserController : ApiControllerBase
 {
     private readonly IServiceManager _service;
@@ -16,25 +18,25 @@ public class UserController : ApiControllerBase
     public UserController(IServiceManager service) => _service = service;
 
     ///<summary>
-    ///End-point to get a user profile information
+    ///End-point to get a user
     ///</summary>
-    ///<param name="userId"></param>
-    ///<response code="200">Ok. If everything goes well.</response>
-    ///<response code="204">No content. Everything is ok.</response>
-    ///<response code="404">Not found. If resource(s) not found.</response>
-    ///<response code="400">Bad request. If the request is not valid.</response>
-    ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-    ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-    ///<response code="500">Server error. If the server did not understand the request.</response>
+    ///<param name="id"></param>
+    ///<returns>User object</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
     [HttpGet]
-    [Route("{userId}")]
+    [Route("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetUser(string userId)
+    public async Task<IActionResult> Get(string id)
     {
-        var baseResult = await _service.User.Get(userId);
+        var baseResult = await _service.User.Get(id);
         if (!baseResult.Success)
             return ProcessError(baseResult);
 
@@ -45,20 +47,19 @@ public class UserController : ApiControllerBase
     ///<summary>
     ///End-point to get paginated list of user profile information
     ///</summary>
+    ///<returns>Paginated list of user objects</returns>
     ///<param name="searchParameters"></param>
-    ///<response code="200">Ok. If everything goes well.</response>
-    ///<response code="204">No content. Everything is ok.</response>
-    ///<response code="404">Not found. If resource(s) not found.</response>
-    ///<response code="400">Bad request. If the request is not valid.</response>
-    ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-    ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-    ///<response code="500">Server error. If the server did not understand the request.</response>
+    ///<response code="200">Ok</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
     [HttpGet]
+    [Authorize(Roles = "SuperAdministrator, Administrator")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetUsers([FromQuery] SearchParameters searchParameters)
+    public async Task<IActionResult> Get([FromQuery] SearchParameters searchParameters)
     {
         var baseResult = await _service.User.Get(searchParameters);
         var result = baseResult.GetResult<PaginatedListDto<DetailedUserToReturnDto>>();
@@ -69,18 +70,19 @@ public class UserController : ApiControllerBase
     ///End-point to activate the user profile
     ///</summary>
     ///<param name="userId"></param>
-    ///<response code="200">Ok. If everything goes well.</response>
-    ///<response code="204">No content. Everything is ok.</response>
-    ///<response code="404">Not found. If resource(s) not found.</response>
-    ///<response code="400">Bad request. If the request is not valid.</response>
-    ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-    ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-    ///<response code="500">Server error. If the server did not understand the request.</response>
+    ///<returns>Ok</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
     [HttpPut]
     [Route("activate/{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Activate(string userId)
@@ -97,18 +99,19 @@ public class UserController : ApiControllerBase
     ///End-point to deactivate the user profile
     ///</summary>
     ///<param name="userId"></param>
-    ///<response code="200">Ok. If everything goes well.</response>
-    ///<response code="204">No content. Everything is ok.</response>
-    ///<response code="404">Not found. If resource(s) not found.</response>
-    ///<response code="400">Bad request. If the request is not valid.</response>
-    ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-    ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-    ///<response code="500">Server error. If the server did not understand the request.</response>
-    [HttpPut]
-    [Route("deactivate/{userId}")]
+    ///<returns>Ok</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
+    [HttpPut, Route("deactivate/{userId}")]
+    [Authorize(Roles = "SuperAdministrator, Administrator")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Deactivate(string userId)
@@ -126,19 +129,20 @@ public class UserController : ApiControllerBase
     ///</summary>
     ///<param name="photoToUpload"></param>
     ///<param name="userId"></param>
-    ///<response code="200">Ok. If everything goes well.</response>
-    ///<response code="204">No content. Everything is ok.</response>
-    ///<response code="404">Not found. If resource(s) not found.</response>
-    ///<response code="400">Bad request. If the request is not valid.</response>
-    ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-    ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-    ///<response code="500">Server error. If the server did not understand the request.</response>
+    ///<returns>Ok</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
     [HttpPost]
     [Route("upload-photo/{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UploadUserPhoto(IFormFile photoToUpload, string userId)
     {
@@ -155,19 +159,20 @@ public class UserController : ApiControllerBase
     ///</summary>
     ///<param name="photoToUpdate"></param>
     ///<param name="userId"></param>
-    ///<response code="200">Ok. If everything goes well.</response>
-    ///<response code="204">No content. Everything is ok.</response>
-    ///<response code="404">Not found. If resource(s) not found.</response>
-    ///<response code="400">Bad request. If the request is not valid.</response>
-    ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-    ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-    ///<response code="500">Server error. If the server did not understand the request.</response>
+    ///<returns>Ok</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
     [HttpPut]
     [Route("update-photo/{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateUserPhoto(IFormFile photoToUpdate, string userId)
     {
@@ -183,19 +188,20 @@ public class UserController : ApiControllerBase
     ///End-point to delete user profile photo
     ///</summary>
     ///<param name="userId"></param>
-    ///<response code="200">Ok. If everything goes well.</response>
-    ///<response code="204">No content. Everything is ok.</response>
-    ///<response code="404">Not found. If resource(s) not found.</response>
-    ///<response code="400">Bad request. If the request is not valid.</response>
-    ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-    ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-    ///<response code="500">Server error. If the server did not understand the request.</response>
+    ///<returns>Ok</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
     [HttpDelete]
     [Route("delete-photo/{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteUserPhoto(string userId)
     {
@@ -212,17 +218,18 @@ public class UserController : ApiControllerBase
     /// </summary>
     /// <param name="userId"></param>
     /// <param name="request"></param>
-    ///<response code="200">Ok. If everything goes well.</response>
-    ///<response code="204">No content. Everything is ok.</response>
-    ///<response code="404">Not found. If resource(s) not found.</response>
-    ///<response code="400">Bad request. If the request is not valid.</response>
-    ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-    ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-    ///<response code="500">Server error. If the server did not understand the request.</response>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden.</response>
+    ///<response code="500">Server error</response>
     [HttpPut("edit-names/{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateNames(string userId, [FromForm] UserNamesForUpdateDto request)
     {

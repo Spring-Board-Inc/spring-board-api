@@ -52,14 +52,14 @@ namespace Services
         public async Task<ApiBaseResponse> RegisterUser(UserForRegistrationDto userForRegistration, string role, StringValues origin)
         {
             if (!userForRegistration.IsPasswordMatched)
-                return new BadRequestResponse(ResponseMessages.ConfirmPassword);
+                return new BadRequestResponse(ResponseMessages.PasswordConfirmPasswordNotMatched);
 
             if (!userForRegistration.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var user = await _userManager.FindByEmailAsync(userForRegistration.Email);
             if (user != null)
-                return new BadRequestResponse(ResponseMessages.EmailTaken);
+                return new NotFoundResponse(ResponseMessages.UserNotFound);
 
             userForRegistration.Gender = Commons.Capitalize(userForRegistration.Gender);
             var isCorrectGender = Enum.IsDefined(typeof(EGender), userForRegistration.Gender);
@@ -78,7 +78,7 @@ namespace Services
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            var response = await SendEmailTokenToUser(
+            var isSent = await SendEmailTokenToUser(
                 new SendTokenEmailDto 
                 {
                     User = user,
@@ -86,17 +86,24 @@ namespace Services
                     Origin = origin, 
                     Subject = "Confirm Email", 
                     TokenType = EToken.ConfirmEmail 
-                });  
-            return response.Success ? new ApiOkResponse<IdentityResult>(result) : response;
+                }); 
+            
+            if(!isSent.Success)
+                return new BadRequestResponse(ResponseMessages.UnexpectedError);
+
+            return new ApiOkResponse<IdentityResult>(result);
         }
 
         public async Task<ApiBaseResponse> ConfirmEmail(EmailConfirmationRequestParameters request)
         {
+            if(!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var user = await _userManager.FindByIdAsync(request.UserId);
             if (user == null)
-                return new NotFoundResponse(ResponseMessages.UserNotFound);
+                return new UserNotFoundResponse(ResponseMessages.UserNotFound);
 
-            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(request.Token))))
+            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(request.Token), EToken.ConfirmEmail.ToString())))
                 return new BadRequestResponse(ResponseMessages.InvalidToken);
 
             var result = await _userManager.ConfirmEmailAsync(user, Uri.UnescapeDataString(request.Token));
@@ -109,15 +116,18 @@ namespace Services
 
         public async Task<ApiBaseResponse> ValidateUser(UserForAuthenticationDto userForAuth)
         {
-            if(!userForAuth.IsValidParams)
+            if (!userForAuth.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            _user = await _userManager.FindByNameAsync(userForAuth.UserName);
+            _user = await _userManager.FindByNameAsync(userForAuth.Email);
+            if (_user == null)
+                return new UserNotFoundResponse(ResponseMessages.NoUserWithEmail);
+
             var signinResult = await _signInManager.PasswordSignInAsync(_user, userForAuth.Password, userForAuth.RememberMe, false);
             var result = (_user != null && _user.IsActive && signinResult.Succeeded);
             if (!result)
             {
-                _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed. Wrong username, password or user not activated yet.");
+                _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed. Wrong password or user not activated yet.");
                 if (_user == null)
                     return new NotFoundResponse(ResponseMessages.UserNotFound);
                 else if (!_user.IsActive)
@@ -153,11 +163,11 @@ namespace Services
             var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
             var user = await _userManager.FindByNameAsync(principal.Identity.Name);
 
-            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null || user.RefreshToken != tokenDto.RefreshToken)
                 return new BadRequestResponse(ResponseMessages.InvalidToken);
 
             _user = user;
-            var token = await CreateToken(populateExp: false);
+            var token = await CreateToken(populateExp: true);
             return new ApiOkResponse<TokenDto>(token);
         }
 
@@ -173,7 +183,7 @@ namespace Services
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var response = await SendEmailTokenToUser(
+            var isSent = await SendEmailTokenToUser(
                 new SendTokenEmailDto 
                 { 
                     User = user, 
@@ -183,13 +193,16 @@ namespace Services
                     TokenType = EToken.ResetPassword 
                 });
 
-            return response.Success ? new ApiOkResponse<string>(ResponseMessages.PasswordResetSuccessful) : response;
+            if(!isSent.Success)
+                return new BadRequestResponse(ResponseMessages.PasswordResetFailed);
+
+            return new ApiOkResponse<string>(ResponseMessages.PasswordResetSuccessful);
         }
 
         public async Task<ApiBaseResponse> ChangeForgottenPassword(ChangeForgottenPasswordDto changePasswordDto)
         {
             if (!changePasswordDto.IsPasswordMatched)
-                return new BadRequestResponse(ResponseMessages.PasswordMismatch);
+                return new BadRequestResponse(ResponseMessages.PasswordConfirmPasswordNotMatched);
 
             if (!changePasswordDto.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
@@ -198,7 +211,7 @@ namespace Services
             if (user == null)
                 return new NotFoundResponse(ResponseMessages.UserNotFound);
 
-            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(changePasswordDto.Token))))
+            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(changePasswordDto.Token), EToken.ResetPassword.ToString())))
                 return new BadRequestResponse(ResponseMessages.InvalidToken);
 
             var changePassword = await _userManager.ResetPasswordAsync(user, Uri.UnescapeDataString(changePasswordDto.Token), changePasswordDto.NewPassword);
@@ -211,7 +224,7 @@ namespace Services
         public async Task<ApiBaseResponse> ChangePassword(string userId, ChangePasswordDto passwordDto)
         {
             if (!passwordDto.IsPasswordMatched)
-                return new BadRequestResponse(ResponseMessages.PasswordMismatch);
+                return new BadRequestResponse(ResponseMessages.PasswordConfirmPasswordNotMatched);
 
             var user = await _userManager.FindByIdAsync(userId);
             var changedPassword = await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
@@ -224,7 +237,7 @@ namespace Services
 
         #region Private Methods
 
-        private async Task<bool> IsTokenConfirmed(string token)
+        private async Task<bool> IsTokenConfirmed(string token, string tokenType)
         {
             var tokenEntity = await _repositoryManager.Token.GetToken(token, true);
             if (tokenEntity == null)
@@ -275,7 +288,7 @@ namespace Services
             (
             issuer: jwtSettings["ValidIssuer"],
             claims: claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["Expires"])),
+            expires: DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["Expires"])),
             signingCredentials: signingCredentials
             );
             return tokenOptions;
@@ -331,31 +344,31 @@ namespace Services
         private async Task<ApiBaseResponse> SendEmailTokenToUser(SendTokenEmailDto tokenEmailDto)
         {
             var url = UrlBuilder.Builder(
-                new UrlBuilderParameters 
-                { 
-                    Token = tokenEmailDto.Token, 
-                    UserId = tokenEmailDto.User.Id 
+                new UrlBuilderParameters
+                {
+                    Token = tokenEmailDto.Token,
+                    UserId = tokenEmailDto.User.Id
                 }, tokenEmailDto.Origin);
 
             var message = GetEmailTemplate(
-                new GetEmailTemplateDto 
-                { 
-                    Url = url, 
-                    FirstName = tokenEmailDto.User.FirstName, 
+                new GetEmailTemplateDto
+                {
+                    Url = url,
+                    FirstName = tokenEmailDto.User.FirstName,
                     TemplateType = (int)tokenEmailDto.TokenType
                 });
 
             bool isSent = await _mailService.SendMailAsync(
-                new EmailRequestParameters 
-                { 
-                    To = tokenEmailDto.User.Email, 
-                    Message = message, 
-                    Subject = tokenEmailDto.Subject 
+                new EmailRequestParameters
+                {
+                    To = tokenEmailDto.User.Email,
+                    Message = message,
+                    Subject = tokenEmailDto.Subject
                 });
 
             if (!isSent)
             {
-                if(tokenEmailDto.TokenType == EToken.ConfirmEmail)
+                if (tokenEmailDto.TokenType == EToken.ConfirmEmail)
                 {
                     var userToDelete = await _userManager.FindByIdAsync(tokenEmailDto.User.Id);
                     if (userToDelete != null)

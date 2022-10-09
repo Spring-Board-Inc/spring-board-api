@@ -18,19 +18,16 @@ namespace Services
     {
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmailService _emailService;
 
         public JobService(
             IRepositoryManager repository, 
-            IMapper mapper, 
-            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper,
             IEmailService emailService
             )
         {
             _repository = repository;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
             _emailService = emailService;
         }
 
@@ -200,9 +197,8 @@ namespace Services
             return new ApiOkResponse<PaginatedListDto<ApplicantInformation>>(pagedData);
         }
 
-        public async Task<ApiBaseResponse> Apply(Guid jobId, IFormFile cv)
+        public async Task<ApiBaseResponse> Apply(Guid jobId, string applicantId, IFormFile cv)
         {
-            var applicantId = GetUserId();
             var userInfo = await _repository.UserInformation.FindUserInformationAsync(applicantId, false);
             if (userInfo == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
@@ -219,7 +215,11 @@ namespace Services
                 return new BadRequestResponse(ResponseMessages.JobExpired);
             
             var message = ApplicationMessage(job, userInfo);
-        
+
+            var isValidFile = Commons.ValidateDocumentFile(cv);
+            if (!isValidFile.Successful)
+                return new BadRequestResponse(isValidFile.Message);
+
             var isSent = await _emailService.SendMailAsync(new ApplicationRequestParameters
             {
                 To = job.Company.Email,
@@ -260,13 +260,6 @@ namespace Services
             };
             return GetEmailTemplates.GetJobApplicationEmailTemplate(applicationDetails);
         }
-
-        private string? GetUserId()
-        {
-            ClaimsPrincipal? userClaim = _httpContextAccessor.HttpContext?.User;
-            return userClaim?.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-
         #endregion
     }
 }

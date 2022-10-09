@@ -5,8 +5,8 @@ namespace Shared.DataTransferObjects
 {
     public class PhotoToUploadDto
     {
-        [Required]
+        [Required(ErrorMessage = $"{nameof(Photo)} is required")]
         public IFormFile Photo { get; set; }
-        public bool IsValidParams => Photo.Length > 0;
+        public bool IsValidParams => Photo?.Length > 0;
     }
 }

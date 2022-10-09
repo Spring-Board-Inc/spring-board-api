@@ -5,9 +5,9 @@ namespace Shared.DataTransferObjects
 {
     public class CompanyRequestObject
     {
-        [Required]
+        [Required(ErrorMessage = $"{nameof(Name)} is required")]
         public string Name { get; set; }
-        [Required, EmailAddress]
+        [Required(ErrorMessage = $"{nameof(Email)} is required"), EmailAddress]
         public string Email { get; set; }
         public IFormFile? Logo { get; set; }
         public bool IsValidFile => Logo?.Length > 0;

@@ -14,6 +14,7 @@
         public string Company { get; set; }
         public string Email { get; set; }
         public string LogoUrl { get; set; }
+        public int NumberOfApplicants { get; set; }
         public DateTime ClosingDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

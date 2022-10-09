@@ -4,16 +4,16 @@ namespace Shared.DataTransferObjects
 {
     public class EducationForUpdateDto
     {
-        [Required]
+        [Required(ErrorMessage = $"{nameof(School)} is required")]
         public string School { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(City)} is required")]
         public string City { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(Country)} is required")]
         public string Country { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(Course)} is required")]
         public string Course { get; set; }
         public int Level { get; set; }
-        [Required]
+        [Required(ErrorMessage = $"{nameof(StartDate)} is required")]
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; } = null;
         public bool IsValidDateRange => (EndDate == null && StartDate <= DateTime.Now) || EndDate > StartDate;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Shared.DataTransferObjects;
@@ -9,6 +10,7 @@ namespace SpringBoard.Presentation.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/industry")]
     [ApiController]
+    [Authorize(Roles = "SuperAdministrator, Administrator")]
     public class IndustryController : ApiControllerBase
     {
         private readonly IServiceManager _service;
@@ -19,14 +21,16 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///End-point to create an industry
         ///</summary>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Created industry object</returns>
+        ///<response code="201">Created</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm]IndustryRequestObject request)
@@ -41,14 +45,16 @@ namespace SpringBoard.Presentation.Controllers.V1
 
         ///<summary>End-point to get an industry</summary>
         ///<param name="id">The id of the industry to find</param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="404">Not found. If the resources is not found.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Industry object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("{id}")]
         public async Task<IActionResult> Get(Guid id)
@@ -61,9 +67,14 @@ namespace SpringBoard.Presentation.Controllers.V1
         }
 
         ///<summary>End-point to get a list of industries</summary>
+        ///<returns>List of industries</returns>
         ///<response code="200">Ok. If everything is OK.</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Get()
         {
             return Ok(await _service.Industry.Get());
@@ -73,16 +84,17 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///End-point to delete an industry
         ///</summary>
         ///<param name="id">The id of the industry to delete</param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
         [HttpDelete, Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -99,16 +111,19 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///</summary>
         ///<param name="id">The id of the industry to update</param>
         ///<param name="request"></param>
-        ///<response code="200">Ok. If everything goes well.</response>
-        ///<response code="404">Not found. If resource(s) not found.</response>
-        ///<response code="400">Bad request. If the request is not valid.</response>
-        ///<response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
-        ///<response code="403">Forbidden. Server refuses to authorize the request.</response>
-        ///<response code="500">Server error. If the server did not understand the request.</response>
+        ///<returns>Updated industry object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error.</response>
         [HttpPut, Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(Guid id, [FromForm]IndustryRequestObject request)
         {
