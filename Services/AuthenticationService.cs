@@ -344,52 +344,55 @@ namespace Services
         private async Task<ApiBaseResponse> SendEmailTokenToUser(SendTokenEmailDto tokenEmailDto)
         {
             var url = UrlBuilder.Builder(
-                new UrlBuilderParameters 
-                { 
-                    Token = tokenEmailDto.Token, 
-                    UserId = tokenEmailDto.User.Id 
+                new UrlBuilderParameters
+                {
+                    Token = tokenEmailDto.Token,
+                    UserId = tokenEmailDto.User.Id
                 }, tokenEmailDto.Origin);
 
             var message = GetEmailTemplate(
-                new GetEmailTemplateDto 
-                { 
-                    Url = url, 
-                    FirstName = tokenEmailDto.User.FirstName, 
+                new GetEmailTemplateDto
+                {
+                    Url = url,
+                    FirstName = tokenEmailDto.User.FirstName,
                     TemplateType = (int)tokenEmailDto.TokenType
                 });
 
-            if (message == null)
-            {
-                var userToDelete = await _userManager.FindByIdAsync(tokenEmailDto.User.Id);
-                if (userToDelete != null)
+            bool isSent = await _mailService.SendMailAsync(
+                new EmailRequestParameters
                 {
-                    await _userManager.DeleteAsync(userToDelete);
-                    return new BadRequestResponse(ResponseMessages.RegistrationFailed);
-                }
-            }
-
-            var isSent = await _mailService.SendMailAsync(
-                new EmailRequestParameters 
-                { 
-                    To = tokenEmailDto.User.Email, 
-                    Message = message, 
-                    Subject = tokenEmailDto.Subject 
+                    To = tokenEmailDto.User.Email,
+                    Message = message,
+                    Subject = tokenEmailDto.Subject
                 });
 
             if (!isSent)
-                return new BadRequestResponse(ResponseMessages.UnexpectedError);
-
-            var tokenEntity = new Token 
-                { 
-                    UserId = tokenEmailDto.User.Id, 
-                    Value = tokenEmailDto.Token, 
-                    Type = tokenEmailDto.TokenType.ToString(), 
-                    ExpiresAt = DateTime.Now.AddHours(1) 
+            {
+                if (tokenEmailDto.TokenType == EToken.ConfirmEmail)
+                {
+                    var userToDelete = await _userManager.FindByIdAsync(tokenEmailDto.User.Id);
+                    if (userToDelete != null)
+                    {
+                        await _userManager.DeleteAsync(userToDelete);
+                        return new BadRequestResponse(ResponseMessages.RegistrationFailed);
+                    }
+                }
+                return new BadRequestResponse(ResponseMessages.PasswordResetFailed);
+            }
+            else
+            {
+                var tokenEntity = new Token
+                {
+                    UserId = tokenEmailDto.User.Id,
+                    Value = tokenEmailDto.Token,
+                    Type = tokenEmailDto.TokenType.ToString(),
+                    ExpiresAt = DateTime.Now.AddHours(1)
                 };
-            await _repositoryManager.Token.CreateToken(tokenEntity);
-            await _repositoryManager.SaveAsync();
+                await _repositoryManager.Token.CreateToken(tokenEntity);
+                await _repositoryManager.SaveAsync();
+            }
 
-            return new ApiOkResponse<bool>(true);
+            return new ApiOkResponse<bool>(isSent);
         }
 
         private string GetEmailTemplate(GetEmailTemplateDto emailTemplateDto)
