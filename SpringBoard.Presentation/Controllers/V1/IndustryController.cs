@@ -10,7 +10,7 @@ namespace SpringBoard.Presentation.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/industry")]
     [ApiController]
-    [Authorize(Roles = "SuperAdministrator, Administrator")]
+    //[Authorize(Roles = "SuperAdministrator, Administrator")]
     public class IndustryController : ApiControllerBase
     {
         private readonly IServiceManager _service;

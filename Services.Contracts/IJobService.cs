@@ -17,5 +17,6 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Get(Guid companyId, SearchParameters searchParams);
         Task<ApiBaseResponse> Get(string userId, SearchParameters searchParams);
         Task<ApiBaseResponse> GetApplicants(Guid jobId, SearchParameters searchParams);
+        Task<ApiBaseResponse> JobStats();
     }
 }

@@ -38,7 +38,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Register([FromForm] UserForRegistrationDto userForRegistration)
+        public async Task<IActionResult> Register(UserForRegistrationDto userForRegistration)
         {
             var role = ((ERoles)userForRegistration.RoleIndex).ToString();
             var origin = HttpContext.Request.Headers["Origin"];
@@ -88,7 +88,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Authenticate([FromForm] UserForAuthenticationDto user)
+        public async Task<IActionResult> Authenticate(UserForAuthenticationDto user)
         {
             var baseResult = await _service.Authentication.ValidateUser(user);
             if(!baseResult.Success)
@@ -110,7 +110,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordDto resetPasswordDto)
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
             var origin = HttpContext.Request.Headers["Origin"];
             var baseResult = await _service.Authentication.ResetPassword(resetPasswordDto, origin);
@@ -134,7 +134,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangePassword([FromForm] ChangeForgottenPasswordDto changePasswordDto)
+        public async Task<IActionResult> ChangePassword(ChangeForgottenPasswordDto changePasswordDto)
         {
             var baseResult = await _service.Authentication.ChangeForgottenPassword(changePasswordDto);
             if (!baseResult.Success)
@@ -146,7 +146,6 @@ namespace SpringBoard.Presentation.Controllers.V1
         /// <summary>
         /// This end-point changes user password when the old password is known.
         /// </summary>
-        /// <param name="userId">Id of the user to change the password for</param>
         /// <param name="changePasswordDto"></param>
         /// <returns>Ok</returns>
         ///<response code="200">Ok</response>
@@ -154,16 +153,16 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="401">Unauthorized</response>
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
-        [HttpPut("change-password/{userId}")]
+        [HttpPut("change-password")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangePassword(string userId, [FromForm] ChangePasswordDto changePasswordDto)
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
         {
-            var baseResult = await _service.Authentication.ChangePassword(userId, changePasswordDto);
+            var baseResult = await _service.Authentication.ChangePassword(changePasswordDto);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 

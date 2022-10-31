@@ -11,6 +11,7 @@ using Shared.Helpers;
 using Shared.RequestFeatures;
 using System.Security.Claims;
 using Entities.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace Services
 {
@@ -19,16 +20,19 @@ namespace Services
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
+        private readonly UserManager<AppUser> userManager;
 
         public JobService(
             IRepositoryManager repository, 
             IMapper mapper,
-            IEmailService emailService
+            IEmailService emailService,
+            UserManager<AppUser> userManager
             )
         {
             _repository = repository;
             _mapper = mapper;
             _emailService = emailService;
+            this.userManager = userManager;
         }
 
         public async Task<ApiBaseResponse> Create(JobRequestObject request)
@@ -124,12 +128,6 @@ namespace Services
 
             if (!searchParams.IndustryId.Equals(Guid.Empty))
                 jobQuery =  jobQuery.Where(j => j.IndustryId.Equals(searchParams.IndustryId));
-
-            if(!searchParams.CompanyId.Equals(Guid.Empty))
-                jobQuery = jobQuery.Where(j => j.CompanyId.Equals(searchParams.CompanyId));
-
-            if(!searchParams.LocationId.Equals(Guid.Empty))
-                jobQuery = jobQuery.Where(j => j.LocationId.Equals(searchParams.LocationId));
 
             var jobs = await jobQuery.Search(searchParams.SearchBy)
                                     .Include(j => j.Industry)
@@ -238,6 +236,23 @@ namespace Services
             await _repository.SaveAsync();
 
             return new ApiOkResponse<string>(ResponseMessages.ApplicationSuccessful);
+        }
+
+        public async Task<ApiBaseResponse> JobStats()
+        {
+            var allJobs = await _repository.Job.FindJobsAsync(false);
+            var jobsCount = allJobs.Where(x => x.NumberOfApplicants > 0).Count();
+            var activeJobsCount = allJobs.Where(x => x.ClosingDate > DateTime.Now).Count();
+            var jobsFilled = jobsCount - activeJobsCount;
+
+            var companies = await _repository.Company.FindCompaniesAsync(false);
+            var companiesCount = companies.Where(x => x.IsDeprecated == false).Count();
+
+            var applicant = await userManager.GetUsersInRoleAsync(ERoles.Applicant.ToString());
+            var applicantCount = applicant.Count();
+
+            var jobStats = new JobStatsDto(applicantCount, activeJobsCount, jobsFilled, companiesCount);
+            return new ApiOkResponse<JobStatsDto>(jobStats);
         }
 
         #region Private Methods

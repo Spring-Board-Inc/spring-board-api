@@ -231,5 +231,19 @@ namespace SpringBoard.Presentation.Controllers.V1
 
             return Ok(baseResult.GetResult<string>());
         }
+
+        ///<summary>End point to get job statistics</summary>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="500">Server error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet, Route("stats")]
+        public async Task<IActionResult> JobStats()
+        {
+            var baseResult = await _service.Job.JobStats();
+
+            return Ok(baseResult.GetResult<JobStatsDto>());
+        }
     }
 }

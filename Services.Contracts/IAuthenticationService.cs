@@ -15,6 +15,6 @@ namespace Services.Contracts
         Task<ApiBaseResponse> RefreshToken(TokenDto tokenDto);
         Task<ApiBaseResponse> ChangeForgottenPassword(ChangeForgottenPasswordDto changePasswordDto);
         Task<ApiBaseResponse> ResetPassword(ResetPasswordDto resetPasswordDto, StringValues origin);
-        Task<ApiBaseResponse> ChangePassword(string userId, ChangePasswordDto passwordDto);
+        Task<ApiBaseResponse> ChangePassword(ChangePasswordDto passwordDto);
     }
 }

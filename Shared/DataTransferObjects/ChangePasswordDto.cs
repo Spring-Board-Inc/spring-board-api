@@ -10,6 +10,7 @@ namespace Shared.DataTransferObjects
         public string NewPassword { get; set; }
         [Required(ErrorMessage = $"{nameof(ConfirmNewPassword)} is required"), Compare("NewPassword")]
         public string ConfirmNewPassword { get; set; }
+        public string UserId { get; set; }
         public bool IsPasswordMatched => NewPassword.Equals(ConfirmNewPassword);
     }
 }

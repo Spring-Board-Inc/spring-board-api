@@ -64,11 +64,10 @@
             <response code="400">Bad request</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.ChangePassword(System.String,Shared.DataTransferObjects.ChangePasswordDto)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.ChangePassword(Shared.DataTransferObjects.ChangePasswordDto)">
              <summary>
              This end-point changes user password when the old password is known.
              </summary>
-             <param name="userId">Id of the user to change the password for</param>
              <param name="changePasswordDto"></param>
              <returns>Ok</returns>
             <response code="200">Ok</response>
@@ -281,6 +280,12 @@
             <response code="401">Unauthorized</response>
             <response code="403">Forbidden</response>
             <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.JobStats">
+            <summary>End point to get job statistics</summary>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
             <response code="500">Server error</response>
         </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.JobTypeController.CreateJobType(Shared.DataTransferObjects.JobTypeRequestObject)">

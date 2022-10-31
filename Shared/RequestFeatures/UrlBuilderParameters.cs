@@ -9,6 +9,6 @@ namespace Shared.RequestFeatures
         [Required]
         public string UserId { get; set; } = string.Empty;
         [Required]
-        public string UrlType { get; set; } = string.Empty;
+        public string TokenType { get; set; } = string.Empty;
     }
 }

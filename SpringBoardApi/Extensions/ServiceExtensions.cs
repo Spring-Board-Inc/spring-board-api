@@ -170,7 +170,7 @@ namespace SpringBoardApi.Extensions
                 new RateLimitRule
                 {
                     Endpoint = "*",
-                    Limit = 20,
+                    Limit = 50,
                     Period = "5m"
                 }
              };

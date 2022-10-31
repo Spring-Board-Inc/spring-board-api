@@ -6,7 +6,6 @@ using Shared.DataTransferObjects;
 
 [Route("api/token")]
 [ApiController]
-[Authorize]
 public class TokenController : ControllerBase
 {
     private readonly IServiceManager _service;
@@ -28,8 +27,7 @@ public class TokenController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPost("refresh")]
-    [Authorize]
-    public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto)
+    public async Task<IActionResult> Refresh(TokenDto tokenDto)
     {
         var tokenDtoToReturn = await _service.Authentication.RefreshToken(tokenDto);
         return Ok(tokenDtoToReturn);

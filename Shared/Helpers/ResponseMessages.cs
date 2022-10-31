@@ -10,7 +10,7 @@ namespace Shared.Helpers
         public static readonly string UserNotFound = "User not found.";
         public static readonly string InvalidToken = "The token is invalid.";
         public static readonly string Unauthorized = "You are not authorized to perform this operation.";
-        public static readonly string EmailTaken = "This email is taken.";
+        public static readonly string EmailTaken = "Already registered with this email. Login instead.";
         public static readonly string UpdateSuccessful = "Update successful.";
         public static readonly string DeleteSuccessful = "Record successfully deleted.";
         public static readonly string PasswordResetSuccessful = "Password successfully reset.";
@@ -29,7 +29,7 @@ namespace Shared.Helpers
         public static readonly string PhotoUpdateSuccessful = "Photo updated successfully.";
         public static readonly string PhotoDeletionFailed = "Photo deleted successfully.";
         public static readonly string PhotoUploadSuccessful = "Photo uploaded successfully.";
-        public static readonly string InactiveAccount = "Account not active.";
+        public static readonly string InactiveAccount = "Account inactive. Please contact support.";
         public static readonly string WrongPasswordOrUserName = "Wrong username or password.";
         public static readonly string LoginSuccessful = "Login successful.";
         public static readonly string UserInformationNotFound = "User information not found.";
@@ -71,6 +71,7 @@ namespace Shared.Helpers
         public static readonly string ApplicationFailed = "Job application failed. Please try again.";
         public static readonly string UnexpectedError = "An unexpected error occurred. Please try again.";
         public static readonly string NoUserWithEmail = "No registered user with the specified email address";
+        public static readonly string LoginEmailNotConfirmed = "Login failed. Email not confirmed. Please confirm your email to continue.";
         internal static readonly string InvalidDocumentFormat = "Invalid document type. Must be one of PDF, DOC or DOCX";
     }
 }

@@ -11,7 +11,6 @@ namespace SpringBoard.Presentation.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/jobtype")]
     [ApiController]
-    [Authorize(Roles = "SuperAdministrator, Administrator")]
     public class JobTypeController : ApiControllerBase
     {
         private readonly IServiceManager _service;

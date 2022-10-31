@@ -57,7 +57,7 @@ namespace Services
             _certificationService = new Lazy<ICertificationService>(() => new
                 CertificationService(repositoryManager, mapper));
             _jobService = new Lazy<IJobService>(() => new
-                JobService(repositoryManager, mapper, emailService));
+                JobService(repositoryManager, mapper, emailService, userManager));
             _jobTypeService = new Lazy<IJobTypeService>(() => new
                 JobTypeService(repositoryManager, mapper));
             _companyService = new Lazy<ICompanyService>(() => new

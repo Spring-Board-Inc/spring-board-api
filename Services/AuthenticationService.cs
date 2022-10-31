@@ -59,7 +59,7 @@ namespace Services
 
             var user = await _userManager.FindByEmailAsync(userForRegistration.Email);
             if (user != null)
-                return new NotFoundResponse(ResponseMessages.UserNotFound);
+                return new NotFoundResponse(ResponseMessages.EmailTaken);
 
             userForRegistration.Gender = Commons.Capitalize(userForRegistration.Gender);
             var isCorrectGender = Enum.IsDefined(typeof(EGender), userForRegistration.Gender);
@@ -103,7 +103,7 @@ namespace Services
             if (user == null)
                 return new UserNotFoundResponse(ResponseMessages.UserNotFound);
 
-            if (!(await IsTokenConfirmed(Uri.UnescapeDataString(request.Token), EToken.ConfirmEmail.ToString())))
+            if (!await IsTokenConfirmed(Uri.UnescapeDataString(request.Token), EToken.ConfirmEmail.ToString()))
                 return new BadRequestResponse(ResponseMessages.InvalidToken);
 
             var result = await _userManager.ConfirmEmailAsync(user, Uri.UnescapeDataString(request.Token));
@@ -124,12 +124,14 @@ namespace Services
                 return new UserNotFoundResponse(ResponseMessages.NoUserWithEmail);
 
             var signinResult = await _signInManager.PasswordSignInAsync(_user, userForAuth.Password, userForAuth.RememberMe, false);
-            var result = (_user != null && _user.IsActive && signinResult.Succeeded);
+            var result = (_user != null && _user.IsActive && signinResult.Succeeded && _user.EmailConfirmed);
             if (!result)
             {
                 _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed. Wrong password or user not activated yet.");
                 if (_user == null)
                     return new NotFoundResponse(ResponseMessages.UserNotFound);
+                else if (!_user.EmailConfirmed)
+                    return new BadRequestResponse(ResponseMessages.LoginEmailNotConfirmed);
                 else if (!_user.IsActive)
                     return new BadRequestResponse(ResponseMessages.InactiveAccount);
                 else
@@ -152,10 +154,11 @@ namespace Services
             var refreshToken = GenerateRefreshToken();
             _user.RefreshToken = refreshToken;
             if (populateExp)
-                _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+                _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
             await _userManager.UpdateAsync(_user);
             var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return new TokenDto(accessToken, refreshToken);
+            var roles = await _userManager.GetRolesAsync(_user);
+            return new TokenDto(accessToken, refreshToken, roles);
         }
 
         public async Task<ApiBaseResponse> RefreshToken(TokenDto tokenDto)
@@ -221,12 +224,12 @@ namespace Services
             return new ApiOkResponse<string>(ResponseMessages.PasswordChangeSuccessful);
         }
 
-        public async Task<ApiBaseResponse> ChangePassword(string userId, ChangePasswordDto passwordDto)
+        public async Task<ApiBaseResponse> ChangePassword(ChangePasswordDto passwordDto)
         {
             if (!passwordDto.IsPasswordMatched)
                 return new BadRequestResponse(ResponseMessages.PasswordConfirmPasswordNotMatched);
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(passwordDto.UserId);
             var changedPassword = await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
             
             if (!changedPassword.Succeeded)
@@ -270,6 +273,7 @@ namespace Services
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
+
         private async Task<List<Claim>> GetClaims()
         {
             var claims = new List<Claim>{ new Claim(ClaimTypes.Name, _user.UserName), new Claim(ClaimTypes.NameIdentifier, _user.Id) };
@@ -288,7 +292,7 @@ namespace Services
             (
             issuer: jwtSettings["ValidIssuer"],
             claims: claims,
-            expires: DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["Expires"])),
+            expires: DateTime.Now.AddHours(Convert.ToDouble(jwtSettings["Expires"])),
             signingCredentials: signingCredentials
             );
             return tokenOptions;
@@ -347,7 +351,8 @@ namespace Services
                 new UrlBuilderParameters
                 {
                     Token = tokenEmailDto.Token,
-                    UserId = tokenEmailDto.User.Id
+                    UserId = tokenEmailDto.User.Id,
+                    TokenType = tokenEmailDto.TokenType.ToString()
                 }, tokenEmailDto.Origin);
 
             var message = GetEmailTemplate(

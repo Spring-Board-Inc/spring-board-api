@@ -10,8 +10,9 @@ namespace Shared.Helpers
         {
             var uriBuilder = new UriBuilder(origin);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["token"] = param.Token;
-            query["userid"] = param.UserId;
+            query["Token"] = param.Token;
+            query["Type"] = param.TokenType;
+            query["UserId"] = param.UserId;
             uriBuilder.Query = query.ToString();
 
             return uriBuilder.ToString();
