@@ -24,7 +24,8 @@ namespace SpringBoardApi.Extensions
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder =>
-                    builder.AllowAnyOrigin()
+                    builder.WithOrigins("http://localhost:3000")
+                        .AllowCredentials()
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
@@ -156,7 +157,7 @@ namespace SpringBoardApi.Extensions
         public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
             services.AddHttpCacheHeaders((expirationOpt) =>
             {
-                expirationOpt.MaxAge = 60;
+                expirationOpt.MaxAge = 20;
                 expirationOpt.CacheLocation = CacheLocation.Private;
             },(validationOpt) =>
             {

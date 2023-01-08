@@ -22,6 +22,9 @@ namespace Repositories
         public async Task<IEnumerable<WorkExperience>> FindWorkExperiencesAsync(Guid userInfoId, bool trackChanges) =>
             await FindByCondition(exp => exp.UserInformationId.Equals(userInfoId), trackChanges)
                     .ToListAsync();
+        public IQueryable<WorkExperience> FindExperiences(Guid id) =>
+            FindByCondition(exp => exp.Id.Equals(id), false)
+                .OrderByDescending(exp => exp.StartDate);
 
         public IQueryable<WorkExperience> FindExperiences(Guid userInfoId, bool trackChanges) =>
             FindByCondition(exp => exp.UserInformationId.Equals(userInfoId), trackChanges)

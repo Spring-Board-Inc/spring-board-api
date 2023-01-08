@@ -41,8 +41,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
-builder.Services.ConfigureResponseCaching();
-builder.Services.ConfigureHttpCacheHeaders();
+//builder.Services.ConfigureResponseCaching();
+//builder.Services.ConfigureHttpCacheHeaders();
 builder.Services.ConfigureController();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -50,8 +50,7 @@ builder.Services.ConfigureSwagger();
 builder.Services.ConfigureJWT(builder.Configuration);
 //builder.Services.ConfigureAuthentication(builder.Configuration);
 
-builder.Services.AddMemoryCache();
-builder.Services.ConfigureRateLimitingOptions();
+//builder.Services.ConfigureRateLimitingOptions();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -74,11 +73,10 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.All
 });
 
-app.UseIpRateLimiting();
+//app.UseIpRateLimiting();
 app.UseCors("CorsPolicy");
-app.UseResponseCaching();
+//app.UseResponseCaching();
 
-app.UseHttpCacheHeaders();
 app.UseAuthentication();
 app.UseAuthorization();
 

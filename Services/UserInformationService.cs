@@ -22,13 +22,12 @@ namespace Services
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<ApiBaseResponse> Create(string userId, UserInformationDto dto)
+        public async Task<ApiBaseResponse> Create(string userId)
         {
-            if (!dto.IsValidParams)
-                return new BadRequestResponse(ResponseMessages.InvalidRequest);
-
-            var userInformation = _mapper.Map<UserInformation>(dto);
-            userInformation.UserId = userId;
+            var userInformation = new UserInformation
+            {
+                UserId = userId
+            };
             await _repositoryManager.UserInformation.CreateUserInformationAsync(userInformation);
             await _repositoryManager.SaveAsync();
 
@@ -62,24 +61,6 @@ namespace Services
 
             var data = _mapper.Map<UserInformationToReturn>(userInfo);
             return new ApiOkResponse<UserInformationToReturn?>(data);
-        }
-
-        public async Task<ApiBaseResponse> Update(Guid id, UserInformationDto dto)
-        {
-            if (!dto.IsValidParams)
-                return new BadRequestResponse(ResponseMessages.InvalidRequest);
-
-            var userInformation = await _repositoryManager.UserInformation.FindUserInformationAsync(id, true);
-            if (userInformation == null)
-                return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
-
-            userInformation.UpdatedAt = DateTime.Now;
-            _mapper.Map(dto, userInformation);
-
-            _repositoryManager.UserInformation.UpdateUserInformation(userInformation);
-            await _repositoryManager.SaveAsync();
-
-            return new ApiOkResponse<string>(ResponseMessages.UserInfoUpdated);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id)

@@ -30,8 +30,16 @@ namespace SpringBoardApi.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -89,6 +97,10 @@ namespace SpringBoardApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PublicId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -100,6 +112,14 @@ namespace SpringBoardApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -445,31 +465,11 @@ namespace SpringBoardApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(80)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeprecated")
                         .HasColumnType("bit");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(120)");
-
-                    b.Property<string>("Town")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(80)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -606,29 +606,29 @@ namespace SpringBoardApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fcc9b0ea-531f-4d6c-91b4-b584381dddbf",
-                            ConcurrencyStamp = "7e9d7c23-bbb9-4cf9-af2c-534fea157eaa",
+                            Id = "e5c51cca-203f-4146-a003-6e75c274105e",
+                            ConcurrencyStamp = "6d4ebf80-813d-445e-8965-4c99837ffbfb",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "b0543b06-d785-42d8-bd8f-9b04b4d908be",
-                            ConcurrencyStamp = "75acdbe8-697e-4235-b135-9072afd3de5d",
+                            Id = "d6ffb8eb-d82c-4e31-a0bd-7845079446e8",
+                            ConcurrencyStamp = "80c5d721-6743-48ad-be68-5f1d0849a96f",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "9f50efa7-da7f-4d97-90a4-d216a8e0c831",
-                            ConcurrencyStamp = "c53b857f-590b-40d1-9416-56da04eb762c",
+                            Id = "1e106301-27c0-4e1d-9838-a55ae2a766ac",
+                            ConcurrencyStamp = "31887b45-68b9-4fb2-83de-172986d72682",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "031ad853-ca2a-47e3-965d-d873b7cde803",
-                            ConcurrencyStamp = "2480d279-070b-4ae3-bcdd-6975fe07f754",
+                            Id = "2a1a2978-5f66-487b-a288-c1f83e9746a0",
+                            ConcurrencyStamp = "f9f6c821-8f83-4daf-9308-0b78aeb2f78c",
                             Name = "Applicant",
                             NormalizedName = "APPLICANT"
                         });

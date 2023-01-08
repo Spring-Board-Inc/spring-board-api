@@ -16,6 +16,7 @@ namespace SpringBoardApi.Mapper
             CreateMap<UserInformationDto, UserInformation>();
             CreateMap<UserInformation, UserInformationToReturnDto>();
             CreateMap<UserNamesForUpdateDto, AppUser>();
+            CreateMap<UserAddressForUpdateDto, AppUser>();
             CreateMap<EducationForCreationDto, Education>()
                 .ForMember(dest => dest.Major, opt => opt.MapFrom(src => src.Course));
             CreateMap<Education, EducationToReturnDto>()

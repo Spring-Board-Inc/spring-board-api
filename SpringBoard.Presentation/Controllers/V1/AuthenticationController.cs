@@ -1,4 +1,5 @@
 ﻿using Entities.Enums;
+using Entities.ErrorModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -117,7 +118,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if(!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<string>());
+            return Ok(baseResult.GetResult<ResponseMessage>());
         }
 
         /// <summary>
@@ -129,7 +130,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="404">Not found</response>
         ///<response code="400">Bad request</response>
         ///<response code="500">Server error</response>
-        [HttpPatch("change-password")]
+        [HttpPatch("forgot-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -140,7 +141,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<string>());
+            return Ok(baseResult.GetResult<ResponseMessage>());
         }
 
         /// <summary>
@@ -166,7 +167,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<string>());
+            return Ok(baseResult.GetResult<ResponseMessage>());
         }
     }
 }

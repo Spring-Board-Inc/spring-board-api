@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Enums;
 using Entities.Models;
 using Entities.Response;
+using EnumsNET;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -28,7 +29,7 @@ namespace Services
             if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var levelOfEducation = ((ELevel)request.Level).ToString();
+            var levelOfEducation = ((ELevel)request.Level).AsString(EnumFormat.Description);
             var education = _mapper.Map<Education>(request);
             education.LevelOfEducation = levelOfEducation;
             education.UserInformationId = userInfoId;
@@ -69,7 +70,7 @@ namespace Services
                 return new NotFoundResponse(ResponseMessages.EducationNotFound);
 
             _mapper.Map(request, educationForUpdate);
-            educationForUpdate.LevelOfEducation = ((ELevel)request.Level).ToString();
+            educationForUpdate.LevelOfEducation = ((ELevel)request.Level).AsString(EnumFormat.Description);
             educationForUpdate.UpdatedAt = DateTime.Now;
 
             _repositoryManager.Education.UpdateEducation(educationForUpdate);

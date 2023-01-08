@@ -17,7 +17,7 @@ namespace Shared.DataTransferObjects
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; } = null;
         public bool IsValidDateRange => (EndDate == null && StartDate <= DateTime.Now) || EndDate > StartDate;
-        public bool IsValidEntries => !string.IsNullOrWhiteSpace(School) && !string.IsNullOrWhiteSpace(City) && !string.IsNullOrWhiteSpace(Country) && !string.IsNullOrWhiteSpace(Course) && (Level >= 0 && Level <= 4);
+        public bool IsValidEntries => !string.IsNullOrWhiteSpace(School) && !string.IsNullOrWhiteSpace(City) && !string.IsNullOrWhiteSpace(Country) && !string.IsNullOrWhiteSpace(Course) && (Level >= 0 && Level <= 5);
         public bool IsValidParams => IsValidDateRange && IsValidEntries;
     }
 }

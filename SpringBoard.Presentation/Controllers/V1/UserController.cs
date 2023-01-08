@@ -10,7 +10,7 @@ using SpringBoard.Presentation.Controllers.V1.Extensions;
 [ApiVersion("1.0")]
 [Route("api/users")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class UserController : ApiControllerBase
 {
     private readonly IServiceManager _service;
@@ -79,6 +79,7 @@ public class UserController : ApiControllerBase
     ///<response code="500">Server error</response>
     [HttpPut]
     [Route("activate/{userId}")]
+    [Authorize(Roles = "SuperAdministrator, Administrator")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -107,7 +108,7 @@ public class UserController : ApiControllerBase
     ///<response code="403">Forbidden</response>
     ///<response code="500">Server error</response>
     [HttpPut, Route("deactivate/{userId}")]
-    [Authorize(Roles = "SuperAdministrator, Administrator")]
+    [Authorize(Roles = "SuperAdministrator, Administrator, Applicant, Employer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -231,12 +232,39 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateNames(string userId, [FromForm] UserNamesForUpdateDto request)
+    public async Task<IActionResult> UpdateNames(string userId, UserNamesForUpdateDto request)
     {
         var baseResult = await _service.User.UpdateUserNames(userId, request);
         if (!baseResult.Success)
             return ProcessError(baseResult);
 
-        return Ok(baseResult.GetResult<string>());
+        return Ok(baseResult.GetResult<DetailedUserToReturnDto>());
+    }
+
+    /// <summary>
+    /// This end-point changes user's address details
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="request"></param>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden.</response>
+    ///<response code="500">Server error</response>
+    [HttpPut("edit-address/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateAddress(string userId, UserAddressForUpdateDto request)
+    {
+        var baseResult = await _service.User.UpdateUserAddress(userId, request);
+        if (!baseResult.Success)
+            return ProcessError(baseResult);
+
+        return Ok(baseResult.GetResult<DetailedUserToReturnDto>());
     }
 }

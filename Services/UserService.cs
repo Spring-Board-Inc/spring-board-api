@@ -166,9 +166,28 @@ namespace Services
                 return new NotFoundResponse(ResponseMessages.UserNotFound);
 
             var userForUpdate = _mapper.Map(request, user);
+            userForUpdate.UpdatedAt = DateTime.Now;
             await _userManager.UpdateAsync(userForUpdate);
 
-            return new ApiOkResponse<string>(ResponseMessages.UserInfoUpdated);
+            var userToReturn = _mapper.Map<DetailedUserToReturnDto>(userForUpdate);
+            return new ApiOkResponse<DetailedUserToReturnDto>(userToReturn);
+        }
+
+        public async Task<ApiBaseResponse> UpdateUserAddress(string userId, UserAddressForUpdateDto request)
+        {
+            if (!request.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new NotFoundResponse(ResponseMessages.UserNotFound);
+
+            var userForUpdate = _mapper.Map(request, user);
+            userForUpdate.UpdatedAt = DateTime.Now;
+            await _userManager.UpdateAsync(userForUpdate);
+
+            var userToReturn = _mapper.Map<DetailedUserToReturnDto>(userForUpdate);
+            return new ApiOkResponse<DetailedUserToReturnDto>(userToReturn);
         }
 
         public async Task<ApiBaseResponse> RemoveProfilePhoto(string userId)
@@ -188,6 +207,17 @@ namespace Services
             return new ApiOkResponse<string>(ResponseMessages.PhotoDeletionSuccessful);
         }
 
+        public async Task<UserClaimsDto> GetUserClaims()
+        {
+            var userId = GetUserId();
+
+            return new UserClaimsDto
+            {
+                UserId = userId,
+                Email = GetUserEmail(),
+                Roles = await GetUserRoles(userId)
+            };
+        }
         public string? GetUserId()
         {
             ClaimsPrincipal? userClaim = _httpContextAccessor.HttpContext?.User;
@@ -198,6 +228,12 @@ namespace Services
         {
             ClaimsPrincipal? userClaim = _httpContextAccessor.HttpContext?.User;
             return userClaim?.FindFirstValue(ClaimTypes.Name);
+        }
+
+        public async Task<IList<string>>? GetUserRoles(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            return user != null ? await _userManager.GetRolesAsync(user) : null;
         }
 
         public async Task<bool> IsInRole(string userId, string role)

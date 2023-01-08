@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -34,9 +35,25 @@ namespace Services
             return new ApiOkResponse<CertificationDto>(certificationToReturn);
         }
 
+        public async Task<ApiBaseResponse> Get(Guid id)
+        {
+            var cert = await _repository.Certification.FindCertification(id, false);
+            if (cert == null)
+                return new NotFoundResponse(ResponseMessages.EducationNotFound);
+
+            var certForReturn = _mapper.Map<CertificationMinInfo>(cert);
+            return new ApiOkResponse<CertificationMinInfo>(certForReturn);
+        }
+
+        public async Task<IEnumerable<CertificationMinInfo>> Get(Guid id, bool track)
+        {
+            var certs = await _repository.Certification.FindCertifications(id, track).ToListAsync();
+            return _mapper.Map<IEnumerable<CertificationMinInfo>>(certs);
+        }
+
         public async Task<ApiBaseResponse> Update(Guid id, CertificationRequest request)
         {
-            if (request.IsValidParams)
+            if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var certificationForUpdate = await _repository.Certification.FindCertification(id, true);

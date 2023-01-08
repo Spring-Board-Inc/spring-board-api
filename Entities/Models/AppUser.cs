@@ -18,6 +18,16 @@ namespace Entities.Models
         public DateTime? LastLogin { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        public string Street { get; set; }
+        [Required]
+        public string City { get; set; }
+        [Required]
+        public string PostalCode { get; set; }
+        [Required]
+        public string State { get; set; }
+        [Required]
+        public string Country { get; set; }
         public UserInformation? UserInformation { get; set; }
         public string PhotoUrl { get; set; } = string.Empty;
         public string PublicId { get; set; } = string.Empty;

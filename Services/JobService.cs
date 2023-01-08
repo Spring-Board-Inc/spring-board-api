@@ -98,7 +98,7 @@ namespace Services
             if (job == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
-            return new ApiOkResponse<JobMinimumInfoDto>(_mapper.Map<JobMinimumInfoDto>(job));
+            return new ApiOkResponse<JobToReturnDto>(_mapper.Map<JobToReturnDto>(job));
         }
 
         public async Task<ApiBaseResponse> Get(SearchParameters searchParameters)
@@ -244,12 +244,13 @@ namespace Services
             var jobsCount = allJobs.Where(x => x.NumberOfApplicants > 0).Count();
             var activeJobsCount = allJobs.Where(x => x.ClosingDate > DateTime.Now).Count();
             var jobsFilled = jobsCount - activeJobsCount;
+            jobsFilled = (jobsFilled < 0) ? 0 : jobsFilled;
 
             var companies = await _repository.Company.FindCompaniesAsync(false);
             var companiesCount = companies.Where(x => x.IsDeprecated == false).Count();
 
             var applicant = await userManager.GetUsersInRoleAsync(ERoles.Applicant.ToString());
-            var applicantCount = applicant.Count();
+            var applicantCount = applicant.Where(x => x.EmailConfirmed).Count();
 
             var jobStats = new JobStatsDto(applicantCount, activeJobsCount, jobsFilled, companiesCount);
             return new ApiOkResponse<JobStatsDto>(jobStats);

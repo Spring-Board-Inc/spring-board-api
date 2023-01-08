@@ -455,6 +455,17 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Get(System.Guid)">
+             <summary>
+             End point to get a skill object
+             </summary>
+             <param name="id">Id of the skill to be deleted.</param>
+             <returns>List of skill objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserInfo(System.String)">
             <summary>
             End-point to get user information by user id
@@ -468,31 +479,16 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error.</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateUserInfo(System.String,Shared.DataTransferObjects.UserInformationDto)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateUserInfo(System.String)">
             <summary>
             End-point to create a new user information
             </summary>
             <param name="userId"></param>
-            <param name="dto"></param>
             <returns>Created user info object</returns>
             <response code="201">Created</response>
             <response code="404">Not found</response>
             <response code="400">Bad request</response>
             <response code="401">Unauthorized.</response>
-            <response code="403">Forbidden</response>
-            <response code="500">Server error</response>
-        </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.UpdateUserInfo(System.Guid,Shared.DataTransferObjects.UserInformationDto)">
-            <summary>
-            End-point to update user information
-            </summary>
-            <param name="id">The id of the user info object to update</param>
-            <param name="dto"></param>
-            <returns>Updated user info object</returns>
-            <response code="200">Ok</response>
-            <response code="404">Not found</response>
-            <response code="400">Bad request</response>
-            <response code="401">Unauthorized</response>
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
@@ -536,9 +532,32 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteUserEducations(System.Guid)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteUserEducation(System.Guid)">
             <summary>
             End-point to delete education profile for a user
+            </summary>
+            <param name="id"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserEducations(System.Guid)">
+            <summary>
+            End-point to get list of applicant's education profile
+            </summary>
+            <param name="userInfoId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserEducation(System.Guid)">
+            <summary>
+            End-point to get an education profile for a user
             </summary>
             <param name="id"></param>
             <returns>Ok</returns>
@@ -575,7 +594,28 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteWorkExperience(System.Guid)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetWorkExperiences(System.Guid)">
+            <summary>
+            End-point to get a list of user work experience
+            </summary>
+            <param name="userInfoId">This is the work experience unique id</param>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetWorkExperience(System.Guid)">
+            <summary>
+            End-point to get single user work experience
+            </summary>
+            <param name="id">This is the work experience unique id</param>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteExperience(System.Guid)">
             <summary>
             End-point to delete user work experience
             </summary>
@@ -629,6 +669,30 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserSkill(System.Guid,System.Guid)">
+            <summary>
+            End-point to get a user skill
+            </summary>
+            <param name="userInfoId"></param>
+            <param name="skillId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserSkills(System.Guid)">
+            <summary>
+            End-point to get a list of user skills
+            </summary>
+            <param name="userInfoId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateCertification(System.Guid,Shared.DataTransferObjects.CertificationRequest)">
             <summary>
             End-point to create user certification
@@ -659,12 +723,35 @@
         </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteCertification(System.Guid)">
             <summary>
-            End-point to create user certification
+            End-point to delete user certification
             </summary>
             <param name="id"></param>
             <returns>Ok</returns>
             <response code="200">Ok</response>
             <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetCertification(System.Guid)">
+            <summary>
+            End-point to get a user certification
+            </summary>
+            <param name="id"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetCertifications(System.Guid)">
+            <summary>
+            End-point to get a list of user certifications
+            </summary>
+            <param name="userInfoId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
             <response code="401">Unauthorized</response>
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
@@ -774,6 +861,19 @@
         <member name="M:UserController.UpdateNames(System.String,Shared.DataTransferObjects.UserNamesForUpdateDto)">
              <summary>
              This end-point changes user's first and last names
+             </summary>
+             <param name="userId"></param>
+             <param name="request"></param>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden.</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.UpdateAddress(System.String,Shared.DataTransferObjects.UserAddressForUpdateDto)">
+             <summary>
+             This end-point changes user's address details
              </summary>
              <param name="userId"></param>
              <param name="request"></param>

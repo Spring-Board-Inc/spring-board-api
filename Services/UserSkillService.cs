@@ -61,6 +61,22 @@ namespace Services
             return new ApiOkResponse<string>(ResponseMessages.NoContent);
         }
 
+        public async Task<ApiBaseResponse> Get(Guid userInfoId, Guid skillId)
+        {
+            var userSkill = await _repository.UserSkill.FindUserSkillAsync(userInfoId, skillId, false);
+            if (userSkill == null)
+                return new BadRequestResponse(ResponseMessages.UserSkillNotFound);
+
+            var data = _mapper.Map<UserSkillMinInfo>(userSkill);
+            return new ApiOkResponse<UserSkillMinInfo>(data);
+        }
+
+        public async Task<IEnumerable<UserSkillMinInfo>> Get(Guid userInfoId)
+        {
+            var userSkills = await _repository.UserSkill.FindUserSkillsAsync(userInfoId, false);
+            return _mapper.Map<IEnumerable<UserSkillMinInfo>>(userSkills);
+        }
+
         public async Task<ApiBaseResponse> Update(Guid userInfoId, Guid skillId, UserSkillRequest request)
         {
             if (!request.IsValidParams)

@@ -55,7 +55,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [HttpGet, Route("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            return Ok((await _service.Job.Get(id)).GetResult<JobMinimumInfoDto>());
+            return Ok((await _service.Job.Get(id)).GetResult<JobToReturnDto>());
         }
 
         ///<summary>End-point to create a job</summary>

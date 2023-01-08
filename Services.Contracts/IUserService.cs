@@ -10,6 +10,8 @@ namespace Services.Contracts
     {
         public string? GetUserId();
         public string? GetUserEmail();
+        Task<IList<string>>? GetUserRoles(string userId);
+        Task<UserClaimsDto> GetUserClaims();
         Task<bool> IsInRole(string userId, string role);
         Task<ApiBaseResponse> Activate(string userid);
         Task<ApiBaseResponse> Deactivate(string UserId);
@@ -19,5 +21,6 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Get(string id);
         Task<ApiBaseResponse> Get(SearchParameters searchParameters);
         Task<ApiBaseResponse> UpdateUserNames(string userId, UserNamesForUpdateDto request);
+        Task<ApiBaseResponse> UpdateUserAddress(string userId, UserAddressForUpdateDto request);
     }
 }

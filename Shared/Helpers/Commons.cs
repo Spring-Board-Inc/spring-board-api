@@ -1,7 +1,6 @@
 ﻿using Entities.ErrorModel;
-using Entities.Response;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+using Shared.DataTransferObjects;
 using System.Text.RegularExpressions;
 
 namespace Shared.Helpers
@@ -14,6 +13,16 @@ namespace Shared.Helpers
         public static string Capitalize(string text)
         {
             return Regex.Replace(Normalize(text), "^[a-z]", m => m.Value.ToUpper());
+        }
+
+        public static UserForRegistrationDto CapitalizeUserDetails(UserForRegistrationDto user)
+        {
+            user.FirstName = Capitalize(user.FirstName);
+            user.LastName = Capitalize(user.LastName);
+            user.Gender = Capitalize(user.Gender);
+            user.City = Capitalize(user.City);
+
+            return user;
         }
 
         private static string Normalize(string text)

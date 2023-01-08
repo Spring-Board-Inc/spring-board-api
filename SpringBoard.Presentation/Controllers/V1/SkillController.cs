@@ -11,7 +11,6 @@ namespace SpringBoard.Presentation.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/skill")]
     [ApiController]
-    [Authorize(Roles = "SuperAdministrator, Administrator")]
     public class SkillController : ApiControllerBase
     {
         private readonly IServiceManager _service;
@@ -29,6 +28,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpPost]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -56,6 +56,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpPut, Route("{id}")]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -82,6 +83,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpDelete, Route("{id}")]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -105,6 +107,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet]
+        [Authorize(Roles = "SuperAdministrator, Administrator, Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -112,6 +115,31 @@ namespace SpringBoard.Presentation.Controllers.V1
         public async Task<IActionResult> Get()
         {
             return Ok((await _service.Skill.Get()).GetResult<IEnumerable<Skill>>());
+        }
+
+        /// <summary>
+        /// End point to get a skill object
+        /// </summary>
+        /// <param name="id">Id of the skill to be deleted.</param>
+        /// <returns>List of skill objects</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("{id}")]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var baseResult = await _service.Skill.Get(id);
+            if (!baseResult.Success)
+                return ProcessError(baseResult);
+
+            return Ok(baseResult.GetResult<Skill>());
         }
     }
 }

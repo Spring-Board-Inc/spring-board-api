@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Enums;
 using Entities.Models;
 using Entities.Response;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -70,7 +71,16 @@ namespace Services
 
         public async Task<ApiBaseResponse> Get()
         {
-            return new ApiOkResponse<IEnumerable<Skill>>(await _repository.Skills.FindSkillsAsync(false));
+            return new ApiOkResponse<IEnumerable<Skill>>(await _repository.Skills.FindSkills(false).ToListAsync());
+        }
+
+        public async Task<ApiBaseResponse> Get(Guid id)
+        {
+            Skill? skill = await _repository.Skills.FindSkillAsync(id, true);
+            if (skill == null)
+                return new NotFoundResponse(ResponseMessages.SkillNotFound);
+
+            return new ApiOkResponse<Skill>(skill);
         }
     }
 }

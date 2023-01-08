@@ -13,7 +13,7 @@ namespace Shared.Helpers
         public static readonly string EmailTaken = "Already registered with this email. Login instead.";
         public static readonly string UpdateSuccessful = "Update successful.";
         public static readonly string DeleteSuccessful = "Record successfully deleted.";
-        public static readonly string PasswordResetSuccessful = "Password successfully reset.";
+        public static readonly string PasswordResetSuccessful = "Successfully reset.";
         public static readonly string PasswordChangeSuccessful = "Password successfully changed.";
         public static readonly string EmailNotConfirmed = "Password reset failed. Email not confirmed.";
         public static readonly string PasswordResetFailed = "Password reset failed.";

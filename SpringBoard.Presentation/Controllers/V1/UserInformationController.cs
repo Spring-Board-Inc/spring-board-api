@@ -10,7 +10,7 @@ using SpringBoard.Presentation.Controllers.V1.Extensions;
 namespace SpringBoard.Presentation.Controllers.V1
 {
     [ApiVersion("1.0")]
-    [Route("api/user-info")]
+    [Route("api/info")]
     [ApiController]
     [Authorize]
     public class UserInformationController : ApiControllerBase
@@ -52,7 +52,6 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///End-point to create a new user information
         ///</summary>
         ///<param name="userId"></param>
-        ///<param name="dto"></param>
         ///<returns>Created user info object</returns>
         ///<response code="201">Created</response>
         ///<response code="404">Not found</response>
@@ -67,47 +66,18 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserInfo(string userId, [FromForm]UserInformationDto dto)
+        public async Task<IActionResult> CreateUserInfo(string userId)
         {
             var exists = await _service.UserInformation.Exists(userId);
             if (exists)
                 return BadRequest();
 
-            var baseResult = await _service.UserInformation.Create(userId, dto);
+            var baseResult = await _service.UserInformation.Create(userId);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
             var result = baseResult.GetResult<UserInformationToReturnDto>();
             return Created(nameof(GetUserInfo), result);
-        }
-
-        ///<summary>
-        ///End-point to update user information
-        ///</summary>
-        ///<param name="id">The id of the user info object to update</param>
-        ///<param name="dto"></param>
-        ///<returns>Updated user info object</returns>
-        ///<response code="200">Ok</response>
-        ///<response code="404">Not found</response>
-        ///<response code="400">Bad request</response>
-        ///<response code="401">Unauthorized</response>
-        ///<response code="403">Forbidden</response>
-        ///<response code="500">Server error</response>
-        [HttpPut, Route("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserInfo(Guid id, [FromForm]UserInformationDto dto)
-        {
-            var baseResult = await _service.UserInformation.Update(id, dto);
-            if (!baseResult.Success)
-                return ProcessError(baseResult);
-
-            var result = baseResult.GetResult<string>();
-            return Ok(result);
         }
 
         ///<summary>
@@ -160,7 +130,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserEducation(Guid userInfoId, [FromForm]EducationForCreationDto request)
+        public async Task<IActionResult> CreateUserEducation(Guid userInfoId, EducationForCreationDto request)
         {
             var baseResult = await _service.Education.Create(userInfoId, request);
             if(!baseResult.Success)
@@ -182,7 +152,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="401">Unauthorized</response>
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
-        [HttpPatch, Route("{userInfoId}/education/{id}")]
+        [HttpPatch, Route("education/{id}")]
         [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -190,7 +160,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserEducations(Guid id, [FromForm]EducationForUpdateDto request)
+        public async Task<IActionResult> UpdateUserEducations(Guid id, EducationForUpdateDto request)
         {
             var baseResult = await _service.Education.Update(id, request);
             if (!baseResult.Success)
@@ -210,20 +180,67 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="401">Unauthorized</response>
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
-        [HttpDelete, Route("{userInfoId}/education/{id}")]
+        [HttpDelete, Route("education/{id}")]
         [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteUserEducations(Guid id)
+        public async Task<IActionResult> DeleteUserEducation(Guid id)
         {
             var baseResult = await _service.Education.Delete(id);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
             var result = baseResult.GetResult<string>();
+            return Ok(result);
+        }
+
+        ///<summary>
+        ///End-point to get list of applicant's education profile
+        ///</summary>
+        ///<param name="userInfoId"></param>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("{userInfoId}/education")]
+        [Authorize(Roles = "Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUserEducations(Guid userInfoId)
+        {
+            return Ok(await _service.Education.Get(userInfoId, false));
+        }
+
+        ///<summary>
+        ///End-point to get an education profile for a user
+        ///</summary>
+        ///<param name="id"></param>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="400">Bad request</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("education/{id}")]
+        [Authorize(Roles = "Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUserEducation(Guid id)
+        {
+            var baseResult = await _service.Education.Get(id);
+            if (!baseResult.Success)
+                return ProcessError(baseResult);
+
+            var result = baseResult.GetResult<EducationToReturnDto>();
             return Ok(result);
         }
 
@@ -250,7 +267,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateWorkExperience(Guid userInfoId, [FromForm]WorkExperienceRequest request)
+        public async Task<IActionResult> CreateWorkExperience(Guid userInfoId, WorkExperienceRequest request)
         {
             var baseResult = await _service.WorkExperience.Create(userInfoId, request);
             if (!baseResult.Success)
@@ -273,7 +290,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="401">Unauthorized</response>
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
-        [HttpPut, Route("{userInfoId}/experience/{id}")]
+        [HttpPut, Route("experience/{id}")]
         [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -281,13 +298,58 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateWorkExperience(Guid id, [FromForm]WorkExperienceRequest request)
+        public async Task<IActionResult> UpdateWorkExperience(Guid id, WorkExperienceRequest request)
         {
             var baseResult = await _service.WorkExperience.Update(id, request);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
             var result = baseResult.GetResult<string>();
+            return Ok(result);
+        }
+
+        ///<summary>
+        ///End-point to get a list of user work experience
+        ///</summary>
+        ///<param name="userInfoId">This is the work experience unique id</param>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("{userInfoId}/experience")]
+        [Authorize(Roles = "Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetWorkExperiences(Guid userInfoId)
+        {
+            return Ok(await _service.WorkExperience.Get(userInfoId, false));     
+        }
+
+        ///<summary>
+        ///End-point to get single user work experience
+        ///</summary>
+        ///<param name="id">This is the work experience unique id</param>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("experience/{id}")]
+        [Authorize(Roles = "Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetWorkExperience(Guid id)
+        {
+            var baseResult = await _service.WorkExperience.Get(id);
+            if (!baseResult.Success)
+                return ProcessError(baseResult);
+
+            var result = baseResult.GetResult<WorkExperienceMinInfo>();
             return Ok(result);
         }
 
@@ -300,14 +362,14 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="401">Unauthorized</response>
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
-        [HttpDelete, Route("{userInfoId}/experience/{id}")]
+        [HttpDelete, Route("experience/{id}")]
         [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteWorkExperience(Guid id)
+        public async Task<IActionResult> DeleteExperience(Guid id)
         {
             var baseResult = await _service.WorkExperience.Delete(id);
             if (!baseResult.Success)
@@ -316,6 +378,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             var result = baseResult.GetResult<string>();
             return Ok(result);
         }
+
         #endregion
 
         #region User Skill
@@ -341,7 +404,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserSkill(Guid userInfoId, Guid skillId, [FromForm]UserSkillRequest request)
+        public async Task<IActionResult> CreateUserSkill(Guid userInfoId, Guid skillId, UserSkillRequest request)
         {
             var baseResult = await _service.UserSkill.Create(userInfoId, skillId, request);
             if (!baseResult.Success)
@@ -372,7 +435,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserSkill(Guid userInfoId, Guid skillId, [FromForm]UserSkillRequest request)
+        public async Task<IActionResult> UpdateUserSkill(Guid userInfoId, Guid skillId, UserSkillRequest request)
         {
             var baseResult = await _service.UserSkill.Update(userInfoId, skillId, request);
             if (!baseResult.Success)
@@ -409,6 +472,56 @@ namespace SpringBoard.Presentation.Controllers.V1
             var result = baseResult.GetResult<string>();
             return Ok(result);
         }
+
+        ///<summary>
+        ///End-point to get a user skill
+        ///</summary>
+        ///<param name="userInfoId"></param>
+        ///<param name="skillId"></param>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("{userInfoId}/skill/{skillId}")]
+        [Authorize(Roles = "Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUserSkill(Guid userInfoId, Guid skillId)
+        {
+            var baseResult = await _service.UserSkill.Get(userInfoId, skillId);
+            if (!baseResult.Success)
+                return ProcessError(baseResult);
+
+            var result = baseResult.GetResult<UserSkillMinInfo>();
+            return Ok(result);
+        }
+
+        ///<summary>
+        ///End-point to get a list of user skills
+        ///</summary>
+        ///<param name="userInfoId"></param>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("{userInfoId}/skill")]
+        [Authorize(Roles = "Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUserSkills(Guid userInfoId)
+        {
+            return Ok(await _service.UserSkill.Get(userInfoId));
+        }
+
         #endregion
 
         #region Certification
@@ -433,7 +546,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateCertification(Guid userInfoId, [FromForm]CertificationRequest request)
+        public async Task<IActionResult> CreateCertification(Guid userInfoId, CertificationRequest request)
         {
             var baseResult = await _service.Certification.Create(userInfoId, request);
             if (!baseResult.Success)
@@ -455,7 +568,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="401">Unauthorized</response>
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
-        [HttpPut, Route("{userInfoId}/certification/{id}")]
+        [HttpPut, Route("certification/{id}")]
         [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -463,7 +576,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateCertification(Guid id, [FromForm]CertificationRequest request)
+        public async Task<IActionResult> UpdateCertification(Guid id, CertificationRequest request)
         {
             var baseResult = await _service.Certification.Update(id, request);
             if (!baseResult.Success)
@@ -474,7 +587,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         }
 
         ///<summary>
-        ///End-point to create user certification
+        ///End-point to delete user certification
         ///</summary>
         ///<param name="id"></param>
         ///<returns>Ok</returns>
@@ -483,7 +596,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="401">Unauthorized</response>
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
-        [HttpDelete, Route("{userInfoId}/certification/{id}")]
+        [HttpDelete, Route("certification/{id}")]
         [Authorize(Roles = "Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -499,6 +612,55 @@ namespace SpringBoard.Presentation.Controllers.V1
             var result = baseResult.GetResult<string>();
             return Ok(result);
         }
+
+        ///<summary>
+        ///End-point to get a user certification
+        ///</summary>
+        ///<param name="id"></param>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="404">Not found</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("certification/{id}")]
+        [Authorize(Roles = "Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCertification(Guid id)
+        {
+            var baseResult = await _service.Certification.Get(id);
+            if (!baseResult.Success)
+                return ProcessError(baseResult);
+
+            var result = baseResult.GetResult<CertificationMinInfo>();
+            return Ok(result);
+        }
+
+        ///<summary>
+        ///End-point to get a list of user certifications
+        ///</summary>
+        ///<param name="userInfoId"></param>
+        ///<returns>Ok</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet, Route("{userInfoId}/certification")]
+        [Authorize(Roles = "Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCertifications(Guid userInfoId)
+        {
+            return Ok(await _service.Certification.Get(userInfoId, false));   
+        }
+
         #endregion
     }
 }

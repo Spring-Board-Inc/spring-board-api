@@ -24,6 +24,6 @@ namespace Repositories
 
         public IQueryable<Skill> FindSkills(bool trackChanges) =>
             FindAll(trackChanges)
-                .OrderByDescending(sk => sk.CreatedAt);
+                .OrderByDescending(sk => sk.Description);
     }
 }

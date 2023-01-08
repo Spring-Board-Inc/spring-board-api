@@ -11,7 +11,6 @@ namespace SpringBoard.Presentation.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/location")]
     [ApiController]
-    [Authorize(Roles = "SuperAdministrator, Administrator")]
     public class LocationController : ApiControllerBase
     {
         private readonly IServiceManager _service;
@@ -28,6 +27,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpPost]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -53,6 +53,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet, Route("{id}")]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -78,6 +79,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -100,6 +102,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpDelete, Route("{id}")]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -127,6 +130,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpPut, Route("{id}")]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

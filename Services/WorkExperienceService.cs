@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -39,6 +40,22 @@ namespace Services
 
             var experienceToReturn = _mapper.Map<WorkExperienceToReturnDto>(workExperience);
             return new ApiOkResponse<WorkExperienceToReturnDto>(experienceToReturn);
+        }
+
+        public async Task<ApiBaseResponse> Get(Guid id)
+        {
+            var exp = await _repository.WorkExperience.FindWorkExperienceAsync(id, true);
+            if (exp == null)
+                return new NotFoundResponse(ResponseMessages.WorkExperienceNotFound);
+
+            var expForReturn = _mapper.Map<WorkExperienceMinInfo>(exp);
+            return new ApiOkResponse<WorkExperienceMinInfo>(expForReturn);
+        }
+
+        public async Task<IEnumerable<WorkExperienceMinInfo>> Get(Guid id, bool track)
+        {
+            var exp = await _repository.WorkExperience.FindExperiences(id, false).ToListAsync();
+            return _mapper.Map<IEnumerable<WorkExperienceMinInfo>>(exp);
         }
 
         public async Task<ApiBaseResponse> Update(Guid id, WorkExperienceRequest request)

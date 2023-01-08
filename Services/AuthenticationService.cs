@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Enums;
+using Entities.ErrorModel;
 using Entities.Models;
 using Entities.Response;
 using Microsoft.AspNetCore.Identity;
@@ -61,7 +62,7 @@ namespace Services
             if (user != null)
                 return new NotFoundResponse(ResponseMessages.EmailTaken);
 
-            userForRegistration.Gender = Commons.Capitalize(userForRegistration.Gender);
+            userForRegistration = Commons.CapitalizeUserDetails(userForRegistration);
             var isCorrectGender = Enum.IsDefined(typeof(EGender), userForRegistration.Gender);
             if (!isCorrectGender)
                 return new BadRequestResponse(ResponseMessages.InvalidGender);
@@ -90,6 +91,13 @@ namespace Services
             
             if(!isSent.Success)
                 return new BadRequestResponse(ResponseMessages.UnexpectedError);
+
+            var userInformation = new UserInformation
+            {
+                UserId = user.Id,
+            };
+            await _repositoryManager.UserInformation.CreateUserInformationAsync(userInformation);
+            await _repositoryManager.SaveAsync();
 
             return new ApiOkResponse<IdentityResult>(result);
         }
@@ -149,7 +157,12 @@ namespace Services
         public async Task<TokenDto> CreateToken(bool populateExp)
         {
             var signingCredentials = GetSigningCredentials();
+
             var claims = await GetClaims();
+            var roles = await _userManager.GetRolesAsync(_user);
+            Guid userInfoId = _repositoryManager.UserInformation.FindUserInformation(_user.Id, false).FirstOrDefault().Id;
+            ClaimsDto? userClaims = new(_user.Id, userInfoId, _user.Email, roles);
+
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             var refreshToken = GenerateRefreshToken();
             _user.RefreshToken = refreshToken;
@@ -157,8 +170,7 @@ namespace Services
                 _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
             await _userManager.UpdateAsync(_user);
             var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            var roles = await _userManager.GetRolesAsync(_user);
-            return new TokenDto(accessToken, refreshToken, roles);
+            return new TokenDto(accessToken, refreshToken, userClaims);
         }
 
         public async Task<ApiBaseResponse> RefreshToken(TokenDto tokenDto)
@@ -198,8 +210,7 @@ namespace Services
 
             if(!isSent.Success)
                 return new BadRequestResponse(ResponseMessages.PasswordResetFailed);
-
-            return new ApiOkResponse<string>(ResponseMessages.PasswordResetSuccessful);
+            return new ApiOkResponse<ResponseMessage>(new ResponseMessage { Message = ResponseMessages.PasswordResetSuccessful });
         }
 
         public async Task<ApiBaseResponse> ChangeForgottenPassword(ChangeForgottenPasswordDto changePasswordDto)
@@ -221,7 +232,7 @@ namespace Services
             if (!changePassword.Succeeded) 
                 return new BadRequestResponse(ResponseMessages.PasswordResetFailed);
 
-            return new ApiOkResponse<string>(ResponseMessages.PasswordChangeSuccessful);
+            return new ApiOkResponse<ResponseMessage>(new ResponseMessage { Message = ResponseMessages.PasswordChangeSuccessful });
         }
 
         public async Task<ApiBaseResponse> ChangePassword(ChangePasswordDto passwordDto)
@@ -235,7 +246,7 @@ namespace Services
             if (!changedPassword.Succeeded)
                 return new BadRequestResponse(ResponseMessages.PasswordChangeFailed);
 
-            return new ApiOkResponse<string>(ResponseMessages.PasswordChangeSuccessful);
+            return new ApiOkResponse<ResponseMessage>(new ResponseMessage { Message = ResponseMessages.PasswordChangeSuccessful });
         }
 
         #region Private Methods

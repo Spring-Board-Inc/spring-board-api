@@ -9,5 +9,6 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Get();
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Update(Guid id, SkillRequest request);
+        Task<ApiBaseResponse> Get(Guid id);
     }
 }
