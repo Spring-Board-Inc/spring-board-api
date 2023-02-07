@@ -42,12 +42,12 @@ namespace Services
             _repository.Industry.DeleteIndustry(industry);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.IndustryDeleted);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Update(Guid id, IndustryRequestObject request)
         {
-            if (request.IsValidParams)
+            if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var industry = await _repository.Industry.FindIndustryAsync(id, true);
@@ -60,8 +60,7 @@ namespace Services
             _repository.Industry.UpdateIndustry(industry);
             await _repository.SaveAsync();
 
-            var industryToReturn = _mapper.Map<IndustryToReturnDto>(industry);
-            return new ApiOkResponse<IndustryToReturnDto>(industryToReturn);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<IEnumerable<IndustryToReturnDto>> Get()

@@ -5,8 +5,9 @@
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Descriptions { get; set; }
-        public string Town { get; set; }
+        public string City { get; set; }
         public string State { get; set; }
+        public string Country { get; set; }
         public string JobType { get; set; }
         public string Industry { get; set; }
         public double SalaryLowerRange { get; set; }

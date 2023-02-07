@@ -3,6 +3,8 @@ using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
 using Entities.Response;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Extensions;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -28,68 +30,127 @@ namespace Services
             _mapper = mapper;
         }
 
-        public async Task<ApiBaseResponse> Create(LocationForCreationDto location)
+        public async Task<ApiBaseResponse> CreateCountry(CountryForCreationDto country)
         {
-            if (!location.IsValidParams)
+            if(!country.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var locationEntity = _mapper.Map<Location>(location);
-            await _repository.Location.CreateLocationAsync(locationEntity);
+            var entity = _mapper.Map<Country>(country);
+            await _repository.Country.CreateCountryAsync(entity);
             await _repository.SaveAsync();
 
-            var locationToReturn = _mapper.Map<LocationDto>(locationEntity);
-            return new ApiOkResponse<LocationDto>(locationToReturn);
+            return new ApiOkResponse<bool>(true);
         }
 
-        public async Task<ApiBaseResponse> Get(SearchParameters locationParameters, bool trackChanges)
+        public async Task<ApiBaseResponse> CreateState(StateForCreationDto state)
         {
-            if (!locationParameters.ValidDateRange)
-                return new BadRequestResponse(ResponseMessages.InvalidDateRange);
-
-            var locations = await _repository.Location.GetLocationsAsync(locationParameters, trackChanges);
-
-            var locationsDto = _mapper.Map<IEnumerable<LocationDto>>(locations);
-            var pagedDataList = PagedList<LocationDto>.Paginate(locationsDto, locationParameters.PageNumber, locationParameters.PageSize);
-
-            return new ApiOkResponse<PaginatedListDto<LocationDto>>(pagedDataList);
-        }
-
-        public async Task<ApiBaseResponse> Get(Guid locationId, bool trackChanges)
-        {
-            var location = await _repository.Location.GetLocationAsync(locationId, trackChanges);
-            if (location is null)
-                return new NotFoundResponse(ResponseMessages.NoLocationFound);
-
-            var locationDto = _mapper.Map<LocationDto>(location);
-            return new ApiOkResponse<LocationDto>(locationDto);
-        }
-
-        public async Task<ApiBaseResponse> Update(Guid locationId, LocationForUpdateDto locationForUpdate, bool trackChanges)
-        {
-            if (!locationForUpdate.IsValidParams)
+            if (!state.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var locationEntity = await _repository.Location.GetLocationAsync(locationId, trackChanges);
-            if (locationEntity is null)
-                return new NotFoundResponse(ResponseMessages.NoLocationFound);
-
-            _mapper.Map(locationForUpdate, locationEntity);
-            locationEntity.UpdatedAt = DateTime.Now;
+            var entity = _mapper.Map<State>(state);
+            await _repository.State.CreateStateAsync(entity);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.UpdateSuccessful);
+            return new ApiOkResponse<bool>(true);
         }
 
-        public async Task<ApiBaseResponse> Delete(Guid locationId, bool trackChanges)
+        public async Task<ApiBaseResponse> DeleteCountry(Guid id, bool trackChanges)
         {
-            var location = await _repository.Location.GetLocationAsync(locationId, trackChanges);
-            if (location is null)
-                return new NotFoundResponse(ResponseMessages.NoLocationFound);
-            
-            _repository.Location.DeleteLocation(location);
+            var entity = await _repository.Country.GetCountryAsync(id, trackChanges);
+            if (entity == null)
+                return new NotFoundResponse(ResponseMessages.CountryNotFound);
+
+            _repository.Country.DeleteCountry(entity);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.DeleteSuccessful);
+            return new ApiOkResponse<bool>(true);
+        }
+
+        public async Task<ApiBaseResponse> DeleteState(Guid id, bool trackChanges)
+        {
+            var entity = await _repository.State.GetStateAsync(id, trackChanges);
+            if (entity == null)
+                return new NotFoundResponse(ResponseMessages.StateNotFound);
+
+            _repository.State.DeleteState(entity);
+            await _repository.SaveAsync();
+
+            return new ApiOkResponse<bool>(true);
+        }
+
+        public async Task<ApiBaseResponse> GetCountries(SearchParameters searchParameters)
+        {
+            var countries = await _repository.Country.GetCountriesAsync(searchParameters, false);
+            var countriesToReturn = _mapper.Map<IEnumerable<CountryDto>>(countries);
+            var pagedData = PagedList<CountryDto>.Paginate(countriesToReturn, searchParameters.PageNumber, searchParameters.PageSize);
+            return new ApiOkResponse<PaginatedListDto<CountryDto>>(pagedData);
+        }
+
+        public async Task<ApiBaseResponse> GetCountry(Guid id, bool trackChanges)
+        {
+            var entity = await _repository.Country.GetCountryAsync(id, trackChanges);
+            if (entity == null)
+                return new NotFoundResponse(ResponseMessages.CountryNotFound);
+
+            var countryToReturn = _mapper.Map<CountryDto>(entity);
+
+            return new ApiOkResponse<CountryDto>(countryToReturn);
+        }
+
+        public async Task<ApiBaseResponse> GetStates(StateSearchParameters searchParameters, bool trackChanges)
+        {
+            IEnumerable<State> states;
+            if (searchParameters.CountryId.Equals(Guid.Empty))
+                states = await _repository.State.GetStates(searchParameters, trackChanges).ToListAsync();
+            else
+                states = await _repository.State.GetStatesByCountry(searchParameters, trackChanges).ToListAsync();
+
+            var statesToReturn = _mapper.Map<IEnumerable<StateDto>>(states);
+            var pagedData = PagedList<StateDto>.Paginate(statesToReturn, searchParameters.PageNumber, searchParameters.PageSize);
+            return new ApiOkResponse<PaginatedListDto<StateDto>>(pagedData);
+        }
+
+        public async Task<ApiBaseResponse> GetState(Guid id, bool trackChanges)
+        {
+            var entity = await _repository.State.GetState(id, trackChanges).FirstOrDefaultAsync();
+            if (entity == null)
+                return new NotFoundResponse(ResponseMessages.StateNotFound);
+
+            var stateToReturn = _mapper.Map<StateDto>(entity);
+
+            return new ApiOkResponse<StateDto>(stateToReturn);
+        }
+
+        public async Task<ApiBaseResponse> UpdateCountry(Guid id, CountryForUpdateDto countryForUpdate, bool trackChanges)
+        {
+            if (!countryForUpdate.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
+            var entity = await _repository.Country.GetCountryAsync(id, trackChanges);
+            if (entity == null)
+                return new NotFoundResponse(ResponseMessages.CountryNotFound);
+
+            _mapper.Map(countryForUpdate, entity);
+            entity.UpdatedAt = DateTime.Now;
+            await _repository.SaveAsync();
+
+            return new ApiOkResponse<bool>(true);
+        }
+
+        public async Task<ApiBaseResponse> UpdateState(Guid id, StateForUpdateDto stateForUpdate, bool trackChanges)
+        {
+            if(!stateForUpdate.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
+            var entity = await _repository.State.GetStateAsync(id, trackChanges);
+            if(entity == null) 
+                return new NotFoundResponse(ResponseMessages.StateNotFound);
+
+            _mapper.Map(stateForUpdate, entity);
+            entity.UpdatedAt = DateTime.Now;
+            await _repository.SaveAsync();
+
+            return new ApiOkResponse<bool>(true);
         }
     }
 }

@@ -35,8 +35,15 @@ namespace Services
                 var validationResult = Commons.ValidateImageFile(request.Logo);
                 if (!validationResult.Successful)
                     return new BadRequestResponse(validationResult.Message);
+                try
+                {
+                    uploadResult = await _cloudinary.UploadPhoto(request.Logo);
+                }
+                catch (Exception e)
+                {
 
-                uploadResult = await _cloudinary.UploadPhoto(request.Logo);
+                    throw new Exception(e.Message);
+                }
                 if (uploadResult == null)
                     return new BadRequestResponse(ResponseMessages.PhotoUploadFailed);
             }
@@ -67,7 +74,7 @@ namespace Services
             if(!string.IsNullOrEmpty(publicId))
                 await _cloudinary.DeleteFile(publicId);
 
-            return new ApiOkResponse<string>(ResponseMessages.CompanyDeleted);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Update(Guid id, CompanyRequestObject request)
@@ -88,9 +95,29 @@ namespace Services
                 if (!validationResult.Successful)
                     return new BadRequestResponse(validationResult.Message);
 
-                var uploadResult = await _cloudinary.UploadPhoto(request.Logo);
+                var uploadResult = new PhotoUploadResultDto(string.Empty, string.Empty);
+                try
+                {
+                    uploadResult = await _cloudinary.UploadPhoto(request.Logo);
+                }
+                catch (Exception e)
+                {
+
+                    throw new Exception(e.Message);
+                }
+                
                 if(uploadResult == null)
                     return new BadRequestResponse(ResponseMessages.CompanyUpdateFailed);
+
+                try
+                {
+                    await _cloudinary.DeleteFile(companyForUpdate.PublicId);
+                }
+                catch (Exception e)
+                {
+
+                    throw new Exception(e.Message);
+                }
 
                 companyForUpdate.LogoUrl = uploadResult.Url;
                 companyForUpdate.PublicId = uploadResult.PublicId;

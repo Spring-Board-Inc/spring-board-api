@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories;
 
@@ -11,9 +12,10 @@ using Repositories;
 namespace SpringBoardApi.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230125162544_AddedNumbersOfPeopleToBeHired")]
+    partial class AddedNumbersOfPeopleToBeHired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -585,7 +587,7 @@ namespace SpringBoardApi.Migrations
 
                     b.Property<string>("Descriptions")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1500)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Designation")
                         .IsRequired()
@@ -646,29 +648,29 @@ namespace SpringBoardApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1d31bf5d-150f-4b7d-b7ad-5a3bf3f2cb06",
-                            ConcurrencyStamp = "15884afc-1b64-4a34-91d7-0824637fe806",
+                            Id = "66faad25-eb4b-4cc7-adbc-858f59a8d6d8",
+                            ConcurrencyStamp = "57ae50a3-3ade-4529-80d6-28ebd61079f1",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "aadf47ca-bcd9-42ed-b1f6-ab45d8fa862e",
-                            ConcurrencyStamp = "344c1da3-7cfa-4825-82ba-b5e5e2881076",
+                            Id = "6642164f-2be1-43a1-9416-8fb4f49c29c5",
+                            ConcurrencyStamp = "94a81310-20c1-4f25-999a-445da81c7754",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "fe92eed3-a117-4e8e-a3a3-fee4b168084a",
-                            ConcurrencyStamp = "75f9cb87-8f2e-471a-b312-e06530f14ba9",
+                            Id = "a17f157a-33ab-442c-97f2-c7d41920bcfe",
+                            ConcurrencyStamp = "6db9cafc-dc8e-495f-9b56-a66c1b142f27",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "51c70757-a138-4cb9-8503-365b3e1d3fa3",
-                            ConcurrencyStamp = "13b216d6-9075-442e-a4fd-eb80274409f2",
+                            Id = "763df99a-1397-45ae-912e-ed6084bc4a5d",
+                            ConcurrencyStamp = "87814f85-5a80-43f5-bce8-5da37d2ebf1b",
                             Name = "Applicant",
                             NormalizedName = "APPLICANT"
                         });

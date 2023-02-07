@@ -34,7 +34,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Create([FromForm] SkillRequest request)
+        public async Task<IActionResult> Create(SkillRequest request)
         {
             var baseResult = await _service.Skill.Create(request);
             if (!baseResult.Success)
@@ -63,13 +63,13 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Update(Guid id, [FromForm] SkillRequest request)
+        public async Task<IActionResult> Update(Guid id, SkillRequest request)
         {
             var baseResult = await _service.Skill.Update(id, request);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<string>());
+            return Ok(baseResult.GetResult<bool>());
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<string>());
+            return Ok(baseResult.GetResult<bool>());
         }
 
         /// <summary>

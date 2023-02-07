@@ -18,12 +18,17 @@ namespace Entities.Models
         [ForeignKey(nameof(Industry))]
         public Guid IndustryId { get; set; }
         public Industry? Industry { get; set; }
-        [ForeignKey(nameof(Location))]
-        public Guid LocationId { get; set; }
-        public Location? Location { get; set; }
+        public string City { get; set; }
+        [ForeignKey(nameof(State))]
+        public Guid StateId { get; set; }
+        public State? State { get; set; }
+        [ForeignKey(nameof(Country))]
+        public Guid CountryId { get; set; }
+        public Country? Country { get; set; }
         [ForeignKey(nameof(Type))]
         public Guid TypeId { get; set; }
         public JobType? Type { get; set; }
+        public int NumbersToBeHired { get; set; } = 1;
         public int NumberOfApplicants { get; set; } = 0;
     }
 }

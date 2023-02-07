@@ -5,7 +5,6 @@ namespace Repositories
     public sealed class RepositoryManager : IRepositoryManager
     {
         private readonly RepositoryContext _repositoryContext;
-        private readonly Lazy<ILocationRepository> _locationRepository;
         private readonly Lazy<ITokenRepository> _tokenRepository;
         private readonly Lazy<IUserInformationRepository> _userInformationRepository;
         private readonly Lazy<IEducationRepository> _educationRepository;
@@ -18,12 +17,12 @@ namespace Repositories
         private readonly Lazy<IJobTypeRepository> _jobTypeRepository;
         private readonly Lazy<IUserSkillRepository> _userSkillRepository;
         private readonly Lazy<IUserJobRepository> _userJobRepository;
+        private readonly Lazy<IStateRepository> _stateRepository;
+        private readonly Lazy<ICountryRepository> _countryRepository;
 
         public RepositoryManager(RepositoryContext repositoryContext)
         {
             _repositoryContext = repositoryContext;
-            _locationRepository = new Lazy<ILocationRepository>(() => new
-                LocationRepository(repositoryContext));
             _tokenRepository = new Lazy<ITokenRepository>(() => new 
                 TokenRepository(repositoryContext));
             _userInformationRepository = new Lazy<IUserInformationRepository>(() => new
@@ -48,9 +47,12 @@ namespace Repositories
                 UserSkillRepository(repositoryContext));
             _userJobRepository = new Lazy<IUserJobRepository>(() => new
                 UserJobRepository(repositoryContext));
+            _stateRepository = new Lazy<IStateRepository>(() => new 
+                StateRepository(repositoryContext));
+            _countryRepository = new Lazy<ICountryRepository>(() => new
+                CountryRepository(repositoryContext));
         }
        
-        public ILocationRepository Location => _locationRepository.Value;
         public ITokenRepository Token => _tokenRepository.Value;
         public IUserInformationRepository UserInformation => _userInformationRepository.Value;
         public IEducationRepository Education => _educationRepository.Value;
@@ -64,6 +66,10 @@ namespace Repositories
         public IUserSkillRepository UserSkill => _userSkillRepository.Value;
 
         public IUserJobRepository UserJob => _userJobRepository.Value;
+
+        public IStateRepository State => _stateRepository.Value;
+
+        public ICountryRepository Country => _countryRepository.Value;
 
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
     }

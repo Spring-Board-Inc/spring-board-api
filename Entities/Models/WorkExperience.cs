@@ -11,7 +11,7 @@ namespace Entities.Models
         public string Location { get; set; }
         [Required, Column(TypeName = "nvarchar(50)")]
         public string Designation { get; set; }
-        [Required, Column(TypeName = "nvarchar(450)")]
+        [Required, Column(TypeName = "nvarchar(1500)")]
         public string? Descriptions { get; set; }
         [Required]
         public DateTime StartDate { get; set; }

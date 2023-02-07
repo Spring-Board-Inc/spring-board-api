@@ -76,7 +76,7 @@ namespace Services
             _repository.WorkExperience.UpdateWorkExperience(workExperienceForUpdate);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.WorkExperienceUpdated);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id)
@@ -88,7 +88,7 @@ namespace Services
             _repository.WorkExperience.DeleteWorkExperience(workExperienceForDeletion);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.WorkExperienceDeleted);
+            return new ApiOkResponse<bool>(true);
         }
     }
 }

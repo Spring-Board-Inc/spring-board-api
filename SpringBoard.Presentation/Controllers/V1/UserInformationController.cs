@@ -304,7 +304,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            var result = baseResult.GetResult<string>();
+            var result = baseResult.GetResult<bool>();
             return Ok(result);
         }
 
@@ -375,7 +375,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            var result = baseResult.GetResult<string>();
+            var result = baseResult.GetResult<bool>();
             return Ok(result);
         }
 

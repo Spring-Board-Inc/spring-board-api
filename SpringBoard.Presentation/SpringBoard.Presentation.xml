@@ -199,6 +199,15 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.GetNoMap(System.Guid)">
+            <summary>End-point to get job by id without mapping</summary>
+            <param name="id">The id of the job to find.</param>
+            <returns>Job object</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Update(System.Guid,Shared.DataTransferObjects.JobRequestObject)">
             <summary>End-point to create a job</summary>
             <param  name="id">The id of the job to update</param>
@@ -250,6 +259,16 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.GetApplicant(System.Guid,System.Guid)">
+            <summary>End-point to get the details of an applicant</summary>
+            <param name="jobId">The id of the job for which the applicants applied for.</param>
+            <param name="applicantId">The id of the applicant</param>
+            <returns>List of user info objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(System.Guid,Shared.RequestFeatures.SearchParameters)">
             <summary>End-point to get paginated list of jobs posted by a company</summary>
             <param name="companyId">The id of the company that posted the job.</param>
@@ -270,7 +289,7 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Apply(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Apply(System.Guid,Shared.DataTransferObjects.CvToSendDto)">
             <summary>End point for user to submit job applications</summary>
             <param name="jobId">The id of the job the user is applying for</param>
             <param name="cv">The CV of the Applicant.</param>
@@ -346,11 +365,11 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Create(Shared.DataTransferObjects.LocationForCreationDto)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Create(Shared.DataTransferObjects.CountryForCreationDto)">
              <summary>
-             End point to create a new location.
+             End point to create a new country.
              </summary>
-             <param name="location"></param>
+             <param name="country"></param>
              <returns>Location object</returns>
             <response code="204">No content</response>
             <response code="400">Bad request</response>
@@ -360,7 +379,7 @@
         </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Get(System.Guid)">
              <summary>
-             End point to get location by id
+             End point to get countryby id
              </summary>
              <param name="id"></param>
              <returns>Location object</returns>
@@ -372,10 +391,10 @@
         </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Get(Shared.RequestFeatures.SearchParameters)">
              <summary>
-             End point to get a paginated list of locations.
+             End point to get a paginated list of countries.
              </summary>
-             <param name="locationParameters"></param>
-             <returns>List of paginated location objects</returns>
+             <param name="searchParameters"></param>
+             <returns>List of paginated country objects</returns>
             <response code="200">Ok</response>
             <response code="401">Unauthorized</response>
             <response code="403">Forbidden</response>
@@ -385,7 +404,7 @@
              <summary>
              Deletes a location
              </summary>
-             <param name="id">the id of the location to find</param>
+             <param name="id">the id of the country to delete</param>
              <returns>Ok</returns>
             <response code="200">Ok</response>
             <response code="404">Not found</response>
@@ -393,13 +412,74 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Update(System.Guid,Shared.DataTransferObjects.LocationForUpdateDto)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Update(System.Guid,Shared.DataTransferObjects.CountryForUpdateDto)">
              <summary>
-             End point to update a location
+             End point to update a country
              </summary>
-             <param name="id">The id of the location to update</param>
-             <param name="location"></param>
-             <returns>Updated location object</returns>
+             <param name="id">The id of the country to update</param>
+             <param name="country"></param>
+             <returns>Updated country object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Create(Shared.DataTransferObjects.StateForCreationDto)">
+             <summary>
+             End point to create a new state.
+             </summary>
+             <param name="state"></param>
+             <returns>True for success, error reponse for failure</returns>
+            <response code="204">No content</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.GetSingleState(System.Guid)">
+             <summary>
+             End point to get state by id
+             </summary>
+             <param name="id"></param>
+             <returns>State object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Get(Shared.RequestFeatures.StateSearchParameters)">
+             <summary>
+             End point to get a paginated list of states.
+             </summary>
+             <param name="searchParameters"></param>
+             <returns>List of paginated state objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.DeleteState(System.Guid)">
+             <summary>
+             Deletes a state
+             </summary>
+             <param name="id">the id of the state to delete</param>
+             <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Update(System.Guid,Shared.DataTransferObjects.StateForUpdateDto)">
+             <summary>
+             End point to update a state
+             </summary>
+             <param name="id">The id of the state to update</param>
+             <param name="state"></param>
+             <returns>Updated country object</returns>
             <response code="200">Ok</response>
             <response code="404">Not found</response>
             <response code="400">Bad request</response>
@@ -817,7 +897,35 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:UserController.UploadUserPhoto(Microsoft.AspNetCore.Http.IFormFile,System.String)">
+        <member name="M:UserController.Suspend(System.String)">
+            <summary>
+            End-point to suspend the user profile
+            This action can only be performed by the Admins
+            and SuperAdmins
+            </summary>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.Reactivate(System.String)">
+            <summary>
+            End-point to re-activate the user profile
+            </summary>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.UploadUserPhoto(Shared.DataTransferObjects.PhotoToUploadDto,System.String)">
             <summary>
             End-point to upload user profile photo.
             </summary>
@@ -831,7 +939,7 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:UserController.UpdateUserPhoto(Microsoft.AspNetCore.Http.IFormFile,System.String)">
+        <member name="M:UserController.UpdateUserPhoto(Shared.DataTransferObjects.PhotoToUploadDto,System.String)">
             <summary>
             End-point to update user profile photo
             </summary>

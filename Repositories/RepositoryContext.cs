@@ -26,7 +26,6 @@ namespace Repositories
         public DbSet<Education>? Educations { get; set; }
         public DbSet<Industry>? Industries { get; set; }
         public DbSet<Job>? Jobs { get; set; }
-        public DbSet<Location>? Locations { get; set; }
         public DbSet<Skill>? Skills { get; set; }
         public DbSet<JobType>? JobTypes { get; set; }
         public DbSet<UserInformation>? UserInformation { get; set; }
@@ -34,5 +33,7 @@ namespace Repositories
         public DbSet<Token>? Tokens { get; set; }
         public DbSet<UserSkill>? UserSkills { get; set; }
         public DbSet<UserJob>? UserJobs { get; set; }
+        public DbSet<State> States { get; set; }
+        public DbSet<Country> Countries { get; set; }
     }
 }

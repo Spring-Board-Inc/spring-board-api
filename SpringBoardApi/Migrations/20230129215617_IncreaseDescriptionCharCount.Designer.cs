@@ -12,8 +12,8 @@ using Repositories;
 namespace SpringBoardApi.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20221223184600_Initial")]
-    partial class Initial
+    [Migration("20230129215617_IncreaseDescriptionCharCount")]
+    partial class IncreaseDescriptionCharCount
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -63,6 +63,9 @@ namespace SpringBoardApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeprecated")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastLogin")
@@ -223,6 +226,30 @@ namespace SpringBoardApi.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("Entities.Models.Country", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeprecated")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
+                });
+
             modelBuilder.Entity("Entities.Models.Education", b =>
                 {
                     b.Property<Guid>("Id")
@@ -304,10 +331,17 @@ namespace SpringBoardApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("ClosingDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CountryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -323,10 +357,10 @@ namespace SpringBoardApi.Migrations
                     b.Property<bool>("IsDeprecated")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("NumberOfApplicants")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumbersToBeHired")
                         .HasColumnType("int");
 
                     b.Property<double?>("SalaryLowerRange")
@@ -334,6 +368,9 @@ namespace SpringBoardApi.Migrations
 
                     b.Property<double?>("SalaryUpperRange")
                         .HasColumnType("float");
+
+                    b.Property<Guid>("StateId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -349,9 +386,11 @@ namespace SpringBoardApi.Migrations
 
                     b.HasIndex("CompanyId");
 
+                    b.HasIndex("CountryId");
+
                     b.HasIndex("IndustryId");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("StateId");
 
                     b.HasIndex("TypeId");
 
@@ -382,34 +421,6 @@ namespace SpringBoardApi.Migrations
                     b.ToTable("JobTypes");
                 });
 
-            modelBuilder.Entity("Entities.Models.Location", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeprecated")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<string>("Town")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Locations");
-                });
-
             modelBuilder.Entity("Entities.Models.Skill", b =>
                 {
                     b.Property<Guid>("Id")
@@ -432,6 +443,35 @@ namespace SpringBoardApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("Entities.Models.State", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AdminArea")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeprecated")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("States");
                 });
 
             modelBuilder.Entity("Entities.Models.Token", b =>
@@ -547,7 +587,7 @@ namespace SpringBoardApi.Migrations
 
                     b.Property<string>("Descriptions")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(1500)");
 
                     b.Property<string>("Designation")
                         .IsRequired()
@@ -608,29 +648,29 @@ namespace SpringBoardApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e5c51cca-203f-4146-a003-6e75c274105e",
-                            ConcurrencyStamp = "6d4ebf80-813d-445e-8965-4c99837ffbfb",
+                            Id = "1d31bf5d-150f-4b7d-b7ad-5a3bf3f2cb06",
+                            ConcurrencyStamp = "15884afc-1b64-4a34-91d7-0824637fe806",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "d6ffb8eb-d82c-4e31-a0bd-7845079446e8",
-                            ConcurrencyStamp = "80c5d721-6743-48ad-be68-5f1d0849a96f",
+                            Id = "aadf47ca-bcd9-42ed-b1f6-ab45d8fa862e",
+                            ConcurrencyStamp = "344c1da3-7cfa-4825-82ba-b5e5e2881076",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "1e106301-27c0-4e1d-9838-a55ae2a766ac",
-                            ConcurrencyStamp = "31887b45-68b9-4fb2-83de-172986d72682",
+                            Id = "fe92eed3-a117-4e8e-a3a3-fee4b168084a",
+                            ConcurrencyStamp = "75f9cb87-8f2e-471a-b312-e06530f14ba9",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "2a1a2978-5f66-487b-a288-c1f83e9746a0",
-                            ConcurrencyStamp = "f9f6c821-8f83-4daf-9308-0b78aeb2f78c",
+                            Id = "51c70757-a138-4cb9-8503-365b3e1d3fa3",
+                            ConcurrencyStamp = "13b216d6-9075-442e-a4fd-eb80274409f2",
                             Name = "Applicant",
                             NormalizedName = "APPLICANT"
                         });
@@ -772,15 +812,21 @@ namespace SpringBoardApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Entities.Models.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Entities.Models.Industry", "Industry")
                         .WithMany("Jobs")
                         .HasForeignKey("IndustryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.Location", "Location")
-                        .WithMany("Jobs")
-                        .HasForeignKey("LocationId")
+                    b.HasOne("Entities.Models.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -792,11 +838,24 @@ namespace SpringBoardApi.Migrations
 
                     b.Navigation("Company");
 
+                    b.Navigation("Country");
+
                     b.Navigation("Industry");
 
-                    b.Navigation("Location");
+                    b.Navigation("State");
 
                     b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Entities.Models.State", b =>
+                {
+                    b.HasOne("Entities.Models.Country", "Country")
+                        .WithMany("States")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("Entities.Models.Token", b =>
@@ -904,17 +963,17 @@ namespace SpringBoardApi.Migrations
                     b.Navigation("Jobs");
                 });
 
+            modelBuilder.Entity("Entities.Models.Country", b =>
+                {
+                    b.Navigation("States");
+                });
+
             modelBuilder.Entity("Entities.Models.Industry", b =>
                 {
                     b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("Entities.Models.JobType", b =>
-                {
-                    b.Navigation("Jobs");
-                });
-
-            modelBuilder.Entity("Entities.Models.Location", b =>
                 {
                     b.Navigation("Jobs");
                 });

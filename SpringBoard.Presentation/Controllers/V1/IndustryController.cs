@@ -33,7 +33,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm]IndustryRequestObject request)
+        public async Task<IActionResult> Create(IndustryRequestObject request)
         {
             var baseResult = await _service.Industry.Create(request);
             if(!baseResult.Success)
@@ -102,7 +102,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            var result = baseResult.GetResult<string>();
+            var result = baseResult.GetResult<bool>();
             return Ok(result);
         }
 
@@ -125,13 +125,13 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(Guid id, [FromForm]IndustryRequestObject request)
+        public async Task<IActionResult> Update(Guid id, IndustryRequestObject request)
         {
             var baseResult = await _service.Industry.Update(id, request);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            var result = baseResult.GetResult<IndustryToReturnDto>();
+            var result = baseResult.GetResult<bool>();
             return Ok(result);
         }
     }

@@ -32,13 +32,13 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
-        public async Task<IActionResult> Create([FromForm]JobRequestObject request)
+        public async Task<IActionResult> Create(JobRequestObject request)
         {
             var baseResult = await _service.Job.Create(request);
             if(!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Created(nameof(Get), baseResult.GetResult<JobMinimumInfoDto>());
+            return Created(nameof(Get), baseResult.GetResult<bool>());
         }
 
         ///<summary>End-point to get job by id</summary>
@@ -56,6 +56,23 @@ namespace SpringBoard.Presentation.Controllers.V1
         public async Task<IActionResult> Get(Guid id)
         {
             return Ok((await _service.Job.Get(id)).GetResult<JobToReturnDto>());
+        }
+
+        ///<summary>End-point to get job by id without mapping</summary>
+        ///<param name="id">The id of the job to find.</param>
+        ///<returns>Job object</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet, Route("raw/{id}")]
+        public async Task<IActionResult> GetNoMap(Guid id)
+        {
+            return Ok((await _service.Job.GetNoMap(id)).GetResult<RawJobToReturnDto>());
         }
 
         ///<summary>End-point to create a job</summary>
@@ -76,13 +93,13 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut, Route("{id}")]
         [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
-        public async Task<IActionResult> Update(Guid id, [FromForm]JobRequestObject request)
+        public async Task<IActionResult> Update(Guid id, JobRequestObject request)
         {
             var baseResult = await _service.Job.Update(id, request);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<JobMinimumInfoDto>());
+            return Ok(baseResult.GetResult<bool>());
         }
 
         ///<summary>End-point to delete a job</summary>
@@ -106,7 +123,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<string>());
+            return Ok(baseResult.GetResult<bool>());
         }
 
         ///<summary>End-point to get paginated list of jobs.</summary>
@@ -159,10 +176,33 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("{jobId}/applicants")]
-        [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
+       // [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
         public async Task<IActionResult> GetApplicants(Guid jobId, [FromQuery]SearchParameters searchParameters)
         {
             return Ok((await _service.Job.GetApplicants(jobId, searchParameters)).GetResult<PaginatedListDto<ApplicantInformation>>());
+        }
+
+        ///<summary>End-point to get the details of an applicant</summary>
+        ///<param name="jobId">The id of the job for which the applicants applied for.</param>
+        ///<param name="applicantId">The id of the applicant</param>
+        ///<returns>List of user info objects</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet, Route("{jobId}/applicants/{applicantId}")]
+        // [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
+        public async Task<IActionResult> GetApplicant(Guid jobId, Guid applicantId)
+        {
+            var baseResult = await _service.Job.GetApplicant(jobId, applicantId);
+            if(!baseResult.Success)
+                return ProcessError(baseResult);
+
+            return Ok(baseResult.GetResult<ApplicantInformation>());
         }
 
         ///<summary>End-point to get paginated list of jobs posted by a company</summary>
@@ -221,7 +261,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost, Route("apply/{jobId}")]
         [Authorize(Roles = "Applicant")]
-        public async Task<IActionResult> Apply(Guid jobId, IFormFile cv)
+        public async Task<IActionResult> Apply([FromRoute]Guid jobId, [FromForm]CvToSendDto cv)
         {
             var applicantId = _service.User.GetUserId();
             var baseResult = await _service.Job.Apply(jobId, applicantId, cv);
@@ -229,7 +269,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if(!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<string>());
+            return Ok(baseResult.GetResult<bool>());
         }
 
         ///<summary>End point to get job statistics</summary>

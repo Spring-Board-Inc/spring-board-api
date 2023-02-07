@@ -31,7 +31,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateJobType([FromForm]JobTypeRequestObject request)
+        public async Task<IActionResult> CreateJobType(JobTypeRequestObject request)
         {
             var baseResult = await _service.JobType.Create(request);
             if (!baseResult.Success)
@@ -95,6 +95,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpDelete, Route("{id}")]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -106,7 +107,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            var result = baseResult.GetResult<string>();
+            var result = baseResult.GetResult<bool>();
             return Ok(result);
         }
 
@@ -123,19 +124,20 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpPut, Route("{id}")]
+        [Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateJobType(Guid id, [FromForm] JobTypeRequestObject request)
+        public async Task<IActionResult> UpdateJobType(Guid id, JobTypeRequestObject request)
         {
             var baseResult = await _service.JobType.Update(id, request);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            var result = baseResult.GetResult<JobTypeToReturnDto>();
+            var result = baseResult.GetResult<bool>();
             return Ok(result);
         }
     }

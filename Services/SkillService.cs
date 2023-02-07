@@ -54,7 +54,7 @@ namespace Services
             _repository.Skills.UpdateSkill(skillToUpdate);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.SkillUpdated);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id)
@@ -66,7 +66,7 @@ namespace Services
             _repository.Skills.DeleteSkill(skillToDelete);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.SkillDeleted);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Get()

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories;
 
@@ -11,9 +12,10 @@ using Repositories;
 namespace SpringBoardApi.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230121091741_ChangeCountryStateRelationshipToOneToMany")]
+    partial class ChangeCountryStateRelationshipToOneToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,9 +63,6 @@ namespace SpringBoardApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeprecated")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastLogin")
@@ -358,9 +357,6 @@ namespace SpringBoardApi.Migrations
                     b.Property<int>("NumberOfApplicants")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumbersToBeHired")
-                        .HasColumnType("int");
-
                     b.Property<double?>("SalaryLowerRange")
                         .HasColumnType("float");
 
@@ -585,7 +581,7 @@ namespace SpringBoardApi.Migrations
 
                     b.Property<string>("Descriptions")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1500)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Designation")
                         .IsRequired()
@@ -646,29 +642,29 @@ namespace SpringBoardApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1d31bf5d-150f-4b7d-b7ad-5a3bf3f2cb06",
-                            ConcurrencyStamp = "15884afc-1b64-4a34-91d7-0824637fe806",
+                            Id = "556d4a19-1de5-45b2-923a-0944085e78ab",
+                            ConcurrencyStamp = "acf2fdf7-c544-4212-8700-68fdd8c60b91",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "aadf47ca-bcd9-42ed-b1f6-ab45d8fa862e",
-                            ConcurrencyStamp = "344c1da3-7cfa-4825-82ba-b5e5e2881076",
+                            Id = "e96cbf8d-0c27-4f55-9859-0a919d0e6674",
+                            ConcurrencyStamp = "fcb957bd-0f92-487c-a01f-b1864c799b4e",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "fe92eed3-a117-4e8e-a3a3-fee4b168084a",
-                            ConcurrencyStamp = "75f9cb87-8f2e-471a-b312-e06530f14ba9",
+                            Id = "3c6c6c3b-82a2-4517-b7a5-287cca475e30",
+                            ConcurrencyStamp = "f22e1794-2b5b-4042-acd4-fd86c92d76b6",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "51c70757-a138-4cb9-8503-365b3e1d3fa3",
-                            ConcurrencyStamp = "13b216d6-9075-442e-a4fd-eb80274409f2",
+                            Id = "ad4e50f3-266d-409e-8041-07c64141b8b0",
+                            ConcurrencyStamp = "8c8fb9c4-60f7-450e-9145-641205203872",
                             Name = "Applicant",
                             NormalizedName = "APPLICANT"
                         });

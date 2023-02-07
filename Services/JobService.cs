@@ -51,8 +51,7 @@ namespace Services
             await _repository.Job.CreateJobAsync(job);
             await _repository.SaveAsync();
 
-            var jobToReturn = _mapper.Map<JobMinimumInfoDto>(job);
-            return new ApiOkResponse<JobMinimumInfoDto>(jobToReturn);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Update(Guid id, JobRequestObject request)
@@ -76,8 +75,7 @@ namespace Services
             _repository.Job.UpdateJob(jobForUpdate);
             await _repository.SaveAsync();
 
-            var jobToReturn = _mapper.Map<JobMinimumInfoDto>(jobForUpdate);
-            return new ApiOkResponse<JobMinimumInfoDto>(jobToReturn);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id)
@@ -89,7 +87,7 @@ namespace Services
             _repository.Job.DeleteJob(job);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.JobDeleted);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Get(Guid id)
@@ -101,13 +99,23 @@ namespace Services
             return new ApiOkResponse<JobToReturnDto>(_mapper.Map<JobToReturnDto>(job));
         }
 
+        public async Task<ApiBaseResponse> GetNoMap(Guid id)
+        {
+            var job = await _repository.Job.FindJobAsync(id, false);
+            if (job == null)
+                return new NotFoundResponse(ResponseMessages.JobNotFound);
+
+            return new ApiOkResponse<RawJobToReturnDto>(_mapper.Map<RawJobToReturnDto>(job));
+        }
+
         public async Task<ApiBaseResponse> Get(SearchParameters searchParameters)
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);
             var jobs = await _repository.Job.FindJobs(true)
                                     .Where(u => u.CreatedAt >= searchParameters.StartDate && u.CreatedAt <= endDate)
                                     .Include(j => j.Industry)
-                                    .Include(j => j.Location)
+                                    .Include(j => j.State)
+                                    .Include(j => j.Country)
                                     .Include(j => j.Company)
                                     .Include(j => j.Type)
                                     .Search(searchParameters.SearchBy)
@@ -132,7 +140,8 @@ namespace Services
             var jobs = await jobQuery.Search(searchParams.SearchBy)
                                     .Include(j => j.Industry)
                                     .Include(j => j.Company)
-                                    .Include(j => j.Location)
+                                    .Include(j => j.State)
+                                    .Include(j => j.Country)
                                     .Include(j => j.Type)
                                     .OrderByDescending(j => j.CreatedAt)
                                     .ToListAsync();
@@ -149,7 +158,8 @@ namespace Services
                                         .Search(searchParams.SearchBy)
                                         .Include(j => j.Industry)
                                         .Include(j => j.Company)
-                                        .Include(j => j.Location)
+                                        .Include(j => j.State)
+                                        .Include(j => j.Country)
                                         .Include(j => j.Type)
                                         .ToListAsync();
 
@@ -165,7 +175,8 @@ namespace Services
                                   .Search(searchParams.SearchBy)
                                   .Include(j => j.Industry)
                                   .Include(j => j.Company)
-                                  .Include(j => j.Location)
+                                  .Include(j => j.State)
+                                  .Include(j => j.Country)
                                   .Include(j => j.Type);
 
             var userJobs = _repository.UserJob.FindUserJobs(userId, false);
@@ -183,10 +194,14 @@ namespace Services
         public async Task<ApiBaseResponse> GetApplicants(Guid jobId, SearchParameters searchParams)
         {
             var userJobs = _repository.UserJob.FindUserJobs(jobId, false);
-            var users = _repository.UserInformation.FindUserInformation(false);
+            var users = userManager.Users
+                .Include(x => x.UserInformation.Educations)
+                .Include(x => x.UserInformation.WorkExperiences)
+                .Include(x => x.UserInformation.UserSkills)
+                .Include(x => x.UserInformation.Certifications);
 
             var usersInfo = await (from user in users
-                        join userJob in userJobs on user.User.Id equals userJob.UserId
+                        join userJob in userJobs on user.Id equals userJob.UserId
                         orderby userJob.CreatedAt ascending
                         select user).ToListAsync();
 
@@ -195,8 +210,31 @@ namespace Services
             return new ApiOkResponse<PaginatedListDto<ApplicantInformation>>(pagedData);
         }
 
-        public async Task<ApiBaseResponse> Apply(Guid jobId, string applicantId, IFormFile cv)
+        public async Task<ApiBaseResponse> GetApplicant(Guid jobId, Guid applicantId)
         {
+            var userJobQuery = _repository.UserJob.FindUserJob(jobId, applicantId, false);
+            var userQuery = userManager.Users
+                .Include(u => u.UserInformation.Educations)
+                .Include(u => u.UserInformation.WorkExperiences)
+                .Include(u => u.UserInformation.UserSkills)
+                .Include(u => u.UserInformation.Certifications)
+                .Where(u => u.Id.Equals(applicantId.ToString()));
+
+            var singleUser = await (from user in userQuery
+                              join userJob in userJobQuery on user.Id equals userJob.UserId
+                              select user).FirstOrDefaultAsync();
+
+            if (singleUser == null)
+                return new BadRequestResponse(ResponseMessages.UserNotFound);
+
+            return new ApiOkResponse<ApplicantInformation>(_mapper.Map<ApplicantInformation>(singleUser));
+        }
+
+        public async Task<ApiBaseResponse> Apply(Guid jobId, string applicantId, CvToSendDto dto)
+        {
+            if (!dto.IsValidParams)
+                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+
             var userInfo = await _repository.UserInformation.FindUserInformationAsync(applicantId, false);
             if (userInfo == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
@@ -214,7 +252,7 @@ namespace Services
             
             var message = ApplicationMessage(job, userInfo);
 
-            var isValidFile = Commons.ValidateDocumentFile(cv);
+            var isValidFile = Commons.ValidateDocumentFile(dto.Cv);
             if (!isValidFile.Successful)
                 return new BadRequestResponse(isValidFile.Message);
 
@@ -223,7 +261,7 @@ namespace Services
                 To = job.Company.Email,
                 Subject = $"{userInfo.User.FirstName} {userInfo.User.LastName}: Application for the position of {job.Title}",
                 Message = message,
-                File = cv
+                File = dto.Cv
             });
 
             if (!isSent)
@@ -235,16 +273,22 @@ namespace Services
             await _repository.UserJob.CreateUserJob(userJob);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.ApplicationSuccessful);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> JobStats()
         {
             var allJobs = await _repository.Job.FindJobsAsync(false);
-            var jobsCount = allJobs.Where(x => x.NumberOfApplicants > 0).Count();
-            var activeJobsCount = allJobs.Where(x => x.ClosingDate > DateTime.Now).Count();
-            var jobsFilled = jobsCount - activeJobsCount;
-            jobsFilled = (jobsFilled < 0) ? 0 : jobsFilled;
+            var activeJobs = allJobs.Where(x => x.ClosingDate >= DateTime.Now);
+            var activeJobsNumbersToBeHired = activeJobs.Sum(x => x.NumbersToBeHired);
+            int activeJobsCount = activeJobs.Count();
+
+            IEnumerable<Job> closedJobs = allJobs.Where(x => x.ClosingDate <= DateTime.Now);
+            int jobsFilled = 0;
+            foreach (Job job in closedJobs)
+            {
+                jobsFilled += job?.NumberOfApplicants < job?.NumbersToBeHired ? job.NumberOfApplicants : job.NumbersToBeHired;
+            }
 
             var companies = await _repository.Company.FindCompaniesAsync(false);
             var companiesCount = companies.Where(x => x.IsDeprecated == false).Count();

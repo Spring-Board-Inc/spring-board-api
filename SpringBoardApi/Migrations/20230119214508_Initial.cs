@@ -84,6 +84,21 @@ namespace SpringBoardApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Countries",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Countries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Industries",
                 columns: table => new
                 {
@@ -111,22 +126,6 @@ namespace SpringBoardApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_JobTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Locations",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Town = table.Column<string>(type: "nvarchar(80)", nullable: false),
-                    State = table.Column<string>(type: "nvarchar(80)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Locations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -307,49 +306,23 @@ namespace SpringBoardApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Jobs",
+                name: "States",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(80)", nullable: false),
-                    Descriptions = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SalaryLowerRange = table.Column<double>(type: "float", nullable: true),
-                    SalaryUpperRange = table.Column<double>(type: "float", nullable: true),
-                    ClosingDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IndustryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NumberOfApplicants = table.Column<int>(type: "int", nullable: false),
+                    AdminArea = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Jobs", x => x.Id);
+                    table.PrimaryKey("PK_States", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Jobs_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Jobs_Industries_IndustryId",
-                        column: x => x.IndustryId,
-                        principalTable: "Industries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Jobs_JobTypes_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "JobTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Jobs_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
+                        name: "FK_States_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -453,15 +426,71 @@ namespace SpringBoardApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Jobs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(80)", nullable: false),
+                    Descriptions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SalaryLowerRange = table.Column<double>(type: "float", nullable: true),
+                    SalaryUpperRange = table.Column<double>(type: "float", nullable: true),
+                    ClosingDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IndustryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NumberOfApplicants = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeprecated = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Jobs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Jobs_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Jobs_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Jobs_Industries_IndustryId",
+                        column: x => x.IndustryId,
+                        principalTable: "Industries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Jobs_JobTypes_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "JobTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Jobs_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1e106301-27c0-4e1d-9838-a55ae2a766ac", "31887b45-68b9-4fb2-83de-172986d72682", "Employer", "EMPLOYER" },
-                    { "2a1a2978-5f66-487b-a288-c1f83e9746a0", "f9f6c821-8f83-4daf-9308-0b78aeb2f78c", "Applicant", "APPLICANT" },
-                    { "d6ffb8eb-d82c-4e31-a0bd-7845079446e8", "80c5d721-6743-48ad-be68-5f1d0849a96f", "Administrator", "ADMINISTRATOR" },
-                    { "e5c51cca-203f-4146-a003-6e75c274105e", "6d4ebf80-813d-445e-8965-4c99837ffbfb", "SuperAdministrator", "SUPERADMINISTRATOR" }
+                    { "2bd4f058-a088-4897-a4e3-6e8aa3779507", "0333cb37-8183-469a-a4ab-5c420bf72bd9", "Administrator", "ADMINISTRATOR" },
+                    { "ab6db76e-56aa-4399-8141-709e3d86880f", "d71edaed-323b-471a-a73a-f3654f310eed", "Applicant", "APPLICANT" },
+                    { "b39cc20b-acec-4156-bc84-16794f37cb24", "25b82eea-3215-4d99-b96d-53624ec2df64", "SuperAdministrator", "SUPERADMINISTRATOR" },
+                    { "d786fbc6-ee6e-4a52-a03f-17adf334b704", "c32944c1-ae94-4e10-971e-8c7bc1fe3afa", "Employer", "EMPLOYER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -519,19 +548,30 @@ namespace SpringBoardApi.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Jobs_CountryId",
+                table: "Jobs",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Jobs_IndustryId",
                 table: "Jobs",
                 column: "IndustryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Jobs_LocationId",
+                name: "IX_Jobs_StateId",
                 table: "Jobs",
-                column: "LocationId");
+                column: "StateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Jobs_TypeId",
                 table: "Jobs",
                 column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_States_CountryId",
+                table: "States",
+                column: "CountryId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tokens_UserId",
@@ -604,10 +644,13 @@ namespace SpringBoardApi.Migrations
                 name: "JobTypes");
 
             migrationBuilder.DropTable(
-                name: "Locations");
+                name: "States");
 
             migrationBuilder.DropTable(
                 name: "UserInformation");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

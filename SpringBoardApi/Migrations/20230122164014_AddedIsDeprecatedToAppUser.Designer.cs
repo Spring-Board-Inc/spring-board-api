@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories;
 
@@ -11,9 +12,10 @@ using Repositories;
 namespace SpringBoardApi.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230122164014_AddedIsDeprecatedToAppUser")]
+    partial class AddedIsDeprecatedToAppUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -358,9 +360,6 @@ namespace SpringBoardApi.Migrations
                     b.Property<int>("NumberOfApplicants")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumbersToBeHired")
-                        .HasColumnType("int");
-
                     b.Property<double?>("SalaryLowerRange")
                         .HasColumnType("float");
 
@@ -585,7 +584,7 @@ namespace SpringBoardApi.Migrations
 
                     b.Property<string>("Descriptions")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1500)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Designation")
                         .IsRequired()
@@ -646,29 +645,29 @@ namespace SpringBoardApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1d31bf5d-150f-4b7d-b7ad-5a3bf3f2cb06",
-                            ConcurrencyStamp = "15884afc-1b64-4a34-91d7-0824637fe806",
+                            Id = "27aec839-5fa7-4dab-8295-c5fb64dd0c64",
+                            ConcurrencyStamp = "0a756968-67bd-4e6e-9863-bd823cf36619",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "aadf47ca-bcd9-42ed-b1f6-ab45d8fa862e",
-                            ConcurrencyStamp = "344c1da3-7cfa-4825-82ba-b5e5e2881076",
+                            Id = "44e6e525-9fc7-46e7-99e3-9ce309c664ff",
+                            ConcurrencyStamp = "677e6ef6-a7eb-4143-91b2-37a858ae1f16",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "fe92eed3-a117-4e8e-a3a3-fee4b168084a",
-                            ConcurrencyStamp = "75f9cb87-8f2e-471a-b312-e06530f14ba9",
+                            Id = "8f769fa5-0753-4772-82c3-39dd1dc5759b",
+                            ConcurrencyStamp = "553cdc39-d6c6-4b7a-90c2-0cee1a1834f8",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "51c70757-a138-4cb9-8503-365b3e1d3fa3",
-                            ConcurrencyStamp = "13b216d6-9075-442e-a4fd-eb80274409f2",
+                            Id = "8f2f0ddf-3d09-4ec2-93ab-e2f7af6db872",
+                            ConcurrencyStamp = "53969479-15ea-4be7-9e63-bdb02ff195d7",
                             Name = "Applicant",
                             NormalizedName = "APPLICANT"
                         });

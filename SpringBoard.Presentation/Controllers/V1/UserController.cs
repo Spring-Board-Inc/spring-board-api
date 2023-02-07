@@ -10,7 +10,6 @@ using SpringBoard.Presentation.Controllers.V1.Extensions;
 [ApiVersion("1.0")]
 [Route("api/users")]
 [ApiController]
-//[Authorize]
 public class UserController : ApiControllerBase
 {
     private readonly IServiceManager _service;
@@ -79,7 +78,7 @@ public class UserController : ApiControllerBase
     ///<response code="500">Server error</response>
     [HttpPut]
     [Route("activate/{userId}")]
-    [Authorize(Roles = "SuperAdministrator, Administrator")]
+    [Authorize(Roles = "SuperAdministrator, Administrator, Applicant, Employer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -92,7 +91,7 @@ public class UserController : ApiControllerBase
         if(!baseResult.Success)
             return ProcessError(baseResult);
 
-        var activationResult = baseResult.GetResult<string>();
+        var activationResult = baseResult.GetResult<bool>();
         return Ok(activationResult);
     }
 
@@ -121,8 +120,69 @@ public class UserController : ApiControllerBase
         if (!baseResult.Success)
             return ProcessError(baseResult);
 
-        var deactivationResult = baseResult.GetResult<string>();
+        var deactivationResult = baseResult.GetResult<bool>();
         return Ok(deactivationResult);
+    }
+
+    ///<summary>
+    ///End-point to suspend the user profile
+    ///This action can only be performed by the Admins
+    ///and SuperAdmins
+    ///</summary>
+    ///<param name="userId"></param>
+    ///<returns>Ok</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
+    [HttpPut, Route("suspend/{userId}")]
+    [Authorize(Roles = "SuperAdministrator, Administrator")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Suspend(string userId)
+    {
+        var baseResult = await _service.User.Suspend(userId);
+        if (!baseResult.Success)
+            return ProcessError(baseResult);
+
+        var deactivationResult = baseResult.GetResult<bool>();
+        return Ok(deactivationResult);
+    }
+
+    ///<summary>
+    ///End-point to re-activate the user profile
+    ///</summary>
+    ///<param name="userId"></param>
+    ///<returns>Ok</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="400">Bad request</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
+    [HttpPut]
+    [Route("reactivate/{userId}")]
+    [Authorize(Roles = "SuperAdministrator, Administrator")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Reactivate(string userId)
+    {
+        var baseResult = await _service.User.Reactivate(userId);
+        if (!baseResult.Success)
+            return ProcessError(baseResult);
+
+        var reactivationResult = baseResult.GetResult<bool>();
+        return Ok(reactivationResult);
     }
 
     ///<summary>
@@ -145,7 +205,7 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UploadUserPhoto(IFormFile photoToUpload, string userId)
+    public async Task<IActionResult> UploadUserPhoto([FromForm]PhotoToUploadDto photoToUpload,[FromRoute] string userId)
     {
         var baseResult = await _service.User.UploadUserPhoto(photoToUpload, userId);
         if (!baseResult.Success)
@@ -175,7 +235,7 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateUserPhoto(IFormFile photoToUpdate, string userId)
+    public async Task<IActionResult> UpdateUserPhoto([FromForm]PhotoToUploadDto photoToUpdate, [FromRoute]string userId)
     {
         var baseResult = await _service.User.UpdateUserPhoto(photoToUpdate, userId);
         if (!baseResult.Success)
@@ -204,7 +264,7 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteUserPhoto(string userId)
+    public async Task<IActionResult> DeleteUserPhoto([FromRoute]string userId)
     {
         var baseResult = await _service.User.RemoveProfilePhoto(userId);
         if (!baseResult.Success)

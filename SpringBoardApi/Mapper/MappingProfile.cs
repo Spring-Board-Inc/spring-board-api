@@ -8,9 +8,13 @@ namespace SpringBoardApi.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<Location, LocationDto>();
-            CreateMap<LocationForCreationDto, Location>();
-            CreateMap<LocationForUpdateDto, Location>();
+            CreateMap<State, StateDto>()
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name));
+            CreateMap<StateForCreationDto, State>();
+            CreateMap<StateForUpdateDto, State>();
+            CreateMap<Country, CountryDto>();
+            CreateMap<CountryForCreationDto, Country>();
+            CreateMap<CountryForUpdateDto, Country>();
             CreateMap<UserForRegistrationDto, AppUser>();
             CreateMap<AppUser, DetailedUserToReturnDto>();
             CreateMap<UserInformationDto, UserInformation>();
@@ -41,25 +45,30 @@ namespace SpringBoardApi.Mapper
             CreateMap<Company, CompanyToReturnDto>();
             CreateMap<JobRequestObject, Job>();
             CreateMap<Job, JobMinimumInfoDto>();
+            CreateMap<Job, RawJobToReturnDto>();
             CreateMap<Job, JobToReturnDto>()
                 .ForMember(dest => dest.JobType, opt => opt.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.Industry, opt => opt.MapFrom(src => src.Industry.Name))
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Company.Name))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Company.Email))
                 .ForMember(dest => dest.LogoUrl, opt => opt.MapFrom(src => src.Company.LogoUrl))
-                .ForMember(dest => dest.Town, opt => opt.MapFrom(src => src.Location.Town))
-                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.Location.State));
-            CreateMap<UserInformation, ApplicantInformation>()
-                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FirstName))
-                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
-                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.User.PhotoUrl))
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.User.Gender))
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
-                .ForMember(dest => dest.Educations, opt => opt.MapFrom(src => src.Educations))
-                .ForMember(dest => dest.WorkExperiences, opt => opt.MapFrom(src => src.WorkExperiences))
-                .ForMember(dest => dest.Certifications, opt => opt.MapFrom(src => src.Certifications))
-                .ForMember(dest => dest.UserSkills, opt => opt.MapFrom(src => src.UserSkills));
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State.AdminArea))
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name));
+            CreateMap<AppUser, ApplicantInformation>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.PhotoUrl))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Street))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
+                .ForMember(dest => dest.State, opt => opt.MapFrom((src) => src.State))
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+                .ForMember(dest => dest.Educations, opt => opt.MapFrom(src => src.UserInformation.Educations))
+                .ForMember(dest => dest.WorkExperiences, opt => opt.MapFrom(src => src.UserInformation.WorkExperiences))
+                .ForMember(dest => dest.Certifications, opt => opt.MapFrom(src => src.UserInformation.Certifications))
+                .ForMember(dest => dest.UserSkills, opt => opt.MapFrom(src => src.UserInformation.UserSkills));
             CreateMap<UserInformation, UserInformationToReturn>()
                 .ForMember(dest => dest.Educations, opt => opt.MapFrom(src => src.Educations))
                 .ForMember(dest => dest.WorkExperiences, opt => opt.MapFrom(src => src.WorkExperiences))

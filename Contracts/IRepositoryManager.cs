@@ -2,7 +2,6 @@
 {
     public interface IRepositoryManager
     {
-        ILocationRepository Location { get; }
         ITokenRepository Token { get; }
         IUserInformationRepository UserInformation { get; }
         IEducationRepository Education { get; }
@@ -15,6 +14,8 @@
         IJobTypeRepository JobType { get; }
         IUserSkillRepository UserSkill { get; }
         IUserJobRepository UserJob { get; }
+        IStateRepository State { get; }
+        ICountryRepository Country { get; }
         Task SaveAsync();
     }
 }

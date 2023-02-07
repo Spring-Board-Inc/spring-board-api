@@ -87,7 +87,22 @@ namespace Services
             if (!result.Succeeded)
                 return new BadRequestResponse(ResponseMessages.UserUpdateFailed);
 
-            return new ApiOkResponse<string>(ResponseMessages.UserActivationSuccessful);
+            return new ApiOkResponse<bool>(true);
+        }
+
+        public async Task<ApiBaseResponse> Reactivate(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new NotFoundResponse(ResponseMessages.UserNotFound);
+
+            user.IsActive = true;
+            user.IsDeprecated = false;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return new BadRequestResponse(ResponseMessages.UserUpdateFailed);
+
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Deactivate(string UserId)
@@ -101,15 +116,30 @@ namespace Services
             if (!result.Succeeded)
                 return new BadRequestResponse(ResponseMessages.UserUpdateFailed);
 
-            return new ApiOkResponse<string>(ResponseMessages.UserDeactivationSuccessful);
+            return new ApiOkResponse<bool>(true);
         }
 
-        public async Task<ApiBaseResponse> UploadUserPhoto(IFormFile photo, string userId)
+        public async Task<ApiBaseResponse> Suspend(string UserId)
         {
-            if (photo.Length <= 0)
+            var user = await _userManager.FindByIdAsync(UserId);
+            if (user == null)
+                return new NotFoundResponse(ResponseMessages.UserNotFound);
+
+            user.IsActive = false;
+            user.IsDeprecated = true;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return new BadRequestResponse(ResponseMessages.UserUpdateFailed);
+
+            return new ApiOkResponse<bool>(true);
+        }
+
+        public async Task<ApiBaseResponse> UploadUserPhoto(PhotoToUploadDto photo, string userId)
+        {
+            if (!photo.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.NoFileChosen);
 
-            var validationResult = Commons.ValidateImageFile(photo);
+            var validationResult = Commons.ValidateImageFile(photo.Photo);
             if (!validationResult.Successful)
                 return new BadRequestResponse(validationResult.Message);
 
@@ -117,7 +147,7 @@ namespace Services
             if (user == null)
                 return new NotFoundResponse(ResponseMessages.UserNotFound);
 
-            var uploadResult = await _cloudinaryService.UploadPhoto(photo);
+            var uploadResult = await _cloudinaryService.UploadPhoto(photo.Photo);
             if(uploadResult == null)
                 return new BadRequestResponse(ResponseMessages.PhotoUploadFailed);
 
@@ -129,12 +159,12 @@ namespace Services
             return new ApiOkResponse<string>(ResponseMessages.PhotoUploadSuccessful);
         }
 
-        public async Task<ApiBaseResponse> UpdateUserPhoto(IFormFile photo, string userId)
+        public async Task<ApiBaseResponse> UpdateUserPhoto(PhotoToUploadDto photo, string userId)
         {
-            if (photo.Length <= 0)
+            if (!photo.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.NoFileChosen);
 
-            var validationResult = Commons.ValidateImageFile(photo);
+            var validationResult = Commons.ValidateImageFile(photo.Photo);
             if (!validationResult.Successful)
                 return new BadRequestResponse(validationResult.Message);
 
@@ -142,7 +172,7 @@ namespace Services
             if (user == null)
                 return new NotFoundResponse(ResponseMessages.UserNotFound);
 
-            var uploadResult = await _cloudinaryService.UploadPhoto(photo);
+            var uploadResult = await _cloudinaryService.UploadPhoto(photo.Photo);
             if (uploadResult == null)
                 return new BadRequestResponse(ResponseMessages.PhotoUploadFailed);
 

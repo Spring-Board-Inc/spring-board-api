@@ -13,6 +13,7 @@ namespace Entities.Models
         public string LastName { get; set; }
         public string Gender { get; set; }
         public bool IsActive { get; set; } = false;
+        public bool IsDeprecated { get; set; } = false;
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
         public DateTime? LastLogin { get; set; }

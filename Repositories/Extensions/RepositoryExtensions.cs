@@ -4,13 +4,22 @@ namespace Repositories.Extensions
 {
     public static class RepositoryExtensions
     {
-        public static IQueryable<Location> Search(this IQueryable<Location> locations, string searchTerm)
+        public static IQueryable<State> Search(this IQueryable<State> states, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
-                return locations;
+                return states;
 
             var lowerCaseTerm = searchTerm.Trim().ToLower();
-            return locations.Where(l => l.State.ToLower().Contains(lowerCaseTerm) || l.Town.ToLower().Contains(lowerCaseTerm));
+            return states.Where(s => s.AdminArea.ToLower().Contains(lowerCaseTerm));
+        }
+
+        public static IQueryable<Country> Search(this IQueryable<Country> countries, string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return countries;
+
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+            return countries.Where(c => c.Name.ToLower().Contains(lowerCaseTerm));
         }
 
         public static IQueryable<Company> Search(this IQueryable<Company> companies, string searchTerm)

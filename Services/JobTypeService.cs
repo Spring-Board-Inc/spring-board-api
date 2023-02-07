@@ -42,7 +42,7 @@ namespace Services
             _repository.JobType.DeleteJobType(jobType);
             await _repository.SaveAsync();
 
-            return new ApiOkResponse<string>(ResponseMessages.JobTypeDeleted);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Update(Guid id, JobTypeRequestObject request)
@@ -60,8 +60,7 @@ namespace Services
             _repository.JobType.UpdateJobType(jobType);
             await _repository.SaveAsync();
 
-            var jobTypeToReturn = _mapper.Map<JobTypeToReturnDto>(jobType);
-            return new ApiOkResponse<JobTypeToReturnDto>(jobTypeToReturn);
+            return new ApiOkResponse<bool>(true);
         }
 
         public async Task<IEnumerable<JobTypeToReturnDto>> Get()

@@ -140,8 +140,10 @@ namespace Services
                     return new NotFoundResponse(ResponseMessages.UserNotFound);
                 else if (!_user.EmailConfirmed)
                     return new BadRequestResponse(ResponseMessages.LoginEmailNotConfirmed);
-                else if (!_user.IsActive)
+                else if (!_user.IsActive && !_user.IsDeprecated)
                     return new BadRequestResponse(ResponseMessages.InactiveAccount);
+                else if (_user.IsDeprecated && !_user.IsActive)
+                    return new BadRequestResponse(ResponseMessages.AccountNotExisting);
                 else
                     return new BadRequestResponse(ResponseMessages.WrongPasswordOrUserName);
             }

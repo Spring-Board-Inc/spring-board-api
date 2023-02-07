@@ -38,6 +38,9 @@ namespace Repositories
             FindByCondition(uj => uj.JobId.Equals(jobId), trackChanges)
                 .OrderByDescending(uj => uj.CreatedAt);
 
+        public IQueryable<UserJob> FindUserJob(Guid jobId, Guid userId, bool trackChanges) =>
+            FindByCondition(uj => uj.JobId.Equals(jobId) && userId.Equals(userId), trackChanges);
+
         public async Task<bool> Exists(string userId, Guid jobId) => 
             await ExistsAsync(uj => uj.UserId.Equals(userId) && uj.JobId.Equals(jobId));
     }

@@ -15,8 +15,10 @@ namespace Services.Contracts
         Task<bool> IsInRole(string userId, string role);
         Task<ApiBaseResponse> Activate(string userid);
         Task<ApiBaseResponse> Deactivate(string UserId);
-        Task<ApiBaseResponse> UploadUserPhoto(IFormFile photoToUpload, string userId);
-        Task<ApiBaseResponse> UpdateUserPhoto(IFormFile model, string userId);
+        Task<ApiBaseResponse> Reactivate(string userId); 
+        Task<ApiBaseResponse> Suspend(string UserId);
+        Task<ApiBaseResponse> UploadUserPhoto(PhotoToUploadDto photoToUpload, string userId);
+        Task<ApiBaseResponse> UpdateUserPhoto(PhotoToUploadDto model, string userId);
         Task<ApiBaseResponse> RemoveProfilePhoto(string userId);
         Task<ApiBaseResponse> Get(string id);
         Task<ApiBaseResponse> Get(SearchParameters searchParameters);

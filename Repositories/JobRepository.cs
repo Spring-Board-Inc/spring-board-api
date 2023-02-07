@@ -20,7 +20,8 @@ namespace Repositories
                     .Include(j => j.Company)
                     .Include(j => j.Industry)
                     .Include(j => j.Type)
-                    .Include(j => j.Location)
+                    .Include(j => j.State)
+                    .Include(j => j.Country)
                     .FirstOrDefaultAsync();
 
         public async Task<IEnumerable<Job>> FindJobsAsync(bool trackChanges) =>

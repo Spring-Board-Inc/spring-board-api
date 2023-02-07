@@ -90,7 +90,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
-            return Ok(baseResult.GetResult<string>());
+            return Ok(baseResult.GetResult<bool>());
         }
 
         ///<summary>End-point to find a company</summary>

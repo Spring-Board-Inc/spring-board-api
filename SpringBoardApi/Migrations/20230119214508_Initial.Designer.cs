@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories;
 
@@ -11,9 +12,10 @@ using Repositories;
 namespace SpringBoardApi.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230119214508_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,9 +63,6 @@ namespace SpringBoardApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeprecated")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastLogin")
@@ -358,9 +357,6 @@ namespace SpringBoardApi.Migrations
                     b.Property<int>("NumberOfApplicants")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumbersToBeHired")
-                        .HasColumnType("int");
-
                     b.Property<double?>("SalaryLowerRange")
                         .HasColumnType("float");
 
@@ -467,7 +463,8 @@ namespace SpringBoardApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex("CountryId")
+                        .IsUnique();
 
                     b.ToTable("States");
                 });
@@ -585,7 +582,7 @@ namespace SpringBoardApi.Migrations
 
                     b.Property<string>("Descriptions")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1500)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Designation")
                         .IsRequired()
@@ -646,29 +643,29 @@ namespace SpringBoardApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1d31bf5d-150f-4b7d-b7ad-5a3bf3f2cb06",
-                            ConcurrencyStamp = "15884afc-1b64-4a34-91d7-0824637fe806",
+                            Id = "b39cc20b-acec-4156-bc84-16794f37cb24",
+                            ConcurrencyStamp = "25b82eea-3215-4d99-b96d-53624ec2df64",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "aadf47ca-bcd9-42ed-b1f6-ab45d8fa862e",
-                            ConcurrencyStamp = "344c1da3-7cfa-4825-82ba-b5e5e2881076",
+                            Id = "2bd4f058-a088-4897-a4e3-6e8aa3779507",
+                            ConcurrencyStamp = "0333cb37-8183-469a-a4ab-5c420bf72bd9",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "fe92eed3-a117-4e8e-a3a3-fee4b168084a",
-                            ConcurrencyStamp = "75f9cb87-8f2e-471a-b312-e06530f14ba9",
+                            Id = "d786fbc6-ee6e-4a52-a03f-17adf334b704",
+                            ConcurrencyStamp = "c32944c1-ae94-4e10-971e-8c7bc1fe3afa",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "51c70757-a138-4cb9-8503-365b3e1d3fa3",
-                            ConcurrencyStamp = "13b216d6-9075-442e-a4fd-eb80274409f2",
+                            Id = "ab6db76e-56aa-4399-8141-709e3d86880f",
+                            ConcurrencyStamp = "d71edaed-323b-471a-a73a-f3654f310eed",
                             Name = "Applicant",
                             NormalizedName = "APPLICANT"
                         });
@@ -848,8 +845,8 @@ namespace SpringBoardApi.Migrations
             modelBuilder.Entity("Entities.Models.State", b =>
                 {
                     b.HasOne("Entities.Models.Country", "Country")
-                        .WithMany("States")
-                        .HasForeignKey("CountryId")
+                        .WithOne("State")
+                        .HasForeignKey("Entities.Models.State", "CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -963,7 +960,7 @@ namespace SpringBoardApi.Migrations
 
             modelBuilder.Entity("Entities.Models.Country", b =>
                 {
-                    b.Navigation("States");
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("Entities.Models.Industry", b =>
