@@ -14,7 +14,7 @@ namespace Repositories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            //modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.Entity<UserSkill>()
                 .HasKey(us => new { us.UserInformationId, us.SkillId });
             modelBuilder.Entity<UserJob>()
@@ -33,7 +33,8 @@ namespace Repositories
         public DbSet<Token>? Tokens { get; set; }
         public DbSet<UserSkill>? UserSkills { get; set; }
         public DbSet<UserJob>? UserJobs { get; set; }
-        public DbSet<State> States { get; set; }
-        public DbSet<Country> Countries { get; set; }
+        public DbSet<State>? States { get; set; }
+        public DbSet<Country>? Countries { get; set; }
+        public DbSet<CareerSummary>? CareerSummaries { get; set; }
     }
 }

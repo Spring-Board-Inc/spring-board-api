@@ -76,6 +76,54 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.Create(Shared.CareerSummaryDto)">
+            <summary>End-point to create applicants career summary</summary>
+            <param name="request"></param>
+            <returns>Created career summary object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.Get(System.String)">
+            <summary>End-point to get applicants career summary by user id</summary>
+            <param name="userId"></param>
+            <returns>Career summary object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.GetMany(System.String)">
+            <summary>End-point to get all applicants career summary by user id</summary>
+            <param name="userId"></param>
+            <returns>List of Career summary object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.Update(System.Guid,Shared.CareerSummaryUpdateDto)">
+            <summary>End-point to update applicants career summary</summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>Career summary object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.Delete(System.Guid)">
+            <summary>End-point to delete applicants career summary</summary>
+            <param name="id"></param>
+            <returns>Career summary object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.CompanyController.Create(Shared.DataTransferObjects.CompanyRequestObject)">
             <summary>End-point to create a new company</summary>
             <param name="request"></param>
@@ -192,15 +240,6 @@
         </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(System.Guid)">
             <summary>End-point to get job by id</summary>
-            <param name="id">The id of the job to find.</param>
-            <returns>Job object</returns>
-            <response code="200">Ok</response>
-            <response code="401">Unauthorized</response>
-            <response code="403">Forbidden</response>
-            <response code="500">Server error</response>
-        </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.GetNoMap(System.Guid)">
-            <summary>End-point to get job by id without mapping</summary>
             <param name="id">The id of the job to find.</param>
             <returns>Job object</returns>
             <response code="200">Ok</response>
@@ -851,6 +890,18 @@
         <member name="M:UserController.Get(System.String)">
             <summary>
             End-point to get a user
+            </summary>
+            <param name="id"></param>
+            <returns>User object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.GetDetails(System.String)">
+            <summary>
+            End-point to get a user (who has in Applicant role) detailed info
             </summary>
             <param name="id"></param>
             <returns>User object</returns>

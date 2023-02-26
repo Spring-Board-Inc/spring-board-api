@@ -15,5 +15,6 @@
         IJobTypeService JobType { get; }
         ICompanyService Company { get; }
         IIndustryService Industry { get; }
+        ICareerSummaryService CareerSummary { get; }
     }
 }

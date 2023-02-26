@@ -58,23 +58,6 @@ namespace SpringBoard.Presentation.Controllers.V1
             return Ok((await _service.Job.Get(id)).GetResult<JobToReturnDto>());
         }
 
-        ///<summary>End-point to get job by id without mapping</summary>
-        ///<param name="id">The id of the job to find.</param>
-        ///<returns>Job object</returns>
-        ///<response code="200">Ok</response>
-        ///<response code="401">Unauthorized</response>
-        ///<response code="403">Forbidden</response>
-        ///<response code="500">Server error</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet, Route("raw/{id}")]
-        public async Task<IActionResult> GetNoMap(Guid id)
-        {
-            return Ok((await _service.Job.GetNoMap(id)).GetResult<RawJobToReturnDto>());
-        }
-
         ///<summary>End-point to create a job</summary>
         ///<param  name="id">The id of the job to update</param>
         ///<param name="request"></param>

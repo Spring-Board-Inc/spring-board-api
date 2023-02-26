@@ -30,6 +30,7 @@ namespace Entities.Models
         [Required]
         public string Country { get; set; }
         public UserInformation? UserInformation { get; set; }
+        public CareerSummary? CareerSummary { get; set; }
         public string PhotoUrl { get; set; } = string.Empty;
         public string PublicId { get; set; } = string.Empty;
         public ICollection<Token>? Tokens { get; set; }

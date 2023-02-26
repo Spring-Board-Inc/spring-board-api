@@ -15,6 +15,7 @@
         public string State { get; set; }
         public string Country { get; set; }
         public string PostalCode { get; set; }
+        public string CareerSummary { get; set; }
         public ICollection<EducationMinInfo> Educations { get; set; }
         public ICollection<WorkExperienceMinInfo> WorkExperiences { get; set; }
         public ICollection<CertificationMinInfo> Certifications { get; set; }

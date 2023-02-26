@@ -1,5 +1,4 @@
-﻿using Entities.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Shared.DataTransferObjects
 {

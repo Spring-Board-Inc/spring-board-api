@@ -24,6 +24,7 @@ namespace Services
         private readonly Lazy<IJobTypeService> _jobTypeService;
         private readonly Lazy<ICompanyService> _companyService;
         private readonly Lazy<IIndustryService> _industryService;
+        private readonly Lazy<ICareerSummaryService> _careerSummaryService;
 
         public ServiceManager(
             IRepositoryManager repositoryManager, 
@@ -64,6 +65,8 @@ namespace Services
                 CompanyService(repositoryManager, mapper, cloudinaryService));
             _industryService = new Lazy<IIndustryService>(() => new
                 IndustryService(repositoryManager, mapper));
+            _careerSummaryService = new Lazy<ICareerSummaryService>(() => new
+                CareerSummaryService(repositoryManager, mapper, logger));
         }
         public ILocationService Location => _locationService.Value;
         public IAuthenticationService Authentication => _authenticationService.Value;
@@ -82,5 +85,7 @@ namespace Services
         public ICompanyService Company => _companyService.Value;
 
         public IIndustryService Industry => _industryService.Value;
+
+        public ICareerSummaryService CareerSummary => _careerSummaryService.Value;
     }
 }

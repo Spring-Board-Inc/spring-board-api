@@ -18,7 +18,6 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Get(string userId, SearchParameters searchParams);
         Task<ApiBaseResponse> GetApplicants(Guid jobId, SearchParameters searchParams);
         Task<ApiBaseResponse> JobStats();
-        Task<ApiBaseResponse> GetNoMap(Guid id);
         Task<ApiBaseResponse> GetApplicant(Guid jobId, Guid applicantId);
     }
 }

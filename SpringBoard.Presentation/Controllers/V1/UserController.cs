@@ -44,6 +44,34 @@ public class UserController : ApiControllerBase
     }
 
     ///<summary>
+    ///End-point to get a user (who has in Applicant role) detailed info
+    ///</summary>
+    ///<param name="id"></param>
+    ///<returns>User object</returns>
+    ///<response code="200">Ok</response>
+    ///<response code="404">Not found</response>
+    ///<response code="401">Unauthorized</response>
+    ///<response code="403">Forbidden</response>
+    ///<response code="500">Server error</response>
+    [HttpGet]
+    [Route("details/{id}")]
+    [Authorize(Roles = "Applicant")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetDetails(string id)
+    {
+        var baseResult = await _service.User.GetDetails(id);
+        if (!baseResult.Success)
+            return ProcessError(baseResult);
+
+        var result = baseResult.GetResult<ApplicantInformation>();
+        return Ok(result);
+    }
+
+    ///<summary>
     ///End-point to get paginated list of user profile information
     ///</summary>
     ///<returns>Paginated list of user objects</returns>

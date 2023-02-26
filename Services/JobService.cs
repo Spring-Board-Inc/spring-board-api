@@ -99,15 +99,6 @@ namespace Services
             return new ApiOkResponse<JobToReturnDto>(_mapper.Map<JobToReturnDto>(job));
         }
 
-        public async Task<ApiBaseResponse> GetNoMap(Guid id)
-        {
-            var job = await _repository.Job.FindJobAsync(id, false);
-            if (job == null)
-                return new NotFoundResponse(ResponseMessages.JobNotFound);
-
-            return new ApiOkResponse<RawJobToReturnDto>(_mapper.Map<RawJobToReturnDto>(job));
-        }
-
         public async Task<ApiBaseResponse> Get(SearchParameters searchParameters)
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);
@@ -198,7 +189,8 @@ namespace Services
                 .Include(x => x.UserInformation.Educations)
                 .Include(x => x.UserInformation.WorkExperiences)
                 .Include(x => x.UserInformation.UserSkills)
-                .Include(x => x.UserInformation.Certifications);
+                .Include(x => x.UserInformation.Certifications)
+                .Include(x => x.CareerSummary);
 
             var usersInfo = await (from user in users
                         join userJob in userJobs on user.Id equals userJob.UserId
@@ -218,6 +210,7 @@ namespace Services
                 .Include(u => u.UserInformation.WorkExperiences)
                 .Include(u => u.UserInformation.UserSkills)
                 .Include(u => u.UserInformation.Certifications)
+                .Include(u => u.CareerSummary)
                 .Where(u => u.Id.Equals(applicantId.ToString()));
 
             var singleUser = await (from user in userQuery

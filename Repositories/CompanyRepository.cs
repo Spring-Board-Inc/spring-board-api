@@ -21,7 +21,8 @@ namespace Repositories
 
         public async Task<IEnumerable<Company>> FindCompaniesAsync(bool trackChanges) =>
             await FindAll(trackChanges)
-                    .OrderByDescending(c => c.CreatedAt)
+                    .OrderByDescending(c => c.Name)
+                    .ThenBy(c => c.CreatedAt)
                     .ToListAsync();
 
         public IQueryable<Company> FindCompanies(bool trackChanges) => 

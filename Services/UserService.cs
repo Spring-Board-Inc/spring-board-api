@@ -60,6 +60,23 @@ namespace Services
             return new ApiOkResponse<DetailedUserToReturnDto>(userToReturn);
         }
 
+        public async Task<ApiBaseResponse> GetDetails(string id)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.UserInformation.Educations)
+                .Include(u => u.UserInformation.WorkExperiences)
+                .Include(u => u.UserInformation.UserSkills)
+                .Include(u => u.UserInformation.Certifications)
+                .Include(u => u.CareerSummary)
+                .Where(u => u.Id.Equals(id))
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                return new BadRequestResponse(ResponseMessages.UserNotFound);
+
+            return new ApiOkResponse<ApplicantInformation>(_mapper.Map<ApplicantInformation>(user));
+        }
+
         public async Task<ApiBaseResponse> Get(SearchParameters searchParameters)
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);

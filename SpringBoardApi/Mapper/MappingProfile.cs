@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.Models;
+using Shared;
 using Shared.DataTransferObjects;
 
 namespace SpringBoardApi.Mapper
@@ -45,7 +46,6 @@ namespace SpringBoardApi.Mapper
             CreateMap<Company, CompanyToReturnDto>();
             CreateMap<JobRequestObject, Job>();
             CreateMap<Job, JobMinimumInfoDto>();
-            CreateMap<Job, RawJobToReturnDto>();
             CreateMap<Job, JobToReturnDto>()
                 .ForMember(dest => dest.JobType, opt => opt.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.Industry, opt => opt.MapFrom(src => src.Industry.Name))
@@ -53,7 +53,12 @@ namespace SpringBoardApi.Mapper
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Company.Email))
                 .ForMember(dest => dest.LogoUrl, opt => opt.MapFrom(src => src.Company.LogoUrl))
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State.AdminArea))
-                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name));
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name))
+                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Company.Id))
+                .ForMember(dest => dest.StateId, opt => opt.MapFrom(src => src.State.Id))
+                .ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.Country.Id))
+                .ForMember(dest => dest.IndustryId, opt => opt.MapFrom(src => src.Industry.Id))
+                .ForMember(dest => dest.TypeId, opt => opt.MapFrom(src => src.Type.Id));
             CreateMap<AppUser, ApplicantInformation>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
@@ -65,6 +70,7 @@ namespace SpringBoardApi.Mapper
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
                 .ForMember(dest => dest.State, opt => opt.MapFrom((src) => src.State))
                 .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+                .ForMember(dest => dest.CareerSummary, opt => opt.MapFrom(src => src.CareerSummary.Summary))
                 .ForMember(dest => dest.Educations, opt => opt.MapFrom(src => src.UserInformation.Educations))
                 .ForMember(dest => dest.WorkExperiences, opt => opt.MapFrom(src => src.UserInformation.WorkExperiences))
                 .ForMember(dest => dest.Certifications, opt => opt.MapFrom(src => src.UserInformation.Certifications))
@@ -78,6 +84,12 @@ namespace SpringBoardApi.Mapper
             CreateMap<WorkExperience, WorkExperienceMinInfo>();
             CreateMap<Certification, CertificationMinInfo>();
             CreateMap<UserSkill, UserSkillMinInfo>();
+            CreateMap<CareerSummary, CareerSummaryReturnDto>()
+                .ForMember(dest => dest.CareerSummary, opt => opt.MapFrom(src => src.Summary));
+            CreateMap<CareerSummaryDto, CareerSummary>()
+                .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.CareerSummary));
+            CreateMap<CareerSummaryUpdateDto, CareerSummary>()
+                .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.CareerSummary));
         }
     }
 }

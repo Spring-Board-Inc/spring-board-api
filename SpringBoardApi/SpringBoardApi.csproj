@@ -32,4 +32,8 @@
     <ProjectReference Include="..\SpringBoard.Presentation\SpringBoard.Presentation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="internal_logs\" />
+  </ItemGroup>
+
 </Project>

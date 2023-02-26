@@ -75,6 +75,8 @@ namespace Shared.Helpers
         public static readonly string CountryNotFound = "Country not found";
         public static readonly string StateNotFound = "State not found.";
         public static readonly string AccountNotExisting = "Your account has been suspended. Please contact support.";
+        public static readonly string CareerSummaryExists;
+        public static readonly string CareerSummaryNotFound;
         internal static readonly string InvalidDocumentFormat = "Invalid document type. Must be one of PDF, DOC or DOCX";
     }
 }

@@ -16,6 +16,7 @@
         IUserJobRepository UserJob { get; }
         IStateRepository State { get; }
         ICountryRepository Country { get; }
+        ICareerSummaryRepository CareerSummary { get; }
         Task SaveAsync();
     }
 }
