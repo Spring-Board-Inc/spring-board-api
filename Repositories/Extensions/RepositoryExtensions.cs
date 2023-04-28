@@ -13,6 +13,15 @@ namespace Repositories.Extensions
             return states.Where(s => s.AdminArea.ToLower().Contains(lowerCaseTerm));
         }
 
+        public static IQueryable<Skill> Search(this IQueryable<Skill> states, string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return states;
+
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+            return states.Where(s => s.Description.ToLower().Contains(lowerCaseTerm));
+        }
+
         public static IQueryable<Country> Search(this IQueryable<Country> countries, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))

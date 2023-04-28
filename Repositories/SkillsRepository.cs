@@ -1,6 +1,8 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Extensions;
+using Shared.RequestFeatures;
 
 namespace Repositories
 {
@@ -20,10 +22,17 @@ namespace Repositories
 
         public async Task<IEnumerable<Skill>> FindSkillsAsync(bool trackChanges) =>
             await FindAll(trackChanges)
+                    .OrderBy(s => s.Description)
                     .ToListAsync();
 
-        public IQueryable<Skill> FindSkills(bool trackChanges) =>
-            FindAll(trackChanges)
-                .OrderByDescending(sk => sk.Description);
+        public async Task<PagedList<Skill>> FindSkills(SearchParameters parameters, bool trackChanges)
+        {
+            var skills = await FindByCondition(s => s.IsDeprecated == false, trackChanges)
+                                .OrderBy(sk => sk.Description)
+                                .Search(parameters.SearchBy)
+                                .ToListAsync();
+
+            return PagedList<Skill>.ToPagedList(skills, parameters.PageNumber, parameters.PageSize);
+        }
     }
 }

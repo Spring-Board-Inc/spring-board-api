@@ -25,6 +25,8 @@ namespace Services
         private readonly Lazy<ICompanyService> _companyService;
         private readonly Lazy<IIndustryService> _industryService;
         private readonly Lazy<ICareerSummaryService> _careerSummaryService;
+        private readonly Lazy<IContactService> _contactService;
+        private readonly Lazy<IAboutUsService> _aboutUsService;
 
         public ServiceManager(
             IRepositoryManager repositoryManager, 
@@ -67,6 +69,11 @@ namespace Services
                 IndustryService(repositoryManager, mapper));
             _careerSummaryService = new Lazy<ICareerSummaryService>(() => new
                 CareerSummaryService(repositoryManager, mapper, logger));
+            _aboutUsService = new Lazy<IAboutUsService>(() => new
+                AboutUsService(repositoryManager, mapper, logger));
+            _contactService = new Lazy<IContactService>(() => new
+                ContactService(repositoryManager, mapper, logger));
+
         }
         public ILocationService Location => _locationService.Value;
         public IAuthenticationService Authentication => _authenticationService.Value;
@@ -87,5 +94,9 @@ namespace Services
         public IIndustryService Industry => _industryService.Value;
 
         public ICareerSummaryService CareerSummary => _careerSummaryService.Value;
+
+        public IAboutUsService AboutUs => _aboutUsService.Value;
+
+        public IContactService Contact => _contactService.Value;
     }
 }

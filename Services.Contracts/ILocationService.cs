@@ -17,5 +17,7 @@ namespace Services.Contracts
         Task<ApiBaseResponse> CreateCountry(CountryForCreationDto state);
         Task<ApiBaseResponse> DeleteCountry(Guid id, bool trackChanges);
         Task<ApiBaseResponse> UpdateCountry(Guid id, CountryForUpdateDto stateForUpdate, bool trackChanges);
+        Task<IEnumerable<StateDto>> GetAll(Guid countryId);
+        Task<IEnumerable<CountryDto>> GetAll();
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
+using Shared.RequestFeatures;
 
 namespace Services
 {
@@ -69,10 +70,17 @@ namespace Services
             return new ApiOkResponse<bool>(true);
         }
 
-        public async Task<ApiBaseResponse> Get()
+        public async Task<ApiBaseResponse> Get(SearchParameters parameters)
         {
-            return new ApiOkResponse<IEnumerable<Skill>>(await _repository.Skills.FindSkills(false).ToListAsync());
+            var skills = await _repository.Skills.FindSkills(parameters, false);
+            var data = _mapper.Map<IEnumerable<SkillDto>>(skills);
+
+            var paged = PaginatedListDto<SkillDto>.Paginate(data, skills.MetaData);
+            return new ApiOkResponse<PaginatedListDto<SkillDto>>(paged);
         }
+
+        public async Task<IEnumerable<SkillDto>> GetAll() =>
+            _mapper.Map<IEnumerable<SkillDto>>(await _repository.Skills.FindSkillsAsync(false));
 
         public async Task<ApiBaseResponse> Get(Guid id)
         {

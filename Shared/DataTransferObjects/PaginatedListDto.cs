@@ -10,5 +10,14 @@ namespace Shared.DataTransferObjects
         {
             Data = new List<T>();
         }
+
+        public static PaginatedListDto<T> Paginate(IEnumerable<T> data, MetaData metaData)
+        {
+            return new PaginatedListDto<T>
+            {
+                Data = data,
+                MetaData = metaData
+            };
+        }
     }
 }

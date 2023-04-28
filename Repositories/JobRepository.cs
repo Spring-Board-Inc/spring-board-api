@@ -1,6 +1,8 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Extensions;
+using Shared.RequestFeatures;
 
 namespace Repositories
 {
@@ -34,5 +36,38 @@ namespace Repositories
             FindAll(trackChanges)
                .OrderByDescending(j => j.CreatedAt)
                .ThenBy(j => j.Title);
+
+        public async Task<PagedList<Job>> FindJobs(SearchParameters parameters)
+        {
+            var endDate = parameters.EndDate == DateTime.MaxValue ? parameters.EndDate : parameters.EndDate.AddDays(1);
+            var jobs = await FindByCondition(j => j.IsDeprecated == false &&  
+                                    j.ClosingDate >= DateTime.Now && 
+                                    (j.CreatedAt >= parameters.StartDate && j.CreatedAt <= endDate), false)
+                                .Search(parameters.SearchBy)
+                                .Include(j => j.Industry)
+                                .Include(j => j.Company)
+                                .Include(j => j.State)
+                                .Include(j => j.Country)
+                                .Include(j => j.Type)
+                                .OrderByDescending(j => j.CreatedAt)
+                                .ToListAsync();
+
+            return PagedList<Job>.ToPagedList(jobs, parameters.PageNumber, parameters.PageSize);
+        }
+
+        public async Task<PagedList<Job>> FindJobs(SearchParameters parameters, bool trackChanges)
+        {
+            var jobs = await FindByCondition(j => j.IsDeprecated == false, trackChanges)
+                                .Search(parameters.SearchBy)
+                                .Include(j => j.Industry)
+                                .Include(j => j.Company)
+                                .Include(j => j.State)
+                                .Include(j => j.Country)
+                                .Include(j => j.Type)
+                                .OrderByDescending(j => j.CreatedAt)
+                                .ToListAsync();
+
+            return PagedList<Job>.ToPagedList(jobs, parameters.PageNumber, parameters.PageSize);
+        }
     }
 }

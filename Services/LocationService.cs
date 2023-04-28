@@ -82,9 +82,12 @@ namespace Services
         {
             var countries = await _repository.Country.GetCountriesAsync(searchParameters, false);
             var countriesToReturn = _mapper.Map<IEnumerable<CountryDto>>(countries);
-            var pagedData = PagedList<CountryDto>.Paginate(countriesToReturn, searchParameters.PageNumber, searchParameters.PageSize);
+            var pagedData = PaginatedListDto<CountryDto>.Paginate(countriesToReturn, countries.MetaData);
             return new ApiOkResponse<PaginatedListDto<CountryDto>>(pagedData);
         }
+
+        public async Task<IEnumerable<CountryDto>> GetAll() =>
+            _mapper.Map<IEnumerable<CountryDto>>(await _repository.Country.GetCountries(false).ToListAsync());
 
         public async Task<ApiBaseResponse> GetCountry(Guid id, bool trackChanges)
         {
@@ -99,15 +102,25 @@ namespace Services
 
         public async Task<ApiBaseResponse> GetStates(StateSearchParameters searchParameters, bool trackChanges)
         {
-            IEnumerable<State> states;
+            PagedList<State> states;
             if (searchParameters.CountryId.Equals(Guid.Empty))
-                states = await _repository.State.GetStates(searchParameters, trackChanges).ToListAsync();
+                states = await _repository.State.GetStates(searchParameters, trackChanges);
+
             else
-                states = await _repository.State.GetStatesByCountry(searchParameters, trackChanges).ToListAsync();
+                states = await _repository.State.GetStatesByCountry(searchParameters, trackChanges);
 
             var statesToReturn = _mapper.Map<IEnumerable<StateDto>>(states);
-            var pagedData = PagedList<StateDto>.Paginate(statesToReturn, searchParameters.PageNumber, searchParameters.PageSize);
+            var pagedData = PaginatedListDto<StateDto>.Paginate(statesToReturn, states.MetaData);
             return new ApiOkResponse<PaginatedListDto<StateDto>>(pagedData);
+        }
+
+        public async Task<IEnumerable<StateDto>> GetAll(Guid countryId)
+        {
+            if(!countryId.Equals(Guid.Empty))
+                return _mapper.Map<IEnumerable<StateDto>>(await _repository.State.GetStates(countryId, false)
+                    .ToListAsync());
+
+            return new List<StateDto>();
         }
 
         public async Task<ApiBaseResponse> GetState(Guid id, bool trackChanges)

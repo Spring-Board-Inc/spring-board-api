@@ -93,6 +93,25 @@ namespace SpringBoard.Presentation.Controllers.V1
         }
 
         /// <summary>
+        /// End point to get a non-paginated list of countries.
+        /// </summary>
+        /// <returns>List of country objects</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet("country/all")]
+        //[Authorize(Roles = "SuperAdministrator, Administrator")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _service.Location.GetAll());
+        }
+
+        /// <summary>
         /// Deletes a location
         /// </summary>
         /// <param name="id">the id of the country to delete</param>
@@ -222,6 +241,25 @@ namespace SpringBoard.Presentation.Controllers.V1
             var baseResult = await _service.Location.GetStates(searchParameters, false);
             var states = baseResult.GetResult<PaginatedListDto<StateDto>>();
             return Ok(states);
+        }
+
+        /// <summary>
+        /// End point to get a paginated list of states.
+        /// </summary>
+        /// <returns>List of paginated state objects</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet("state/all/{countryId}")]
+        //[Authorize(Roles = "SuperAdministrator, Administrator")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllStates([FromRoute] Guid countryId)
+        {
+            return Ok(await _service.Location.GetAll(countryId));
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Shared.DataTransferObjects;
+using Shared.RequestFeatures;
 using SpringBoard.Presentation.Controllers.V1.Extensions;
 
 namespace SpringBoard.Presentation.Controllers.V1
@@ -112,9 +113,28 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Get([FromQuery] SearchParameters parameters)
+        {
+            return Ok((await _service.Skill.Get(parameters)).GetResult<PaginatedListDto<SkillDto>>());
+        }
+
+        /// <summary>
+        /// Get non-paged list of skill objects
+        /// </summary>
+        /// <returns>List of skill objects</returns>
+        ///<response code="200">Ok</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [HttpGet("all")]
+        [Authorize(Roles = "SuperAdministrator, Administrator, Applicant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Get()
         {
-            return Ok((await _service.Skill.Get()).GetResult<IEnumerable<Skill>>());
+            return Ok(await _service.Skill.GetAll());
         }
 
         /// <summary>

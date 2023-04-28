@@ -19,18 +19,19 @@ namespace Repositories
 
         public IQueryable<Country> GetCountries(bool trackChanges) =>
             FindAll(trackChanges)
-                .OrderByDescending(c => c.CreatedAt)
-                .ThenBy(c => c.Name);
+                .OrderBy(c => c.Name);
 
-        public async Task<IEnumerable<Country>> GetCountriesAsync(SearchParameters searchParameters, bool trackChanges)
+        public async Task<PagedList<Country>> GetCountriesAsync(SearchParameters searchParameters, bool trackChanges)
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);
-            return await FindAll(trackChanges)
+            var countries = await FindAll(trackChanges)
                             .Where(c => c.CreatedAt >= searchParameters.StartDate && c.CreatedAt <= endDate)
                             .OrderBy(c => c.Name)
                             .ThenByDescending(c => c.CreatedAt)
                             .Search(searchParameters.SearchBy)
                             .ToListAsync();
+
+            return PagedList<Country>.ToPagedList(countries, searchParameters.PageNumber, searchParameters.PageSize);
         }
 
         public void UpdateCountry(Country country) => Update(country);

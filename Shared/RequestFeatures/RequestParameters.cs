@@ -22,11 +22,4 @@
         public string SearchBy { get; set; } = string.Empty;
         public bool ValidDateRange => EndDate > StartDate;
     }
-
-    public enum RequestUriType
-    {
-        PreviousPage,
-        NextPage,
-        CurrentPage
-    }
 }

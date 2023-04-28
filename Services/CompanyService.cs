@@ -132,12 +132,12 @@ namespace Services
 
         public async Task<ApiBaseResponse> Get(string userId, bool isEmployer, SearchParameters parameters)
         {
-            var companies = await _repository.Company.FindCompaniesAsync(false);
+            var companies = await _repository.Company.FindCompaniesAsync(parameters, false);
             if(isEmployer)
                 companies.Where(x => x.UserId == userId);
 
             var companiesToReturn = _mapper.Map<IEnumerable<CompanyToReturnDto>>(companies);
-            var pagedData = PagedList<CompanyToReturnDto>.Paginate(companiesToReturn, parameters.PageNumber, parameters.PageSize);
+            var pagedData = PaginatedListDto<CompanyToReturnDto>.Paginate(companiesToReturn, companies.MetaData);
             return new ApiOkResponse<PaginatedListDto<CompanyToReturnDto>>(pagedData);
         }
 

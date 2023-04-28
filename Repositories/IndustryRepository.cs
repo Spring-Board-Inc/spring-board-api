@@ -1,6 +1,8 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Extensions;
+using Shared.RequestFeatures;
 
 namespace Repositories
 {
@@ -19,13 +21,18 @@ namespace Repositories
             await FindByCondition(i => i.Id.Equals(id), trackChanges)
                     .FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<Industry?>> FindIndustriesAsync(bool trackChanges) =>
-            await FindAll(trackChanges)
-                    .OrderByDescending(i => i.CreatedAt)
+        public async Task<PagedList<Industry>> FindIndustriesAsync(SearchParameters searchTerms, bool trackChanges)
+        {
+            var industries = await FindByCondition(i => i.IsDeprecated == false, trackChanges)
+                    .Search(searchTerms.SearchBy)
+                    .OrderBy(i => i.Name)
                     .ToListAsync();
+
+            return PagedList<Industry>.ToPagedList(industries, searchTerms.PageNumber, searchTerms.PageSize);
+        }
 
         public IQueryable<Industry> FindIndustries(bool trackChanges) =>
             FindAll(trackChanges)
-                .OrderByDescending(i => i.CreatedAt);
+                .OrderBy(i => i.Name);
     }
 }

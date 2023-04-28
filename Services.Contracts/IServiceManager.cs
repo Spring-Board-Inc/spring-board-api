@@ -16,5 +16,7 @@
         ICompanyService Company { get; }
         IIndustryService Industry { get; }
         ICareerSummaryService CareerSummary { get; }
+        IAboutUsService AboutUs { get; }
+        IContactService Contact { get; }
     }
 }

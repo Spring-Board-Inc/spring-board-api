@@ -87,8 +87,10 @@ namespace Services
                                     .ThenBy(u => u.FirstName)
                                     .ToListAsync();
 
-            var usersDto = _mapper.Map<IEnumerable<DetailedUserToReturnDto>>(users);
-            var pagedDataList = PagedList<DetailedUserToReturnDto>.Paginate(usersDto, searchParameters.PageNumber, searchParameters.PageSize);
+            var pagedList = PagedList<AppUser>.ToPagedList(users, searchParameters.PageNumber, searchParameters.PageSize);
+
+            var usersDto = _mapper.Map<IEnumerable<DetailedUserToReturnDto>>(pagedList);
+            var pagedDataList = PaginatedListDto<DetailedUserToReturnDto>.Paginate(usersDto, pagedList.MetaData);
 
             return new ApiOkResponse<PaginatedListDto<DetailedUserToReturnDto>>(pagedDataList);
         }

@@ -18,35 +18,40 @@ namespace Repositories
         public async Task<State?> GetStateAsync(Guid id, bool trackChanges) =>
             await FindByCondition(s => s.Id.Equals(id), trackChanges).FirstOrDefaultAsync();
 
-        public IQueryable<State> GetStates(bool trackChanges) =>
-            FindAll(trackChanges)
-            .OrderByDescending(s => s.CreatedAt)
-            .ThenBy(s => s.AdminArea);
+        public IQueryable<State> GetStates(Guid countryId, bool trackChanges) =>
+            FindByCondition(s => s.CountryId.Equals(countryId), trackChanges)
+            .OrderBy(s => s.AdminArea);
 
         public IQueryable<State> GetState(Guid id, bool trackChanges = false) =>
             FindByCondition(s => s.Id.Equals(id), trackChanges)
                 .Include(s => s.Country);
 
-        public IQueryable<State> GetStatesByCountry(StateSearchParameters parameters, bool trackChanges = false) =>
-            FindByCondition(s => 
+        public async Task<PagedList<State>> GetStatesByCountry(StateSearchParameters parameters, bool trackChanges = false)
+        {
+            var states = await FindByCondition(s =>
                     s.CountryId.Equals(parameters.CountryId) &&
-                    (s.CreatedAt >= parameters.StartDate && 
-                        s.CreatedAt <= (parameters.EndDate == DateTime.MaxValue ? parameters.EndDate : parameters.EndDate.AddDays(1))), 
+                    (s.CreatedAt >= parameters.StartDate &&
+                        s.CreatedAt <= (parameters.EndDate == DateTime.MaxValue ? parameters.EndDate : parameters.EndDate.AddDays(1))),
                 trackChanges)
                 .Search(parameters.SearchBy)
                 .Include(s => s.Country)
                 .OrderBy(s => s.AdminArea)
-                .ThenByDescending(s => s.CreatedAt);
+                .ThenByDescending(s => s.CreatedAt).ToListAsync();
 
-        public IQueryable<State> GetStates(StateSearchParameters searchParameters, bool trackChanges = false)
+            return PagedList<State>.ToPagedList(states, parameters.PageNumber, parameters.PageSize);
+        }
+
+        public async Task<PagedList<State>> GetStates(StateSearchParameters searchParameters, bool trackChanges = false)
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);
-            return FindAll(trackChanges)
+            var states = await  FindAll(trackChanges)
                 .Where(s => s.CreatedAt >= searchParameters.StartDate && s.CreatedAt <= endDate)
                 .Search(searchParameters.SearchBy)
                 .Include(s => s.Country)
                 .OrderByDescending(s => s.CreatedAt)
-                .ThenBy(s => s.AdminArea);
+                .ThenBy(s => s.AdminArea).ToListAsync();
+
+            return PagedList<State>.ToPagedList(states, searchParameters.PageNumber, searchParameters.PageSize);
         }
 
         public void UpdateState(State state) => Update(state);

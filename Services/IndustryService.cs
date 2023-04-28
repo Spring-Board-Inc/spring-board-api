@@ -2,9 +2,11 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
+using Shared.RequestFeatures;
 
 namespace Services
 {
@@ -63,10 +65,18 @@ namespace Services
             return new ApiOkResponse<bool>(true);
         }
 
-        public async Task<IEnumerable<IndustryToReturnDto>> Get()
+        public async Task<PaginatedListDto<IndustryToReturnDto>> Get(SearchParameters parameters)
         {
-            var industries = await _repository.Industry.FindIndustriesAsync(false);
-            return _mapper.Map<IEnumerable<IndustryToReturnDto>>(industries);
+            var industries = await _repository.Industry.FindIndustriesAsync(parameters, false);
+            var data = _mapper.Map<IEnumerable<IndustryToReturnDto>>(industries);
+
+            var paged = PaginatedListDto<IndustryToReturnDto>.Paginate(data, industries.MetaData);
+            return paged;
+        }
+
+        public async Task<IEnumerable<IndustryToReturnDto>> GetAll()
+        {
+            return _mapper.Map<IEnumerable<IndustryToReturnDto>>( await _repository.Industry.FindIndustries(false).ToListAsync());
         }
 
         public async Task<ApiBaseResponse> Get(Guid id)

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Shared.DataTransferObjects;
+using Shared.RequestFeatures;
 using SpringBoard.Presentation.Controllers.V1.Extensions;
 
 namespace SpringBoard.Presentation.Controllers.V1
@@ -75,9 +76,23 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Get([FromQuery] SearchParameters parameters)
+        {
+            return Ok(await _service.Industry.Get(parameters));
+        }
+
+        ///<summary>End-point to get a no-paging list of industries</summary>
+        ///<returns>List of industries</returns>
+        ///<response code="200">Ok. If everything is OK.</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="403">Forbidden</response>
+        [HttpGet("all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _service.Industry.Get());
+            return Ok(await _service.Industry.GetAll());
         }
 
         ///<summary>

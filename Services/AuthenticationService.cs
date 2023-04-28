@@ -108,6 +108,7 @@ namespace Services
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var user = await _userManager.FindByIdAsync(request.UserId);
+    
             if (user == null)
                 return new UserNotFoundResponse(ResponseMessages.UserNotFound);
 

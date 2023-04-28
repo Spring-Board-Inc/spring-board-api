@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.RequestFeatures;
 
 namespace Contracts
 {
@@ -8,7 +9,7 @@ namespace Contracts
         void DeleteCompany(Company company);
         void UpdateCompany(Company company);
         Task<Company?> FindCompanyAsync(Guid id, bool trackChanges);
-        Task<IEnumerable<Company>> FindCompaniesAsync(bool trackChanges);
-        IQueryable<Company> FindCompanies(bool trackChanges);
+        Task<PagedList<Company>> FindCompaniesAsync(SearchParameters parameters, bool trackChanges);
+        Task<int> Count(bool trackChanges);
     }
 }

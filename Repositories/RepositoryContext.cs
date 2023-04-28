@@ -36,5 +36,7 @@ namespace Repositories
         public DbSet<State>? States { get; set; }
         public DbSet<Country>? Countries { get; set; }
         public DbSet<CareerSummary>? CareerSummaries { get; set; }
+        public DbSet<AboutUs> AboutUs { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
     }
 }

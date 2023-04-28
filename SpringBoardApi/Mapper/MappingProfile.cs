@@ -11,6 +11,7 @@ namespace SpringBoardApi.Mapper
         {
             CreateMap<State, StateDto>()
                 .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name));
+            CreateMap<Skill, SkillDto>();
             CreateMap<StateForCreationDto, State>();
             CreateMap<StateForUpdateDto, State>();
             CreateMap<Country, CountryDto>();

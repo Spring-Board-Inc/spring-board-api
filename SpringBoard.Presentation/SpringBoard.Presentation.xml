@@ -195,8 +195,15 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Get">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Get(Shared.RequestFeatures.SearchParameters)">
             <summary>End-point to get a list of industries</summary>
+            <returns>List of industries</returns>
+            <response code="200">Ok. If everything is OK.</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Get">
+            <summary>End-point to get a no-paging list of industries</summary>
             <returns>List of industries</returns>
             <response code="200">Ok. If everything is OK.</response>
             <response code="401">Unauthorized</response>
@@ -439,6 +446,16 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Get">
+             <summary>
+             End point to get a non-paginated list of countries.
+             </summary>
+             <returns>List of country objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Delete(System.Guid)">
              <summary>
              Deletes a location
@@ -494,6 +511,16 @@
              End point to get a paginated list of states.
              </summary>
              <param name="searchParameters"></param>
+             <returns>List of paginated state objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.GetAllStates(System.Guid)">
+             <summary>
+             End point to get a paginated list of states.
+             </summary>
              <returns>List of paginated state objects</returns>
             <response code="200">Ok</response>
             <response code="401">Unauthorized</response>
@@ -564,9 +591,19 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Get">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Get(Shared.RequestFeatures.SearchParameters)">
              <summary>
              Get list of skill objects
+             </summary>
+             <returns>List of skill objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Get">
+             <summary>
+             Get non-paged list of skill objects
              </summary>
              <returns>List of skill objects</returns>
             <response code="200">Ok</response>
