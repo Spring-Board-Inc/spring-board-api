@@ -17,6 +17,8 @@
         IStateRepository State { get; }
         ICountryRepository Country { get; }
         ICareerSummaryRepository CareerSummary { get; }
+        IContactRepository Contact { get; }
+        IAboutUsRepository AboutUs { get; }
         Task SaveAsync();
     }
 }

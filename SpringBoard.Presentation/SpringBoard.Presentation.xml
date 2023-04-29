@@ -4,6 +4,66 @@
         <name>SpringBoard.Presentation</name>
     </assembly>
     <members>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Get">
+            <summary>
+            Gets About Us object
+            </summary>
+            <returns>About Us object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Create(Shared.DataTransferObjects.AboutUsForCreateDto)">
+            <summary>
+            Creates About Us entity
+            </summary>
+            <param name="request"></param>
+            <returns>About Us object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Update(System.Guid,Shared.DataTransferObjects.AboutUsForUpdateDto)">
+            <summary>
+            Updates About Us entity
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>About Us object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Delete(System.Guid)">
+            <summary>
+            Permanently deletes an About Us entity
+            </summary>
+            <param name="id"></param>
+            <returns>True or false</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Deprecate(System.Guid)">
+            <summary>
+            Change the IsDeprecated flag of an About Us entity
+            </summary>
+            <param name="id"></param>
+            <returns>True or false</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.Register(Shared.DataTransferObjects.UserForRegistrationDto)">
             <summary>
             End-point to register new user
@@ -170,6 +230,29 @@
             <returns>List of company object</returns>
             <response code="200">Ok</response>
             <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Create(Shared.DataTransferObjects.ContactForCreationDto)">
+            <summary>
+            Creates Contact entity
+            </summary>
+            <param name="request"></param>
+            <returns>Contact object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Get">
+            <summary>
+            Gets Contact entity
+            </summary>
+            <returns>Contact object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>

@@ -10,6 +10,7 @@ namespace Contracts
         void UpdateCompany(Company company);
         Task<Company?> FindCompanyAsync(Guid id, bool trackChanges);
         Task<PagedList<Company>> FindCompaniesAsync(SearchParameters parameters, bool trackChanges);
+        Task<PagedList<Company>> FindCompaniesAsync(SearchParameters parameters, bool trackChanges, string userId = "", bool isEmployer = false);
         Task<int> Count(bool trackChanges);
     }
 }

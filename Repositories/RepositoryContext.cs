@@ -14,7 +14,7 @@ namespace Repositories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.Entity<UserSkill>()
                 .HasKey(us => new { us.UserInformationId, us.SkillId });
             modelBuilder.Entity<UserJob>()

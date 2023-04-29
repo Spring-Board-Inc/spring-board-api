@@ -32,6 +32,23 @@ namespace Repositories
             return PagedList<Company>.ToPagedList(companies, parameters.PageNumber, parameters.PageSize);
         }
 
+        public async Task<PagedList<Company>> FindCompaniesAsync(SearchParameters parameters, bool trackChanges, string userId = "", bool isEmployer = false)
+        {
+            var companies = isEmployer ?
+                                await FindByCondition(c => c.UserId.Equals(userId), trackChanges)
+                                        .Search(parameters.SearchBy)
+                                        .OrderBy(c => c.Name)
+                                        .ThenBy(c => c.CreatedAt)
+                                        .ToListAsync() :
+                                await FindAll(trackChanges)
+                                    .Search(parameters.SearchBy)
+                                    .OrderBy(c => c.Name)
+                                    .ThenBy(c => c.CreatedAt)
+                                    .ToListAsync();
+
+            return PagedList<Company>.ToPagedList(companies, parameters.PageNumber, parameters.PageSize);
+        }
+
         public async Task<int> Count(bool trackChanges)
         {
             var companies = await FindByCondition(c => c.IsDeprecated == false, trackChanges)

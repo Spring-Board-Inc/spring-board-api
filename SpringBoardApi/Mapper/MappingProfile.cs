@@ -91,6 +91,12 @@ namespace SpringBoardApi.Mapper
                 .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.CareerSummary));
             CreateMap<CareerSummaryUpdateDto, CareerSummary>()
                 .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.CareerSummary));
+            CreateMap<AboutUsForCreateDto, AboutUs>();
+            CreateMap<AboutUsForUpdateDto, AboutUs>();
+            CreateMap<AboutUs, AboutUsToReturnDto>();
+            CreateMap<ContactForCreationDto, Contact>();
+            CreateMap<ContactForUpdateDto, Contact>();
+            CreateMap<Contact, ContactToReturnDto>();
         }
     }
 }

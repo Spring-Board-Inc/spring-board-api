@@ -20,6 +20,8 @@ namespace Repositories
         private readonly Lazy<IStateRepository> _stateRepository;
         private readonly Lazy<ICountryRepository> _countryRepository;
         private readonly Lazy<ICareerSummaryRepository> _careerSummaryRepository;
+        private readonly Lazy<IAboutUsRepository> _aboutUsRepository;
+        private readonly Lazy<IContactRepository> _contactRepository;
 
         public RepositoryManager(RepositoryContext repositoryContext)
         {
@@ -54,6 +56,10 @@ namespace Repositories
                 CountryRepository(repositoryContext));
             _careerSummaryRepository = new Lazy<ICareerSummaryRepository>(() => new
                 CareerSummaryRepository(repositoryContext));
+            _aboutUsRepository = new Lazy<IAboutUsRepository>(() => new
+                AboutUsRepository(repositoryContext));
+            _contactRepository = new Lazy<IContactRepository>(() => new
+                ContactRepository(repositoryContext));
         }
        
         public ITokenRepository Token => _tokenRepository.Value;
@@ -71,6 +77,8 @@ namespace Repositories
         public IStateRepository State => _stateRepository.Value;
         public ICountryRepository Country => _countryRepository.Value;
         public ICareerSummaryRepository CareerSummary => _careerSummaryRepository.Value;
+        public IContactRepository Contact => _contactRepository.Value;
+        public IAboutUsRepository AboutUs => _aboutUsRepository.Value;
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
     }
 }
