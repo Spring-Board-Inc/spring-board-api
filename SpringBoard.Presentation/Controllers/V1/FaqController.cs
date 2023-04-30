@@ -108,7 +108,6 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///Deletes a FAQ entity
         ///</summary>
         ///<param name="id"></param>
-        ///<param name="request"></param>
         ///<returns>True or False</returns>
         ///<reponse code="200">OK</reponse>
         ///<response code="401">Unathorized</response>
