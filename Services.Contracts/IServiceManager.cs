@@ -18,5 +18,6 @@
         ICareerSummaryService CareerSummary { get; }
         IAboutUsService AboutUs { get; }
         IContactService Contact { get; }
+        IFaqService Faq { get; }
     }
 }

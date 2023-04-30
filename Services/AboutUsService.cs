@@ -57,6 +57,15 @@ namespace Services
             return new ApiOkResponse<AboutUsToReturnDto>(data);
         }
 
+        public async Task<ApiBaseResponse> Get(Guid id)
+        {
+            var about = await manager.AboutUs.Get(id, false);
+            if (about == null) return new AboutUsNotFoundResponse(id);
+
+            var data = mapper.Map<AboutUsToReturnDto>(about);
+            return new ApiOkResponse<AboutUsToReturnDto>(data);
+        }
+
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
             var about = await manager.AboutUs.Get(id, true);

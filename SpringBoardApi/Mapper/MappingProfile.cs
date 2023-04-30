@@ -97,6 +97,18 @@ namespace SpringBoardApi.Mapper
             CreateMap<ContactForCreationDto, Contact>();
             CreateMap<ContactForUpdateDto, Contact>();
             CreateMap<Contact, ContactToReturnDto>();
+            CreateMap<AddressForCreationDto, Address>();
+            CreateMap<Address, AddressToReturnDto>();
+            CreateMap<AddressForUpdateDto, Address>();
+            CreateMap<PhoneForCreationDto, Phone>();
+            CreateMap<Phone, PhoneToReturnDto>();
+            CreateMap<PhoneForUpdateDto, Phone>();
+            CreateMap<EmailForCreationDto, Email>();
+            CreateMap<Email, EmailToReturnDto>();
+            CreateMap<EmailForUpdateDto, Email>();
+            CreateMap<FaqForCreationDto, Faq>();
+            CreateMap<FaqForUpdateDto, Faq>();
+            CreateMap<Faq, FaqToReturnDto>();
         }
     }
 }

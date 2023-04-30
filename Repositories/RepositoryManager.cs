@@ -22,6 +22,7 @@ namespace Repositories
         private readonly Lazy<ICareerSummaryRepository> _careerSummaryRepository;
         private readonly Lazy<IAboutUsRepository> _aboutUsRepository;
         private readonly Lazy<IContactRepository> _contactRepository;
+        private readonly Lazy<IFaqRepository> _faqRepository;
 
         public RepositoryManager(RepositoryContext repositoryContext)
         {
@@ -60,6 +61,8 @@ namespace Repositories
                 AboutUsRepository(repositoryContext));
             _contactRepository = new Lazy<IContactRepository>(() => new
                 ContactRepository(repositoryContext));
+            _faqRepository = new Lazy<IFaqRepository>(() => new 
+                FaqRepository(repositoryContext));
         }
        
         public ITokenRepository Token => _tokenRepository.Value;
@@ -79,6 +82,7 @@ namespace Repositories
         public ICareerSummaryRepository CareerSummary => _careerSummaryRepository.Value;
         public IContactRepository Contact => _contactRepository.Value;
         public IAboutUsRepository AboutUs => _aboutUsRepository.Value;
+        public IFaqRepository Faq => _faqRepository.Value;
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
     }
 }

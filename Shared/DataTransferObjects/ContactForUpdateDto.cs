@@ -2,8 +2,8 @@
 {
     public sealed record ContactForUpdateDto
     {
-        public AddressForCreationDto Address { get; init; }
-        public ICollection<PhoneForUpdateDto> Phone { get; init; }
+        public AddressForUpdateDto Address { get; init; }
+        public ICollection<PhoneForUpdateDto> Phones { get; init; }
         public ICollection<EmailForUpdateDto> Email { get; init; }
     }
 }

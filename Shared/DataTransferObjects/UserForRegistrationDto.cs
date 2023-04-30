@@ -37,9 +37,4 @@ namespace Shared.DataTransferObjects
             && !string.IsNullOrWhiteSpace(State) && !string.IsNullOrWhiteSpace(Country);
         public bool IsValidParams => IsPasswordMatched && IsValidEntries;
     }
-
-    public record AddressDto
-    {
-        
-    }
 }

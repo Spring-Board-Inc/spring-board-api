@@ -40,6 +40,31 @@ namespace SpringBoard.Presentation.Controllers.V1
         }
 
         ///<summary>
+        ///Gets About Us object by id
+        ///</summary>
+        ///<returns>About Us object</returns>
+        ///<response code="200">OK</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="404">Not Found</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Administrator, SuperAdministrator")]
+        public async Task<IActionResult> Get([FromRoute] Guid id)
+        {
+            var baseResult = await _service.AboutUs.Get(id);
+            if (!baseResult.Success)
+                return ProcessError(baseResult);
+
+            return Ok(baseResult.GetResult<AboutUsToReturnDto>());
+        }
+
+        ///<summary>
         ///Creates About Us entity
         ///</summary>
         ///<param name="request"></param>

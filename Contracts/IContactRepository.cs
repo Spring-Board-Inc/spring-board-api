@@ -6,7 +6,7 @@ namespace Contracts
     {
         Task CreateAsync(Contact contact);
         void UpdateContact(Contact contact);
-        void DeleteAsync(Contact contact);
+        void DeleteContact(Contact contact);
         Task<Contact> GetAsync(Guid id, bool trackChanges);
         Task<Contact> GetAsync(bool trackChanges);
         Task<bool> Exists();

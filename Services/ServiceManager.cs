@@ -27,6 +27,7 @@ namespace Services
         private readonly Lazy<ICareerSummaryService> _careerSummaryService;
         private readonly Lazy<IContactService> _contactService;
         private readonly Lazy<IAboutUsService> _aboutUsService;
+        private readonly Lazy<IFaqService> _faqService;
 
         public ServiceManager(
             IRepositoryManager repositoryManager, 
@@ -73,6 +74,8 @@ namespace Services
                 AboutUsService(repositoryManager, mapper, logger));
             _contactService = new Lazy<IContactService>(() => new
                 ContactService(repositoryManager, mapper, logger));
+            _faqService = new Lazy<IFaqService>(() => new
+                FaqService(repositoryManager, mapper));
 
         }
         public ILocationService Location => _locationService.Value;
@@ -84,19 +87,13 @@ namespace Services
         public ISkillService Skill => _skillService.Value;
         public IUserSkillService UserSkill => _userSkillService.Value;
         public ICertificationService Certification => _certificationService.Value;
-
         public IJobService Job => _jobService.Value;
-
         public IJobTypeService JobType => _jobTypeService.Value;
-
         public ICompanyService Company => _companyService.Value;
-
         public IIndustryService Industry => _industryService.Value;
-
         public ICareerSummaryService CareerSummary => _careerSummaryService.Value;
-
         public IAboutUsService AboutUs => _aboutUsService.Value;
-
         public IContactService Contact => _contactService.Value;
+        public IFaqService Faq => _faqService.Value;
     }
 }

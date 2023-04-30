@@ -10,16 +10,17 @@ namespace Repositories.Extensions
                 return states;
 
             var lowerCaseTerm = searchTerm.Trim().ToLower();
-            return states.Where(s => s.AdminArea.ToLower().Contains(lowerCaseTerm));
+            return states.Where(s => s.AdminArea.ToLower().Contains(lowerCaseTerm)
+                         || s.Country.Name.ToLower().Contains(lowerCaseTerm));
         }
 
-        public static IQueryable<Skill> Search(this IQueryable<Skill> states, string searchTerm)
+        public static IQueryable<Skill> Search(this IQueryable<Skill> skills, string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
-                return states;
+                return skills;
 
             var lowerCaseTerm = searchTerm.Trim().ToLower();
-            return states.Where(s => s.Description.ToLower().Contains(lowerCaseTerm));
+            return skills.Where(s => s.Description.ToLower().Contains(lowerCaseTerm));
         }
 
         public static IQueryable<Country> Search(this IQueryable<Country> countries, string searchTerm)
@@ -46,7 +47,10 @@ namespace Repositories.Extensions
                 return jobs;
 
             var lowerCaseTerm = searchTerm.Trim().ToLower();
-            return jobs.Where(j => j.Title.ToLower().Contains(lowerCaseTerm));
+            return jobs.Where(j => j.Title.ToLower().Contains(lowerCaseTerm) 
+                        || j.Company.Name.ToLower().Contains(lowerCaseTerm)
+                        || j.Type.Name.ToLower().Contains(lowerCaseTerm)
+                        || j.Descriptions.ToLower().Contains(lowerCaseTerm));
         }
 
         public static IQueryable<Industry> Search(this IQueryable<Industry> industries, string searchTerm)
@@ -65,6 +69,15 @@ namespace Repositories.Extensions
 
             var lowerCaseTerm = searchTerm.Trim().ToLower();
             return users.Where(u => u.FirstName.ToLower().Contains(lowerCaseTerm) || u.LastName.ToLower().Contains(lowerCaseTerm));
+        }
+
+        public static IQueryable<Faq> Search(this IQueryable<Faq> faqs, string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return faqs;
+
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+            return faqs.Where(u => u.Question.ToLower().Contains(lowerCaseTerm) || u.Answer.ToLower().Contains(lowerCaseTerm));
         }
     }
 }

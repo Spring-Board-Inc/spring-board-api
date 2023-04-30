@@ -14,14 +14,20 @@ namespace Repositories
 
         public void UpdateContact(Contact contact) => Update(contact);
 
-        public void DeleteAsync(Contact contact) => Delete(contact);
+        public void DeleteContact(Contact contact) => Delete(contact);
 
         public async Task<Contact> GetAsync(Guid id, bool trackChanges) =>
             await FindByCondition(c => c.Id.Equals(id), trackChanges)
+                    .Include(c => c.Address)
+                    .Include(c => c.Phones)
+                    .Include(c => c.Email)
                     .FirstOrDefaultAsync();
 
         public async Task<Contact> GetAsync(bool trackChanges) =>
             await FindByCondition(c => c.IsDeprecated == false, trackChanges)
+                    .Include(c => c.Address)
+                    .Include(c => c.Phones)
+                    .Include(c => c.Email)
                     .FirstOrDefaultAsync();
 
         public async Task<bool> Exists() =>

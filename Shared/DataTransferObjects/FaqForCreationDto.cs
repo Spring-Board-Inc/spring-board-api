@@ -1,6 +1,6 @@
 ﻿namespace Shared.DataTransferObjects
 {
-    public sealed record PhoneToReturnDto : PhoneDto
+    public sealed record FaqForCreationDto : FaqBaseDto
     {
     }
 }

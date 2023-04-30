@@ -15,6 +15,17 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Get(System.Guid)">
+            <summary>
+            Gets About Us object by id
+            </summary>
+            <returns>About Us object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Create(Shared.DataTransferObjects.AboutUsForCreateDto)">
             <summary>
             Creates About Us entity
@@ -254,6 +265,114 @@
             <response code="401">Unauthorized</response>
             <response code="404">Not Found</response>
             <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Get(System.Guid)">
+            <summary>
+            Gets Contact entity by id
+            </summary>
+            <returns>Contact object</returns>
+            <param name="id"></param>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Update(System.Guid,Shared.DataTransferObjects.ContactForUpdateDto)">
+            <summary>
+            Updates Contact entity
+            </summary>
+            <returns>Updated Contact object</returns>
+            <param name="id"></param>
+            <param name="request"></param>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Delete(System.Guid)">
+            <summary>
+            Permanently deletes a Contact entity
+            </summary>
+            <returns>True or false</returns>
+            <param name="id"></param>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Deprecate(System.Guid)">
+            <summary>
+            Deprecates a Contact entity
+            </summary>
+            <returns>True or false</returns>
+            <param name="id"></param>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Create(Shared.DataTransferObjects.FaqForCreationDto)">
+            <summary>
+            Creates FAQ entity
+            </summary>
+            <param name="request"></param>
+            <returns>Created FAQ Object</returns>
+            <reponse code="201">Created</reponse>
+            <response code="401">Unathorized</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Get(System.Guid)">
+            <summary>
+            Gets a FAQ entity
+            </summary>
+            <param name="id"></param>
+            <returns>FAQ Object</returns>
+            <reponse code="200">OK</reponse>
+            <response code="401">Unathorized</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Get(Shared.RequestFeatures.SearchParameters)">
+            <summary>
+            Gets a paginated list of FAQs
+            </summary>
+            <param name="parameters"></param>
+            <returns>List of FAQ objects</returns>
+            <reponse code="200">OK</reponse>
+            <response code="401">Unathorized</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Update(System.Guid,Shared.DataTransferObjects.FaqForUpdateDto)">
+            <summary>
+            Updates a FAQ entity
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>Updated FAQ Object</returns>
+            <reponse code="200">OK</reponse>
+            <response code="401">Unathorized</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Delete(System.Guid)">
+            <summary>
+            Deletes a FAQ entity
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>True or False</returns>
+            <reponse code="200">OK</reponse>
+            <response code="401">Unathorized</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
             <response code="500">Server error</response>
         </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Create(Shared.DataTransferObjects.IndustryRequestObject)">
