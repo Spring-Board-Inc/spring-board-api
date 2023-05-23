@@ -10,5 +10,6 @@ namespace Contracts
         Task<AboutUs> Get(bool trackChanges);
         Task<AboutUs> Get(Guid id, bool trackChanges);
         Task<bool> Exists();
+        Task<IEnumerable<AboutUs>> GetAll(bool trackChanges);
     }
 }

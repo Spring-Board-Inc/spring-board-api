@@ -30,14 +30,26 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            var baseResult = await _service.AboutUs.Get();
-            if(!baseResult.Success)
-                return ProcessError(baseResult);
+        public async Task<IActionResult> Get() =>
+            Ok(await _service.AboutUs.Get());
 
-            return Ok(baseResult.GetResult<AboutUsToReturnDto>());
-        }
+        ///<summary>
+        ///Gets About Us object
+        ///</summary>
+        ///<returns>About Us object</returns>
+        ///<response code="200">OK</response>
+        ///<response code="401">Unauthorized</response>
+        ///<response code="404">Not Found</response>
+        ///<response code="403">Forbidden</response>
+        ///<response code="500">Server error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll() =>
+            Ok(await _service.AboutUs.GetAll());
 
         ///<summary>
         ///Gets About Us object by id

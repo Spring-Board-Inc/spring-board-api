@@ -20,8 +20,13 @@ namespace Repositories
             await FindByCondition(a => a.IsDeprecated == false, trackChanges)
                     .FirstOrDefaultAsync();
 
+        public async Task<IEnumerable<AboutUs>> GetAll(bool trackChanges) =>
+            await FindAll(trackChanges)
+                    .ToListAsync();
+
         public async Task<AboutUs> Get(Guid id, bool trackChanges) =>
             await FindByCondition(a => a.Id.Equals(id) && a.IsDeprecated == false, trackChanges)
+                    .OrderByDescending(a => a.CreatedAt)
                     .FirstOrDefaultAsync();
 
         public async Task<bool> Exists() =>

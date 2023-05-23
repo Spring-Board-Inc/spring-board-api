@@ -48,13 +48,16 @@ namespace Services
             return new ApiOkResponse<AboutUsToReturnDto>(data);
         }
 
-        public async Task<ApiBaseResponse> Get()
+        public async Task<AboutUsToReturnDto> Get()
         {
             var about = await manager.AboutUs.Get(false);
-            if (about == null) return new AboutUsNotFoundResponse();
+            return mapper.Map<AboutUsToReturnDto>(about);
+        }
 
-            var data = mapper.Map<AboutUsToReturnDto>(about);
-            return new ApiOkResponse<AboutUsToReturnDto>(data);
+        public async Task<IEnumerable<AboutUsToReturnDto>> GetAll()
+        {
+            var abouts = await manager.AboutUs.GetAll(false);
+            return mapper.Map<IEnumerable<AboutUsToReturnDto>>(abouts);
         }
 
         public async Task<ApiBaseResponse> Get(Guid id)
