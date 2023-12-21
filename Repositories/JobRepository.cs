@@ -40,8 +40,7 @@ namespace Repositories
         public async Task<PagedList<Job>> FindJobs(SearchParameters parameters)
         {
             var endDate = parameters.EndDate == DateTime.MaxValue ? parameters.EndDate : parameters.EndDate.AddDays(1);
-            var jobs = await FindByCondition(j => j.IsDeprecated == false &&  
-                                    j.ClosingDate >= DateTime.Now && 
+            var jobs = await FindByCondition(j => j.IsDeprecated == false &&   
                                     (j.CreatedAt >= parameters.StartDate && j.CreatedAt <= endDate), false)
                                 .Search(parameters.SearchBy)
                                 .Include(j => j.Industry)

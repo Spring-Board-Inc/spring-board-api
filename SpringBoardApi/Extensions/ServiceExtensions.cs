@@ -24,7 +24,7 @@ namespace SpringBoardApi.Extensions
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder =>
-                    builder.WithOrigins("http://localhost:3000")
+                    builder.WithOrigins("http://localhost:3000", "http://localhost:3001", "https://spring-board.netlify.app")
                         .AllowCredentials()
                         .AllowAnyMethod()
                         .AllowAnyHeader());
@@ -33,21 +33,22 @@ namespace SpringBoardApi.Extensions
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
             services.Configure<IISOptions>(options =>
             {
+                
             });
 
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddSingleton<ILoggerManager, LoggerManager>();
 
         public static void ConfigureController(this IServiceCollection services) => 
-            services.AddControllers(config => {
-                config.RespectBrowserAcceptHeader = true;
-                config.ReturnHttpNotAcceptable = true;
-                config.CacheProfiles.Add("60SecondsDuration", new CacheProfile
-                {
-                    Duration = 120
-                });
-            })
-                .ConfigureApiBehaviorOptions(opt => opt.SuppressModelStateInvalidFilter = true)
+            services
+                .AddControllers(config => {
+                    config.RespectBrowserAcceptHeader = true;
+                    config.ReturnHttpNotAcceptable = true;
+                    config.CacheProfiles.Add("60SecondsDuration", new CacheProfile
+                    {
+                        Duration = 120
+                    });
+                })
                 .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
                 .AddNewtonsoftJson(x => 
                     x.SerializerSettings.ContractResolver = new DefaultContractResolver())

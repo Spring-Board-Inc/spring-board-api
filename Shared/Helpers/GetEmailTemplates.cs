@@ -58,5 +58,29 @@ namespace Shared.Helpers
 
             return msgBody;
         }
+
+        public static string? GetMessageBody(Institution institution, string link)
+        {
+            string body;
+            var folderName = Path.Combine("wwwroot", "Templates", "ProspectiveStudentTemplate.html");
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            if (File.Exists(filepath))
+                body = File.ReadAllText(filepath);
+            else
+                return null;
+
+            var msgBody = body.Replace("[YEAR]", DateTime.Now.Year.ToString())
+                              .Replace("[LOGOURL]", institution.LogoUrl)
+                              .Replace("[SCHOOLNAME]", institution.Name)
+                              .Replace("[ACTIVATIONLINK]", link);
+
+            return msgBody;
+        }
+    }
+
+    public class Institution
+    {
+        public string Name { get; set; }
+        public string LogoUrl { get; set; }
     }
 }
