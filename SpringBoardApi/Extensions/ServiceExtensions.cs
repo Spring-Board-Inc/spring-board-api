@@ -93,8 +93,7 @@ namespace SpringBoardApi.Extensions
                         Url = new Uri("https://ojo-toba.herokuapp.com")
                     }
                 });
-                var xmlFile = $"{typeof(SpringBoard.Presentation.AssemblyReference).Assembly.GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, Directory.GetCurrentDirectory(), "wwwroot", "SpringBoard.Presentation.xml");
                 c.IncludeXmlComments(xmlPath);
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

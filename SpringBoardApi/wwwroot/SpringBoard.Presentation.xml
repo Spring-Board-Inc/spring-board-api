@@ -1,0 +1,1296 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SpringBoard.Presentation</name>
+    </assembly>
+    <members>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Get">
+            <summary>
+            Gets About Us object
+            </summary>
+            <returns>About Us object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.GetAll">
+            <summary>
+            Gets About Us object
+            </summary>
+            <returns>About Us object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Get(System.Guid)">
+            <summary>
+            Gets About Us object by id
+            </summary>
+            <returns>About Us object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Create(Shared.DataTransferObjects.AboutUsForCreateDto)">
+            <summary>
+            Creates About Us entity
+            </summary>
+            <param name="request"></param>
+            <returns>About Us object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Update(System.Guid,Shared.DataTransferObjects.AboutUsForUpdateDto)">
+            <summary>
+            Updates About Us entity
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>About Us object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Delete(System.Guid)">
+            <summary>
+            Permanently deletes an About Us entity
+            </summary>
+            <param name="id"></param>
+            <returns>True or false</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AboutUsController.Deprecate(System.Guid)">
+            <summary>
+            Change the IsDeprecated flag of an About Us entity
+            </summary>
+            <param name="id"></param>
+            <returns>True or false</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.Register(Shared.DataTransferObjects.UserForRegistrationDto)">
+            <summary>
+            End-point to register new user
+            </summary>
+            <param name="userForRegistration">
+            First Name, Last Name, Password: must be at least, 8 characters including at least,
+            a special character, a number, upper case and lower case letters.
+            Confirm password must match the Password. The email must be a valid email address,
+            because it will have to be confirmed. same with phone number.
+            Role index is between 0 and 3. Applicant, Company, Admin and SuperAdmin respectively.
+            </param>
+            <returns>Idebtity result</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad Requst</response>
+            <response code="204">No content</response>
+            <response code="500">Internal server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.ConfirmEmail(Shared.RequestFeatures.EmailConfirmationRequestParameters)">
+             <summary>
+             End-point to confirm user's email address
+             </summary>
+             <param name="requestParameters"></param>
+             <returns>Identity result</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.Authenticate(Shared.DataTransferObjects.UserForAuthenticationDto)">
+             <summary>
+             Logs in users with username (email address) and password
+             </summary>
+             <param name="user"></param>
+             <returns>Access and refresh tokens.</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.ResetPassword(Shared.DataTransferObjects.ResetPasswordDto)">
+             <summary>
+             This end-point resets user password
+             </summary>
+             <param name="resetPasswordDto"></param>
+             <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.ChangePassword(Shared.DataTransferObjects.ChangeForgottenPasswordDto)">
+             <summary>
+             This end-point changes user forgotten password
+             </summary>
+             <param name="changePasswordDto"></param>
+             <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.AuthenticationController.ChangePassword(Shared.DataTransferObjects.ChangePasswordDto)">
+             <summary>
+             This end-point changes user password when the old password is known.
+             </summary>
+             <param name="changePasswordDto"></param>
+             <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.Create(Shared.CareerSummaryDto)">
+            <summary>End-point to create applicants career summary</summary>
+            <param name="request"></param>
+            <returns>Created career summary object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.Get(System.String)">
+            <summary>End-point to get applicants career summary by user id</summary>
+            <param name="userId"></param>
+            <returns>Career summary object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.GetMany(System.String)">
+            <summary>End-point to get all applicants career summary by user id</summary>
+            <param name="userId"></param>
+            <returns>List of Career summary object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.Update(System.Guid,Shared.CareerSummaryUpdateDto)">
+            <summary>End-point to update applicants career summary</summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>Career summary object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CareerSummaryController.Delete(System.Guid)">
+            <summary>End-point to delete applicants career summary</summary>
+            <param name="id"></param>
+            <returns>Career summary object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CompanyController.Create(Shared.DataTransferObjects.CompanyRequestObject)">
+            <summary>End-point to create a new company</summary>
+            <param name="request"></param>
+            <returns>Created company object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CompanyController.Update(System.Guid,Shared.DataTransferObjects.CompanyRequestObject)">
+            <summary>End-point to update a company</summary>
+            <param name="id">The id of the company to update.</param>
+            <param name="request"></param>
+            <returns>Updated company object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CompanyController.Delete(System.Guid)">
+            <summary>End-point to delete a company</summary>
+            <param name="id">The id of the company to delete</param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CompanyController.Get(System.Guid)">
+            <summary>End-point to find a company</summary>
+            <param name="id">The id of the company to find</param>
+            <returns>Company object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.CompanyController.Get(Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get a list of companies</summary>
+            <returns>List of company object</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Create(Shared.DataTransferObjects.ContactForCreationDto)">
+            <summary>
+            Creates Contact entity
+            </summary>
+            <param name="request"></param>
+            <returns>Contact object</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Get">
+            <summary>
+            Gets Contact entity
+            </summary>
+            <returns>Contact object</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Get(System.Guid)">
+            <summary>
+            Gets Contact entity by id
+            </summary>
+            <returns>Contact object</returns>
+            <param name="id"></param>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Update(System.Guid,Shared.DataTransferObjects.ContactForUpdateDto)">
+            <summary>
+            Updates Contact entity
+            </summary>
+            <returns>Updated Contact object</returns>
+            <param name="id"></param>
+            <param name="request"></param>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Delete(System.Guid)">
+            <summary>
+            Permanently deletes a Contact entity
+            </summary>
+            <returns>True or false</returns>
+            <param name="id"></param>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.ContactController.Deprecate(System.Guid)">
+            <summary>
+            Deprecates a Contact entity
+            </summary>
+            <returns>True or false</returns>
+            <param name="id"></param>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Create(Shared.DataTransferObjects.FaqForCreationDto)">
+            <summary>
+            Creates FAQ entity
+            </summary>
+            <param name="request"></param>
+            <returns>Created FAQ Object</returns>
+            <reponse code="201">Created</reponse>
+            <response code="401">Unathorized</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Get(System.Guid)">
+            <summary>
+            Gets a FAQ entity
+            </summary>
+            <param name="id"></param>
+            <returns>FAQ Object</returns>
+            <reponse code="200">OK</reponse>
+            <response code="401">Unathorized</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Get(Shared.RequestFeatures.SearchParameters)">
+            <summary>
+            Gets a paginated list of FAQs
+            </summary>
+            <param name="parameters"></param>
+            <returns>List of FAQ objects</returns>
+            <reponse code="200">OK</reponse>
+            <response code="401">Unathorized</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Update(System.Guid,Shared.DataTransferObjects.FaqForUpdateDto)">
+            <summary>
+            Updates a FAQ entity
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>Updated FAQ Object</returns>
+            <reponse code="200">OK</reponse>
+            <response code="401">Unathorized</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.FaqController.Delete(System.Guid)">
+            <summary>
+            Deletes a FAQ entity
+            </summary>
+            <param name="id"></param>
+            <returns>True or False</returns>
+            <reponse code="200">OK</reponse>
+            <response code="401">Unathorized</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Create(Shared.DataTransferObjects.IndustryRequestObject)">
+            <summary>
+            End-point to create an industry
+            </summary>
+            <param name="request"></param>
+            <returns>Created industry object</returns>
+            <response code="201">Created</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Get(System.Guid)">
+            <summary>End-point to get an industry</summary>
+            <param name="id">The id of the industry to find</param>
+            <returns>Industry object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Get(Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get a list of industries</summary>
+            <returns>List of industries</returns>
+            <response code="200">Ok. If everything is OK.</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Get">
+            <summary>End-point to get a no-paging list of industries</summary>
+            <returns>List of industries</returns>
+            <response code="200">Ok. If everything is OK.</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Delete(System.Guid)">
+            <summary>
+            End-point to delete an industry
+            </summary>
+            <param name="id">The id of the industry to delete</param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.IndustryController.Update(System.Guid,Shared.DataTransferObjects.IndustryRequestObject)">
+            <summary>
+            End-point to update an industry
+            </summary>
+            <param name="id">The id of the industry to update</param>
+            <param name="request"></param>
+            <returns>Updated industry object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Create(Shared.DataTransferObjects.JobRequestObject)">
+            <summary>End-point to create a job</summary>
+            <param name="request"></param>
+            <returns>Created job object</returns>
+            <response code="201">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(System.Guid)">
+            <summary>End-point to get job by id</summary>
+            <param name="id">The id of the job to find.</param>
+            <returns>Job object</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Update(System.Guid,Shared.DataTransferObjects.JobRequestObject)">
+            <summary>End-point to create a job</summary>
+            <param  name="id">The id of the job to update</param>
+            <param name="request"></param>
+            <returns>Updated job object</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="404">Unauthorized</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Delete(System.Guid)">
+            <summary>End-point to delete a job</summary>
+            <param name="id"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get paginated list of jobs.</summary>
+            <param name="searchParameters"></param>
+            <returns>List of job objects</returns>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="404">Not. If the resource is not found.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(Shared.RequestFeatures.JobSearchParams)">
+            <summary>End-point to get paginated list of jobs filtered by location, company, job type and industry.</summary>
+            <param name="searchParameters"></param>
+            <returns>List of job objects</returns>
+            <response code="200">Ok. If everything goes well.</response>
+            <response code="401">Unauthorized. Invalid authentication credentials for the requested resource.</response>
+            <response code="403">Forbidden. Server refuses to authorize the request.</response>
+            <response code="500">Server error. If the server did not understand the request.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.GetApplicants(System.Guid,Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get paginated list of applicants that applied for a particular job</summary>
+            <param name="jobId">The id of the job for which the applicants applied for.</param>
+            <param name="searchParameters"></param>
+            <returns>List of user info objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.GetApplicant(System.Guid,System.Guid)">
+            <summary>End-point to get the details of an applicant</summary>
+            <param name="jobId">The id of the job for which the applicants applied for.</param>
+            <param name="applicantId">The id of the applicant</param>
+            <returns>List of user info objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(System.Guid,Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get paginated list of jobs posted by a company</summary>
+            <param name="companyId">The id of the company that posted the job.</param>
+            <param name="searchParameters"></param>
+            <returns>List of job objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Get(System.String,Shared.RequestFeatures.SearchParameters)">
+            <summary>End-point to get job by by applicant</summary>
+            <param name="applicantId">The id of the user for which we want to get the job applied for.</param>
+            <param name="searchParams"></param>
+            <returns>List of job objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.Apply(System.Guid,Shared.DataTransferObjects.CvToSendDto)">
+            <summary>End point for user to submit job applications</summary>
+            <param name="jobId">The id of the job the user is applying for</param>
+            <param name="cv">The CV of the Applicant.</param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="400">Bad request</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobController.JobStats">
+            <summary>End point to get job statistics</summary>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobTypeController.CreateJobType(Shared.DataTransferObjects.JobTypeRequestObject)">
+            <summary>
+            End-point to create job type
+            </summary>
+            <param name="request"></param>
+            <response code="201">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobTypeController.Get(System.Guid)">
+            <summary>
+            End-point to get a job type by id
+            </summary>
+            <param name="id">The id of the job type to find</param>
+            <returns>Job type object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobTypeController.Get">
+            <summary>
+            End-point to get list of job types
+            </summary>
+            <returns>A list of job type objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobTypeController.DeleteJobType(System.Guid)">
+            <summary>
+            End-point to delete a job type
+            </summary>
+            <param name="id">The id of the job type to delete</param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.JobTypeController.UpdateJobType(System.Guid,Shared.DataTransferObjects.JobTypeRequestObject)">
+            <summary>
+            End-point to update a job type
+            </summary>
+            <param name="id">The id of the job type to update</param>
+            <param name="request"></param>
+            <returns>The updated job type object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Create(Shared.DataTransferObjects.CountryForCreationDto)">
+             <summary>
+             End point to create a new country.
+             </summary>
+             <param name="country"></param>
+             <returns>Location object</returns>
+            <response code="204">No content</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Get(System.Guid)">
+             <summary>
+             End point to get countryby id
+             </summary>
+             <param name="id"></param>
+             <returns>Location object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Get(Shared.RequestFeatures.SearchParameters)">
+             <summary>
+             End point to get a paginated list of countries.
+             </summary>
+             <param name="searchParameters"></param>
+             <returns>List of paginated country objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Get">
+             <summary>
+             End point to get a non-paginated list of countries.
+             </summary>
+             <returns>List of country objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Delete(System.Guid)">
+             <summary>
+             Deletes a location
+             </summary>
+             <param name="id">the id of the country to delete</param>
+             <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Update(System.Guid,Shared.DataTransferObjects.CountryForUpdateDto)">
+             <summary>
+             End point to update a country
+             </summary>
+             <param name="id">The id of the country to update</param>
+             <param name="country"></param>
+             <returns>Updated country object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Create(Shared.DataTransferObjects.StateForCreationDto)">
+             <summary>
+             End point to create a new state.
+             </summary>
+             <param name="state"></param>
+             <returns>True for success, error reponse for failure</returns>
+            <response code="204">No content</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.GetSingleState(System.Guid)">
+             <summary>
+             End point to get state by id
+             </summary>
+             <param name="id"></param>
+             <returns>State object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Get(Shared.RequestFeatures.StateSearchParameters)">
+             <summary>
+             End point to get a paginated list of states.
+             </summary>
+             <param name="searchParameters"></param>
+             <returns>List of paginated state objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.GetAllStates(System.Guid)">
+             <summary>
+             End point to get a paginated list of states.
+             </summary>
+             <returns>List of paginated state objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.DeleteState(System.Guid)">
+             <summary>
+             Deletes a state
+             </summary>
+             <param name="id">the id of the state to delete</param>
+             <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.LocationController.Update(System.Guid,Shared.DataTransferObjects.StateForUpdateDto)">
+             <summary>
+             End point to update a state
+             </summary>
+             <param name="id">The id of the state to update</param>
+             <param name="state"></param>
+             <returns>Updated country object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Create(Shared.DataTransferObjects.SkillRequest)">
+             <summary>
+             Creates a new skill.
+             </summary>
+             <param name="request"></param>
+             <returns>Created skill object</returns>
+            <response code="201">Created</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Update(System.Guid,Shared.DataTransferObjects.SkillRequest)">
+             <summary>
+             Updates skills.
+             </summary>
+             <param name="request"></param>
+             <param name="id">Id of the skill to be updated.</param>
+             <returns>Updated skill object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Delete(System.Guid)">
+             <summary>
+             Deletes skill.
+             </summary>
+             <param name="id">Id of the skill to be deleted.</param>
+             <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Get(Shared.RequestFeatures.SearchParameters)">
+             <summary>
+             Get list of skill objects
+             </summary>
+             <returns>List of skill objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Get">
+             <summary>
+             Get non-paged list of skill objects
+             </summary>
+             <returns>List of skill objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Get(System.Guid)">
+             <summary>
+             End point to get a skill object
+             </summary>
+             <param name="id">Id of the skill to be deleted.</param>
+             <returns>List of skill objects</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserInfo(System.String)">
+            <summary>
+            End-point to get user information by user id
+            </summary>
+            <param name="userId">The user id</param>
+            <returns>User information object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error.</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateUserInfo(System.String)">
+            <summary>
+            End-point to create a new user information
+            </summary>
+            <param name="userId"></param>
+            <returns>Created user info object</returns>
+            <response code="201">Created</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized.</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteUserInfo(System.Guid)">
+            <summary>
+            End-point to delete user information
+            </summary>
+            <param name="id">The id of the user info to delete</param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateUserEducation(System.Guid,Shared.DataTransferObjects.EducationForCreationDto)">
+            <summary>
+            End-point to create education profile for users
+            </summary>
+            <param name="userInfoId"></param>
+            <param name="request"></param>
+            <returns>Created education object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.UpdateUserEducations(System.Guid,Shared.DataTransferObjects.EducationForUpdateDto)">
+            <summary>
+            End-point to update education profile for a user
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteUserEducation(System.Guid)">
+            <summary>
+            End-point to delete education profile for a user
+            </summary>
+            <param name="id"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserEducations(System.Guid)">
+            <summary>
+            End-point to get list of applicant's education profile
+            </summary>
+            <param name="userInfoId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserEducation(System.Guid)">
+            <summary>
+            End-point to get an education profile for a user
+            </summary>
+            <param name="id"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateWorkExperience(System.Guid,Shared.DataTransferObjects.WorkExperienceRequest)">
+            <summary>
+            End-point to create user work experience
+            </summary>
+            <param name="userInfoId"></param>
+            <param name="request"></param>
+            <returns>Work experience object</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.UpdateWorkExperience(System.Guid,Shared.DataTransferObjects.WorkExperienceRequest)">
+            <summary>
+            End-point to update user work experience
+            </summary>
+            <param name="id">This is the work experience unique id</param>
+            <param name="request"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetWorkExperiences(System.Guid)">
+            <summary>
+            End-point to get a list of user work experience
+            </summary>
+            <param name="userInfoId">This is the work experience unique id</param>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetWorkExperience(System.Guid)">
+            <summary>
+            End-point to get single user work experience
+            </summary>
+            <param name="id">This is the work experience unique id</param>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteExperience(System.Guid)">
+            <summary>
+            End-point to delete user work experience
+            </summary>
+            <param name="id">This is the work experience unique id</param>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateUserSkill(System.Guid,System.Guid,Shared.DataTransferObjects.UserSkillRequest)">
+            <summary>
+            End-point to create user skill
+            </summary>
+            <param name="userInfoId"></param>
+            <param name="skillId"></param>
+            <param name="request"></param>
+            <returns>User skill object</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.UpdateUserSkill(System.Guid,System.Guid,Shared.DataTransferObjects.UserSkillRequest)">
+            <summary>
+            End-point to update user skill
+            </summary>
+            <param name="userInfoId"></param>
+            <param name="skillId"></param>
+            <param name="request"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteUserSkill(System.Guid,System.Guid)">
+            <summary>
+            End-point to delete user skill
+            </summary>
+            <param name="userInfoId"></param>
+            <param name="skillId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserSkill(System.Guid,System.Guid)">
+            <summary>
+            End-point to get a user skill
+            </summary>
+            <param name="userInfoId"></param>
+            <param name="skillId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserSkills(System.Guid)">
+            <summary>
+            End-point to get a list of user skills
+            </summary>
+            <param name="userInfoId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateCertification(System.Guid,Shared.DataTransferObjects.CertificationRequest)">
+            <summary>
+            End-point to create user certification
+            </summary>
+            <param name="userInfoId"></param>
+            <param name="request"></param>
+            <returns>Certification object</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="404">Not found</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.UpdateCertification(System.Guid,Shared.DataTransferObjects.CertificationRequest)">
+            <summary>
+            End-point to update user certification
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found.</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.DeleteCertification(System.Guid)">
+            <summary>
+            End-point to delete user certification
+            </summary>
+            <param name="id"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetCertification(System.Guid)">
+            <summary>
+            End-point to get a user certification
+            </summary>
+            <param name="id"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetCertifications(System.Guid)">
+            <summary>
+            End-point to get a list of user certifications
+            </summary>
+            <param name="userInfoId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:TokenController.Refresh(Shared.DataTransferObjects.TokenDto)">
+             <summary>
+             End-point to renew refresh tokens
+             </summary>
+             <param name="tokenDto"></param>
+             <returns>Access and refresh tokens.</returns>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.Get(System.String)">
+            <summary>
+            End-point to get a user
+            </summary>
+            <param name="id"></param>
+            <returns>User object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.GetDetails(System.String)">
+            <summary>
+            End-point to get a user (who has in Applicant role) detailed info
+            </summary>
+            <param name="id"></param>
+            <returns>User object</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.Get(Shared.RequestFeatures.SearchParameters)">
+            <summary>
+            End-point to get paginated list of user profile information
+            </summary>
+            <returns>Paginated list of user objects</returns>
+            <param name="searchParameters"></param>
+            <response code="200">Ok</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.Activate(System.String)">
+            <summary>
+            End-point to activate the user profile
+            </summary>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.Deactivate(System.String)">
+            <summary>
+            End-point to deactivate the user profile
+            </summary>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.Suspend(System.String)">
+            <summary>
+            End-point to suspend the user profile
+            This action can only be performed by the Admins
+            and SuperAdmins
+            </summary>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.Reactivate(System.String)">
+            <summary>
+            End-point to re-activate the user profile
+            </summary>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.UploadUserPhoto(Shared.DataTransferObjects.PhotoToUploadDto,System.String)">
+            <summary>
+            End-point to upload user profile photo.
+            </summary>
+            <param name="photoToUpload"></param>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.UpdateUserPhoto(Shared.DataTransferObjects.PhotoToUploadDto,System.String)">
+            <summary>
+            End-point to update user profile photo
+            </summary>
+            <param name="photoToUpdate"></param>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.DeleteUserPhoto(System.String)">
+            <summary>
+            End-point to delete user profile photo
+            </summary>
+            <param name="userId"></param>
+            <returns>Ok</returns>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.UpdateNames(System.String,Shared.DataTransferObjects.UserNamesForUpdateDto)">
+             <summary>
+             This end-point changes user's first and last names
+             </summary>
+             <param name="userId"></param>
+             <param name="request"></param>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden.</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:UserController.UpdateAddress(System.String,Shared.DataTransferObjects.UserAddressForUpdateDto)">
+             <summary>
+             This end-point changes user's address details
+             </summary>
+             <param name="userId"></param>
+             <param name="request"></param>
+            <response code="200">Ok</response>
+            <response code="404">Not found</response>
+            <response code="400">Bad request</response>
+            <response code="401">Unauthorized</response>
+            <response code="403">Forbidden.</response>
+            <response code="500">Server error</response>
+        </member>
+    </members>
+</doc>
