@@ -81,9 +81,9 @@ namespace SpringBoardApi.Extensions
         public static void ConfigureSwagger(this IServiceCollection services) => 
             services.AddSwaggerGen(c => 
             {
-                c.SwaggerDoc("v1", new OpenApiInfo 
-                { 
-                    Title = "Spring Board Api", 
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Spring Board Api",
                     Version = "v1",
                     Description = "SpringBoard API by Ojo Toba Rufus",
                     Contact = new OpenApiContact
@@ -93,8 +93,6 @@ namespace SpringBoardApi.Extensions
                         Url = new Uri("https://ojo-toba.herokuapp.com")
                     }
                 });
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, Directory.GetCurrentDirectory(), "wwwroot", "SpringBoard.Presentation.xml");
-                c.IncludeXmlComments(xmlPath);
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
