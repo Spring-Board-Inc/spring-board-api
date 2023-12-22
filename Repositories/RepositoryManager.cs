@@ -1,4 +1,6 @@
 ﻿using Contracts;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
 
 namespace Repositories
 {
@@ -24,7 +26,7 @@ namespace Repositories
         private readonly Lazy<IContactRepository> _contactRepository;
         private readonly Lazy<IFaqRepository> _faqRepository;
 
-        public RepositoryManager(RepositoryContext repositoryContext)
+        public RepositoryManager(RepositoryContext repositoryContext, IOptions<MongoDbSettings> mongoDbSettings)
         {
             _repositoryContext = repositoryContext;
             _tokenRepository = new Lazy<ITokenRepository>(() => new 
@@ -36,7 +38,7 @@ namespace Repositories
             _workExperienceRepository = new Lazy<IWorkExperienceRepository>(() => new
                 WorkExperienceRepository(repositoryContext));
             _skillsRepository = new Lazy<ISkillsRepository>(() => new
-                SkillsRepository(repositoryContext));
+                SkillsRepository(mongoDbSettings));
             _companyRepository = new Lazy<ICompanyRepository>(() => new
                 CompanyRepository(repositoryContext));
             _certificationRepository = new Lazy<ICertificationRepository>(() => new
