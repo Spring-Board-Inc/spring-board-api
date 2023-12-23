@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Models;
 using Entities.Response;
 using Services.Contracts;
+using Services.Extensions;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
 using Shared.RequestFeatures;
@@ -51,10 +52,9 @@ namespace Services
             var company = _mapper.Map<Company>(request);
             company.LogoUrl = uploadResult.Url;
             company.PublicId = uploadResult.PublicId;
-            company.UserId = userId;
+            company.UserId = userId.StringToGuid();
 
-            await _repository.Company.CreateCompanyAsync(company);
-            await _repository.SaveAsync();
+            await _repository.Company.AddAsync(company);
 
             var companyToReturn = _mapper.Map<CompanyToReturnDto>(company);
             return new ApiOkResponse<CompanyToReturnDto>(companyToReturn);
@@ -62,14 +62,12 @@ namespace Services
 
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
-            var company = await _repository.Company.FindCompanyAsync(id, true);
-            var publicId = company.PublicId;
-
+            var company = await _repository.Company.FindAsync(id);
             if (company == null)
                 return new NotFoundResponse(ResponseMessages.CompanyNotFound);
 
-            _repository.Company.DeleteCompany(company);
-            await _repository.SaveAsync();
+            var publicId = company.PublicId;
+            await _repository.Company.DeleteAsync(x => x.Id.Equals(id));
 
             if(!string.IsNullOrEmpty(publicId))
                 await _cloudinary.DeleteFile(publicId);
@@ -82,12 +80,12 @@ namespace Services
             if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var companyForUpdate = await _repository.Company.FindCompanyAsync(id, true);
+            var companyForUpdate = await _repository.Company.FindAsync(id);
             if (companyForUpdate == null)
                 return new NotFoundResponse(ResponseMessages.CompanyNotFound);
 
             _mapper.Map(request, companyForUpdate);
-            companyForUpdate.UpdatedAt = DateTime.Now;
+            companyForUpdate.UpdatedAt = DateTime.UtcNow;
 
             if(request.IsValidFile)
             {
@@ -123,16 +121,15 @@ namespace Services
                 companyForUpdate.PublicId = uploadResult.PublicId;
             }
 
-            _repository.Company.UpdateCompany(companyForUpdate);
-            await _repository.SaveAsync();
+            await _repository.Company.EditAsync(x => x.Id.Equals(id), companyForUpdate);
 
             var companyToReturn = _mapper.Map<CompanyToReturnDto>(companyForUpdate);
             return new ApiOkResponse<CompanyToReturnDto>(companyToReturn);
         }
 
-        public async Task<ApiBaseResponse> Get(string userId, bool isEmployer, SearchParameters parameters)
+        public ApiBaseResponse Get(string userId, bool isEmployer, SearchParameters parameters)
         {
-            var companies = await _repository.Company.FindCompaniesAsync(parameters, false, userId, isEmployer);
+            var companies = _repository.Company.FindAsync(parameters, userId.StringToGuid(), isEmployer);
 
             var companiesToReturn = _mapper.Map<IEnumerable<CompanyToReturnDto>>(companies);
             var pagedData = PaginatedListDto<CompanyToReturnDto>.Paginate(companiesToReturn, companies.MetaData);
@@ -141,7 +138,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Get(Guid id)
         {
-            var company = await _repository.Company.FindCompanyAsync(id, false);
+            var company = await _repository.Company.FindAsync(id);
             if (company == null)
                 return new NotFoundResponse(ResponseMessages.CompanyNotFound);
 

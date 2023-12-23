@@ -9,8 +9,8 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Create(IndustryRequestObject request);
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Update(Guid id, IndustryRequestObject request);
-        Task<PaginatedListDto<IndustryToReturnDto>> Get(SearchParameters parameters);
+        PaginatedListDto<IndustryToReturnDto> Get(SearchParameters parameters);
         Task<ApiBaseResponse> Get(Guid id);
-        Task<IEnumerable<IndustryToReturnDto>> GetAll();
+        IEnumerable<IndustryToReturnDto> GetAll();
     }
 }

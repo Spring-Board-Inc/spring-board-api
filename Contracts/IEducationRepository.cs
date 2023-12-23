@@ -1,14 +1,15 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IEducationRepository
     {
-        Task<IEnumerable<Education>> GetEducationsAsync(Guid id, bool trackChanges);
-        Task<Education?> GetEducationAsync(Guid id, bool trackChanges);
-        IQueryable<Education> GetEducations(Guid userInfoId, bool trackChanges);
-        void DeleteEducation(Education education);
-        void UpdateEducation(Education education);
-        Task CreateEducationAsync(Education education);
+        Task AddAsync(Education education);
+        Task DeleteAsync(Expression<Func<Education, bool>> expression);
+        Task EditAsync(Expression<Func<Education, bool>> expression, Education education);
+        Task<Education?> FindByIdAsync(Guid id);
+        IEnumerable<Education> FindByUserInfoId(Guid userInfoId);
+        IQueryable<Education> FindByUserInfoIdAsQueryable(Guid userInfoId);
     }
 }

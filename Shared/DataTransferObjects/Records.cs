@@ -13,5 +13,5 @@ namespace Shared.DataTransferObjects
     public record UserSkillDto(Guid UserInformationId, Guid SkillId, string Skill, string Level);
     public record CertificationDto(Guid Id, string Name, string IssuingBody, DateTime IssuingDate, DateTime CreatedAt, DateTime UpdatedAt);
     public record CompanyToReturnDto(Guid Id, string Name, string Email, string LogoUrl, string PublicId, DateTime CreatedAt, DateTime UpdatedAt);
-    public record JobStatsDto(int JobSeekers, int ActiveJobs, int JobsFilled, int Companies);
+    public record JobStatsDto(int JobSeekers, int ActiveJobs, int JobsFilled, long Companies);
 }

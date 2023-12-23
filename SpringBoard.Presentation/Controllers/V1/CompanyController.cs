@@ -134,7 +134,7 @@ namespace SpringBoard.Presentation.Controllers.V1
             var userId = _service.User.GetUserId();
             bool isInRole = await _service.User.IsInRole(userId, ERoles.Employer.ToString());
 
-            var result = await _service.Company.Get(userId, isInRole, parameters);
+            var result = _service.Company.Get(userId, isInRole, parameters);
             if (!result.Success)
                 return ProcessError(result);
 

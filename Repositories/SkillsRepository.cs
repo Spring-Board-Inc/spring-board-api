@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Repositories.Configurations;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
@@ -13,44 +14,16 @@ namespace Repositories
         public SkillsRepository(IOptions<MongoDbSettings> mongoDbSettings) 
             : base(mongoDbSettings){}
 
-        public async Task CreateSkillAsync(Skill skill) => 
+        public async Task AddAsync(Skill skill) => 
             await CreateAsync(skill);
 
-        public void DeleteSkill(Skill skill)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteAsync(Expression<Func<Skill, bool>> expression) =>
+            await RemoveAsync(expression);
 
-        public Task<Skill?> FindSkillAsync(Guid id, bool trackChanges)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<Skill?> FindByIdAsync(Guid id) =>
+            await GetAsync(x => x.Id.Equals(id) && x.IsDeprecated == false);
 
-        //public async Task CreateSkillAsync(Skill skill) => await Create(skill);
-
-        //public void DeleteSkill(Skill skill) => Delete(skill);
-
-        //public void UpdateSkill(Skill skill) => Update(skill);
-        //public async Task<Skill?> FindSkillAsync(Guid id, bool trackChanges) =>
-        //    await FindByCondition(sk => sk.Id.Equals(id), trackChanges)
-        //            .FirstOrDefaultAsync();
-
-        //public async Task<IEnumerable<Skill>> FindSkillsAsync(bool trackChanges) =>
-        //    await FindAll(trackChanges)
-        //            .OrderBy(s => s.Description)
-        //            .ToListAsync();
-
-        //public async Task<PagedList<Skill>> FindSkills(SearchParameters parameters, bool trackChanges)
-        //{
-        //    var skills = await FindByCondition(s => s.IsDeprecated == false, trackChanges)
-        //                        .OrderBy(sk => sk.Description)
-        //                        .Search(parameters.SearchBy)
-        //                        .ToListAsync();
-
-        //    return PagedList<Skill>.ToPagedList(skills, parameters.PageNumber, parameters.PageSize);
-        //}
-
-        public PagedList<Skill> FindSkills(SearchParameters parameters, bool trackChanges)
+        public PagedList<Skill> Find(SearchParameters parameters)
         {
             var skills = GetAsQueryable(x => x.IsDeprecated == false)
                 .OrderBy(x => x.Description)
@@ -59,14 +32,10 @@ namespace Repositories
             return PagedList<Skill>.ToPagedList(skills, parameters.PageNumber, parameters.PageSize);
         }
 
-        public Task<IEnumerable<Skill>> FindSkillsAsync(bool trackChanges)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<Skill>> Find() =>
+            await GetAsync();
 
-        public void UpdateSkill(Skill skill)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task EditAsync(Expression<Func<Skill, bool>> expression, Skill skill) =>
+            await UpdateAsync(expression, skill);
     }
 }

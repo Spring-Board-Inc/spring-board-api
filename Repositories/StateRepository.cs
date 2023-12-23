@@ -1,59 +1,63 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class StateRepository : RepositoryBase<State>, IStateRepository
+    public class StateRepository : MongoRepositoryBase<State>, IStateRepository
     {
-        public StateRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public StateRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}
 
-        public async Task CreateStateAsync(State state) => await Create(state);
+        public async Task AddAsync(State state) => 
+            await CreateAsync(state);
 
-        public void DeleteState(State state) => Delete(state);
+        public async Task DeleteAsync(Expression<Func<State, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<State?> GetStateAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(s => s.Id.Equals(id), trackChanges).FirstOrDefaultAsync();
+        public async Task<State?> FindAsync(Guid id) =>
+            await GetAsync(s => s.Id.Equals(id));
 
-        public IQueryable<State> GetStates(Guid countryId, bool trackChanges) =>
-            FindByCondition(s => s.CountryId.Equals(countryId), trackChanges)
+        public IQueryable<State> FindByCountryAsQueryable(Guid countryId) =>
+            GetAsQueryable(s => s.CountryId.Equals(countryId))
             .OrderBy(s => s.AdminArea);
 
-        public IQueryable<State> GetState(Guid id, bool trackChanges = false) =>
-            FindByCondition(s => s.Id.Equals(id), trackChanges)
-                .Include(s => s.Country);
+        public IQueryable<State> FindByIdAsQueryable(Guid id) =>
+            GetAsQueryable(s => s.Id.Equals(id))
+                .Include(x => x.Country);
 
-        public async Task<PagedList<State>> GetStatesByCountry(StateSearchParameters parameters, bool trackChanges = false)
+        public PagedList<State> FindByCountryIdAsync(StateSearchParameters parameters)
         {
-            var states = await FindByCondition(s =>
+            var states = GetAsQueryable(s =>
                     s.CountryId.Equals(parameters.CountryId) &&
                     (s.CreatedAt >= parameters.StartDate &&
-                        s.CreatedAt <= (parameters.EndDate == DateTime.MaxValue ? parameters.EndDate : parameters.EndDate.AddDays(1))),
-                trackChanges)
-                .Search(parameters.SearchBy)
-                .Include(s => s.Country)
+                        s.CreatedAt <= (parameters.EndDate == DateTime.MaxValue ? parameters.EndDate : parameters.EndDate.AddDays(1))))
                 .OrderBy(s => s.AdminArea)
-                .ThenByDescending(s => s.CreatedAt).ToListAsync();
+                .ThenByDescending(s => s.CreatedAt)
+                .Search(parameters.SearchBy)
+                .Include(x => x.Country);         
 
             return PagedList<State>.ToPagedList(states, parameters.PageNumber, parameters.PageSize);
         }
 
-        public async Task<PagedList<State>> GetStates(StateSearchParameters searchParameters, bool trackChanges = false)
+        public PagedList<State> FindStates(StateSearchParameters searchParameters)
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);
-            var states = await  FindAll(trackChanges)
-                .Where(s => s.CreatedAt >= searchParameters.StartDate && s.CreatedAt <= endDate)
-                .Search(searchParameters.SearchBy)
+            var states = GetAsQueryable(s => s.CreatedAt >= searchParameters.StartDate && s.CreatedAt <= endDate)
                 .Include(s => s.Country)
                 .OrderByDescending(s => s.CreatedAt)
-                .ThenBy(s => s.AdminArea).ToListAsync();
+                .ThenBy(s => s.AdminArea)
+                .Search(searchParameters.SearchBy);
 
             return PagedList<State>.ToPagedList(states, searchParameters.PageNumber, searchParameters.PageSize);
         }
 
-        public void UpdateState(State state) => Update(state);
+        public async Task EditAsync(Expression<Func<State, bool>> expression, State state) => 
+            await UpdateAsync(expression, state);
     }
 }

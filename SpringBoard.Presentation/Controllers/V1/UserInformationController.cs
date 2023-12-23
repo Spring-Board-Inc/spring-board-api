@@ -212,9 +212,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserEducations(Guid userInfoId)
+        public IActionResult GetUserEducations(Guid userInfoId)
         {
-            return Ok(await _service.Education.Get(userInfoId, false));
+            return Ok(_service.Education.GetByUserInfoId(userInfoId));
         }
 
         ///<summary>

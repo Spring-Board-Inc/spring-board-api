@@ -259,7 +259,7 @@ namespace Services
                 jobsFilled += job?.NumberOfApplicants < job?.NumbersToBeHired ? job.NumberOfApplicants : job.NumbersToBeHired;
             }
 
-            var companyCount = await _repository.Company.Count(false);
+            var companyCount = await _repository.Company.Count(x => x.IsDeprecated == false);
 
             var applicant = await userManager.GetUsersInRoleAsync(ERoles.Applicant.ToString());
             var applicantCount = applicant.Where(x => x.EmailConfirmed).Count();

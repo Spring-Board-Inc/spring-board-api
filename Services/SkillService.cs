@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
-using Entities.Enums;
 using Entities.Models;
 using Entities.Response;
-using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -32,9 +30,7 @@ namespace Services
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var skill = _mapper.Map<Skill>(request);
-
-            await _repository.Skills.CreateSkillAsync(skill);
-            await _repository.SaveAsync();
+            await _repository.Skills.AddAsync(skill);
 
             var skillToReturn = _mapper.Map<SkillToReturnDto>(skill);
             return new ApiOkResponse<SkillToReturnDto>(skillToReturn);
@@ -45,46 +41,46 @@ namespace Services
             if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var skillToUpdate = await _repository.Skills.FindSkillAsync(id, true);
+            var skillToUpdate = await _repository.Skills.FindByIdAsync(id);
             if (skillToUpdate == null)
                 return new NotFoundResponse(ResponseMessages.SkillNotFound);
 
             skillToUpdate.Description = request.Description;
-            skillToUpdate.UpdatedAt = DateTime.Now;
-
-            _repository.Skills.UpdateSkill(skillToUpdate);
-            await _repository.SaveAsync();
+            skillToUpdate.UpdatedAt = DateTime.UtcNow;
+            await _repository.Skills.EditAsync(x => x.Id.Equals(id), skillToUpdate);
 
             return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
-            var skillToDelete = await _repository.Skills.FindSkillAsync(id, true);
+            var skillToDelete = await _repository.Skills.FindByIdAsync(id);
             if (skillToDelete == null)
                 return new NotFoundResponse(ResponseMessages.SkillNotFound);
 
-            _repository.Skills.DeleteSkill(skillToDelete);
-            await _repository.SaveAsync();
-
+            await _repository.Skills.DeleteAsync(x => x.Id.Equals(id));
             return new ApiOkResponse<bool>(true);
         }
 
-        public async Task<ApiBaseResponse> Get(SearchParameters parameters)
+        public ApiBaseResponse Get(SearchParameters parameters)
         {
-            var skills = _repository.Skills.FindSkills(parameters, false);
+            var skills = _repository.Skills.Find(parameters);
             var data = _mapper.Map<IEnumerable<SkillDto>>(skills);
 
             var paged = PaginatedListDto<SkillDto>.Paginate(data, skills.MetaData);
             return new ApiOkResponse<PaginatedListDto<SkillDto>>(paged);
         }
 
-        public async Task<IEnumerable<SkillDto>> GetAll() =>
-            _mapper.Map<IEnumerable<SkillDto>>(await _repository.Skills.FindSkillsAsync(false));
+        public async Task<List<SkillDto>> GetAll()
+        {
+            var result =  await _repository.Skills.Find();
+            return _mapper.Map<List<SkillDto>>(result.OrderBy(x => x.Description).ToList());
+        }
+           
 
         public async Task<ApiBaseResponse> Get(Guid id)
         {
-            Skill? skill = await _repository.Skills.FindSkillAsync(id, true);
+            Skill? skill = await _repository.Skills.FindByIdAsync(id);
             if (skill == null)
                 return new NotFoundResponse(ResponseMessages.SkillNotFound);
 

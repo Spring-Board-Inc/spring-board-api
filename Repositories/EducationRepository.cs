@@ -1,29 +1,34 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class EducationRepository : RepositoryBase<Education>, IEducationRepository
+    public class EducationRepository : MongoRepositoryBase<Education>, IEducationRepository
     {
-        public EducationRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public EducationRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}
 
-        public async Task CreateEducationAsync(Education education) => await Create(education);
+        public async Task AddAsync(Education education) => 
+            await CreateAsync(education);
 
-        public void UpdateEducation(Education education) => Update(education);
+        public async Task EditAsync(Expression<Func<Education, bool>> expression, Education education) => 
+            await UpdateAsync(expression, education);
 
-        public void DeleteEducation(Education education) => Delete(education);
-        public async Task<Education?> GetEducationAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(ed => ed.Id.Equals(id), trackChanges).FirstOrDefaultAsync();
+        public async Task DeleteAsync(Expression<Func<Education, bool>> expression) => 
+            await RemoveAsync(expression);
+        public async Task<Education?> FindByIdAsync(Guid id) =>
+            await GetAsync(ed => ed.Id.Equals(id));
 
-        public async Task<IEnumerable<Education>> GetEducationsAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(ed => ed.UserInformationId.Equals(id), trackChanges)
+        public IEnumerable<Education> FindByUserInfoId(Guid userInfoId) =>
+            GetAsQueryable(ed => ed.UserInformationId.Equals(userInfoId))
                       .OrderByDescending(ed => ed.StartDate)
-                      .ToListAsync();
+                      .ToList();
 
-        public IQueryable<Education> GetEducations(Guid userInfoId, bool trackChanges) =>
-            FindByCondition(ed => ed.UserInformationId.Equals(userInfoId), trackChanges)
+        public IQueryable<Education> FindByUserInfoIdAsQueryable(Guid userInfoId) =>
+            GetAsQueryable(ed => ed.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(ed => ed.StartDate);
     }
 }
