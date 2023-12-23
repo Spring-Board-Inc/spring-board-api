@@ -30,9 +30,9 @@ namespace Repositories
         {
             _repositoryContext = repositoryContext;
             _tokenRepository = new Lazy<ITokenRepository>(() => new 
-                TokenRepository(repositoryContext));
+                TokenRepository(mongoDbSettings));
             _userInformationRepository = new Lazy<IUserInformationRepository>(() => new
-                UserInformationRepository(repositoryContext));
+                UserInformationRepository(mongoDbSettings));
             _educationRepository = new Lazy<IEducationRepository>(() => new
                 EducationRepository(repositoryContext));
             _workExperienceRepository = new Lazy<IWorkExperienceRepository>(() => new

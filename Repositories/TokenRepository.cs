@@ -1,20 +1,24 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class TokenRepository : RepositoryBase<Token>, ITokenRepository
+    public class TokenRepository : MongoRepositoryBase<Token>, ITokenRepository
     {
-        public TokenRepository(RepositoryContext repositoryContext) 
-            : base(repositoryContext){}
+        public TokenRepository(IOptions<MongoDbSettings> settings) 
+            : base(settings){}
 
-        public async Task CreateToken(Token token) => await Create(token);
+        public async Task CreateToken(Token token) => await CreateAsync(token);
 
-        public void UpdateToken(Token token) => Update(token);
-        public void DeleteToken(Token token) => Delete(token);
+        public async Task UpdateToken(Expression<Func<Token, bool>> expression, Token token) => 
+            await UpdateAsync(expression, token);
+        public async Task DeleteToken(Expression<Func<Token, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<Token?> GetToken(string token, bool trackChanges) => 
-            await FindByCondition(t => t.Value == token, trackChanges).FirstOrDefaultAsync();
+        public async Task<Token?> GetToken(string token) => 
+            await GetAsync(t => t.Value == token);
     }
 }

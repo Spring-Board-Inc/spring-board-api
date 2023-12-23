@@ -1,5 +1,8 @@
 ﻿using Contracts;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Repositories.Configurations;
 using System.Linq.Expressions;
@@ -13,7 +16,6 @@ namespace Repositories
         public MongoRepositoryBase(IOptions<MongoDbSettings> mongoDbSettings)
         {
             var mongoClient = new MongoClient(mongoDbSettings.Value.ConnectionString);
-
             var mongoDatabase = mongoClient.GetDatabase(mongoDbSettings.Value.DatabaseName);
             _collection = mongoDatabase.GetCollection<TCollection>(typeof(TCollection).Name);
         }

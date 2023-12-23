@@ -1,24 +1,24 @@
-﻿using Entities.Enums;
-using Microsoft.AspNetCore.Identity;
+﻿using AspNetCore.Identity.MongoDbCore.Models;
+using MongoDbGenericRepository.Attributes;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models
 {
-    public class AppUser : IdentityUser
+    [CollectionName("Users")]
+    public class AppUser : MongoIdentityUser<Guid>
     {
-        [Required, Column(TypeName = "nvarchar(80)")]
+        [Required]
         public string FirstName { get; set; }
-        [Required, Column(TypeName = "nvarchar(80)")]
+        [Required]
         public string LastName { get; set; }
         public string Gender { get; set; }
         public bool IsActive { get; set; } = false;
         public bool IsDeprecated { get; set; } = false;
         public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
         public DateTime? LastLogin { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
         [Required]
         public string Street { get; set; }
         [Required]
@@ -33,6 +33,5 @@ namespace Entities.Models
         public CareerSummary? CareerSummary { get; set; }
         public string PhotoUrl { get; set; } = string.Empty;
         public string PublicId { get; set; } = string.Empty;
-        public ICollection<Token>? Tokens { get; set; }
     }
 }

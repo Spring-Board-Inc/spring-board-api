@@ -153,6 +153,15 @@ namespace SpringBoardApi.Extensions
                 opt.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<RepositoryContext>().AddDefaultTokenProviders();
 
+        public static void ConfigureMongoIdentity(this IServiceCollection services, IConfiguration configuration)
+        {
+            var databaseName = configuration.GetValue<string>("SpringBoardMongoDb:DatabaseName");
+            var connectionStr = configuration.GetValue<string>("SpringBoardMongoDb:ConnectionString");
+            services.AddIdentity<AppUser, AppRole>()
+                .AddMongoDbStores<AppUser, AppRole, Guid>(connectionStr, databaseName)
+                .AddDefaultTokenProviders();
+        }
+
         public static void ConfigureResponseCaching(this IServiceCollection services) =>
             services.AddResponseCaching();
 

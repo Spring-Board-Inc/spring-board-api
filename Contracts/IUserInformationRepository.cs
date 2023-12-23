@@ -1,16 +1,15 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IUserInformationRepository
     {
-        Task<UserInformation?> FindUserInformationAsync(string userId, bool trackChanges);
-        void DeleteUserInformation(UserInformation userInformation);
-        void UpdateUserInformation(UserInformation userInformation);
-        Task CreateUserInformationAsync(UserInformation userInformation);
-        Task<bool> UserInformationExists(string userId);
-        Task<UserInformation?> FindUserInformationAsync(Guid id, bool trackChanges);
-        IQueryable<UserInformation> FindUserInformation(string userId, bool trackChanges);
-        IQueryable<UserInformation> FindUserInformation(bool trackChanges);
+        Task AddAsync(UserInformation userInformation);
+        Task DeleteAsync(Expression<Func<UserInformation, bool>> expression);
+        Task<UserInformation?> GetByUserIdAsync(Guid userId);
+        Task<UserInformation?> GetByIdAsync(Guid id);
+        Task EditAsync(Expression<Func<UserInformation, bool>> expression, UserInformation userInformation);
+        Task<bool> ExistsAsync(Guid userId);
     }
 }

@@ -60,7 +60,7 @@ namespace Services
 
             var user = await _userManager.FindByEmailAsync(userForRegistration.Email);
             if (user != null)
-                return new NotFoundResponse(ResponseMessages.EmailTaken);
+                return new BadRequestResponse(ResponseMessages.EmailTaken);
 
             userForRegistration = Commons.CapitalizeUserDetails(userForRegistration);
             var isCorrectGender = Enum.IsDefined(typeof(EGender), userForRegistration.Gender);
@@ -96,9 +96,7 @@ namespace Services
             {
                 UserId = user.Id,
             };
-            await _repositoryManager.UserInformation.CreateUserInformationAsync(userInformation);
-            await _repositoryManager.SaveAsync();
-
+            await _repositoryManager.UserInformation.AddAsync(userInformation);
             return new ApiOkResponse<IdentityResult>(result);
         }
 
@@ -163,7 +161,7 @@ namespace Services
 
             var claims = await GetClaims();
             var roles = await _userManager.GetRolesAsync(_user);
-            Guid userInfoId = _repositoryManager.UserInformation.FindUserInformation(_user.Id, false).FirstOrDefault().Id;
+            var userInfoId = (await _repositoryManager.UserInformation.GetByUserIdAsync(_user.Id))?.Id;
             ClaimsDto? userClaims = new(_user.Id, userInfoId, _user.Email, roles);
 
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
@@ -256,28 +254,27 @@ namespace Services
 
         private async Task<bool> IsTokenConfirmed(string token, string tokenType)
         {
-            var tokenEntity = await _repositoryManager.Token.GetToken(token, true);
+            var tokenEntity = await _repositoryManager.Token.GetToken(token);
             if (tokenEntity == null)
                 return false;
 
-            if (DateTime.Now >= tokenEntity.ExpiresAt)
+            if (DateTime.UtcNow >= tokenEntity.ExpiresAt)
             {
                 if(tokenEntity.Type == EToken.ConfirmEmail.ToString())
                 {
-                    var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == tokenEntity.UserId);
+                    var user = await _userManager.FindByIdAsync(tokenEntity.UserId.ToString());
                     if (user == null)
                         return false;
 
                     await _userManager.DeleteAsync(user);
+                    await _repositoryManager.UserInformation.DeleteAsync(x => x.UserId == tokenEntity.UserId);
                 }
 
-                _repositoryManager.Token.DeleteToken(tokenEntity);
-                await _repositoryManager.SaveAsync();
+                await _repositoryManager.Token.DeleteToken(x => x.Value == token);
                 return false;
             }
 
-            _repositoryManager.Token.DeleteToken(tokenEntity);
-            await _repositoryManager.SaveAsync();
+            await _repositoryManager.Token.DeleteToken(x => x.Value == token);
             return true;
         }
 
@@ -290,7 +287,7 @@ namespace Services
 
         private async Task<List<Claim>> GetClaims()
         {
-            var claims = new List<Claim>{ new Claim(ClaimTypes.Name, _user.UserName), new Claim(ClaimTypes.NameIdentifier, _user.Id) };
+            var claims = new List<Claim>{ new Claim(ClaimTypes.Name, _user.UserName), new Claim(ClaimTypes.NameIdentifier.ToString(), _user.Id.ToString()) };
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles)
             {
@@ -306,7 +303,7 @@ namespace Services
             (
             issuer: jwtSettings["ValidIssuer"],
             claims: claims,
-            expires: DateTime.Now.AddHours(Convert.ToDouble(jwtSettings["Expires"])),
+            expires: DateTime.UtcNow.AddHours(Convert.ToDouble(jwtSettings["Expires"])),
             signingCredentials: signingCredentials
             );
             return tokenOptions;
@@ -365,7 +362,7 @@ namespace Services
                 new UrlBuilderParameters
                 {
                     Token = tokenEmailDto.Token,
-                    UserId = tokenEmailDto.User.Id,
+                    UserId = tokenEmailDto.User.Id.ToString(),
                     TokenType = tokenEmailDto.TokenType.ToString()
                 }, tokenEmailDto.Origin);
 
@@ -389,7 +386,7 @@ namespace Services
             {
                 if (tokenEmailDto.TokenType == EToken.ConfirmEmail)
                 {
-                    var userToDelete = await _userManager.FindByIdAsync(tokenEmailDto.User.Id);
+                    var userToDelete = await _userManager.FindByIdAsync(tokenEmailDto.User.Id.ToString());
                     if (userToDelete != null)
                     {
                         await _userManager.DeleteAsync(userToDelete);
@@ -405,10 +402,9 @@ namespace Services
                     UserId = tokenEmailDto.User.Id,
                     Value = tokenEmailDto.Token,
                     Type = tokenEmailDto.TokenType.ToString(),
-                    ExpiresAt = DateTime.Now.AddHours(1)
+                    ExpiresAt = DateTime.UtcNow.AddHours(1)
                 };
                 await _repositoryManager.Token.CreateToken(tokenEntity);
-                await _repositoryManager.SaveAsync();
             }
 
             return new ApiOkResponse<bool>(isSent);
