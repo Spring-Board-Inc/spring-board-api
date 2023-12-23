@@ -29,7 +29,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[Authorize(Roles = "SuperAdministrator")]
+        [Authorize(Roles = "SuperAdministrator")]
         [HttpGet]
         public IActionResult Get() =>
             Ok(_manager.Roles.Where(_=> true).ToList());
@@ -49,7 +49,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[Authorize(Roles = "SuperAdministrator")]
+        [Authorize(Roles = "SuperAdministrator")]
         [HttpPost]
         public async Task<IActionResult> Create(RoleForCreateDto request)
         {
@@ -81,7 +81,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[Authorize(Roles = "SuperAdministrator")]
+        [Authorize(Roles = "SuperAdministrator")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] RoleForCreateDto request)
         {
@@ -109,7 +109,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[Authorize(Roles = "SuperAdministrator")]
+        [Authorize(Roles = "SuperAdministrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
