@@ -1,60 +1,58 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class CompanyRepository : RepositoryBase<Company>, ICompanyRepository
+    public class CompanyRepository : MongoRepositoryBase<Company>, ICompanyRepository
     {
-        public CompanyRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public CompanyRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}
 
-        public async Task CreateCompanyAsync(Company company) => await Create(company);
+        public async Task AddAsync(Company company) => 
+            await CreateAsync(company);
 
-        public void DeleteCompany(Company company) => Delete(company);
+        public async Task DeleteAsync(Expression<Func<Company, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public void UpdateCompany(Company company) => Update(company);
+        public async Task EditAsync(Expression<Func<Company, bool>> expression, Company company) => 
+            await UpdateAsync(expression, company);
 
-        public async Task<Company?> FindCompanyAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(c => c.Id.Equals(id), trackChanges)
-                    .FirstOrDefaultAsync();
+        public async Task<Company?> FindAsync(Guid id) =>
+            await GetAsync(c => c.Id.Equals(id));
 
-        public async Task<PagedList<Company>> FindCompaniesAsync(SearchParameters parameters, bool trackChanges)
+        public PagedList<Company> FindAsync(SearchParameters parameters)
         {
-            var companies = await FindAll(trackChanges)
+            var companies = GetAsQueryable(_ => true)
                     .Search(parameters.SearchBy)
                     .OrderBy(c => c.Name)
-                    .ThenBy(c => c.CreatedAt)
-                    .ToListAsync();
+                    .ThenBy(c => c.CreatedAt);
 
             return PagedList<Company>.ToPagedList(companies, parameters.PageNumber, parameters.PageSize);
         }
 
-        public async Task<PagedList<Company>> FindCompaniesAsync(SearchParameters parameters, bool trackChanges, string userId = "", bool isEmployer = false)
+        public PagedList<Company> FindAsync(SearchParameters parameters, Guid userId, bool isEmployer = false)
         {
             var companies = isEmployer ?
-                                await FindByCondition(c => c.UserId.Equals(userId), trackChanges)
-                                        .Search(parameters.SearchBy)
-                                        .OrderBy(c => c.Name)
-                                        .ThenBy(c => c.CreatedAt)
-                                        .ToListAsync() :
-                                await FindAll(trackChanges)
-                                    .Search(parameters.SearchBy)
+                                 GetAsQueryable(c => c.UserId.Equals(userId))
                                     .OrderBy(c => c.Name)
                                     .ThenBy(c => c.CreatedAt)
-                                    .ToListAsync();
+                                    .Search(parameters.SearchBy) :
+                                GetAsQueryable(_ => true)
+                                    .OrderBy(c => c.Name)
+                                    .ThenBy(c => c.CreatedAt)
+                                    .Search(parameters.SearchBy);
 
             return PagedList<Company>.ToPagedList(companies, parameters.PageNumber, parameters.PageSize);
         }
 
-        public async Task<int> Count(bool trackChanges)
+        public async Task<long> Count(Expression<Func<Company, bool>> expression)
         {
-            var companies = await FindByCondition(c => c.IsDeprecated == false, trackChanges)
-                .ToListAsync();
-
-            return companies.Count;
+            return await CountAsync(expression);
         }
     }
 }

@@ -76,7 +76,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] SearchParameters parameters) => Ok(await service.Faq.Get(parameters));
+        public IActionResult Get([FromQuery] SearchParameters parameters) => Ok(service.Faq.Get(parameters));
 
         ///<summary>
         ///Updates a FAQ entity

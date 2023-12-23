@@ -1,17 +1,18 @@
 ﻿using Entities.Models;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IStateRepository
     {
-        Task<PagedList<State>> GetStates(StateSearchParameters searchParameters, bool trackChanges = false);
-        Task<State?> GetStateAsync(Guid id, bool trackChanges);
-        Task CreateStateAsync(State state);
-        void DeleteState(State state);
-        void UpdateState(State state);
-        IQueryable<State> GetStates(Guid countryId, bool trackChanges);
-        IQueryable<State> GetState(Guid id, bool trackChanges);
-        Task<PagedList<State>> GetStatesByCountry(StateSearchParameters parameters, bool trackChanges = false);
+        Task AddAsync(State state);
+        Task DeleteAsync(Expression<Func<State, bool>> expression);
+        IQueryable<State> FindByCountryAsQueryable(Guid countryId);
+        Task<State?> FindAsync(Guid id);
+        IQueryable<State> FindByIdAsQueryable(Guid id);
+        PagedList<State> FindByCountryIdAsync(StateSearchParameters parameters);
+        PagedList<State> FindStates(StateSearchParameters searchParameters);
+        Task EditAsync(Expression<Func<State, bool>> expression, State state);
     }
 }

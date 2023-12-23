@@ -34,7 +34,7 @@ namespace Services
                 )
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var skill = await _repository.Skills.FindSkillAsync(skillId, false);
+            var skill = await _repository.Skills.FindByIdAsync(skillId);
             if (skill == null)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 

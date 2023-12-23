@@ -9,7 +9,7 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Create(string userId, CompanyRequestObject request);
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Update(Guid id, CompanyRequestObject request);
-        Task<ApiBaseResponse> Get(string userId, bool isEmployer, SearchParameters parameters);
+        ApiBaseResponse Get(string userId, bool isEmployer, SearchParameters parameters);
         Task<ApiBaseResponse> Get(Guid id);
     }
 }
