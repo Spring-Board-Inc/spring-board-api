@@ -19,7 +19,7 @@ builder.Services.ConfigureLoggerService();
 
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
-builder.Services.ConfigureMailJet();
+builder.Services.ConfigureMailJet(builder.Configuration);
 
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAuthentication();

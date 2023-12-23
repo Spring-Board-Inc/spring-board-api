@@ -765,6 +765,54 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.RoleController.Get">
+            <summary>
+            Gets Roles
+            </summary>
+            <returns>List of System Roles</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.RoleController.Create(Shared.DataTransferObjects.RoleForCreateDto)">
+            <summary>
+            Creates System Role
+            </summary>
+            <param name="request"></param>
+            <returns>Identity result</returns>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.RoleController.Update(System.Guid,Shared.DataTransferObjects.RoleForCreateDto)">
+            <summary>
+            Updates System Role
+            </summary>
+            <param name="id"></param>
+            <param name="request"></param>
+            <returns>Identity result</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
+        <member name="M:SpringBoard.Presentation.Controllers.V1.RoleController.Delete(System.Guid)">
+            <summary>
+            Permanently deletes system role
+            </summary>
+            <param name="id"></param>
+            <returns>Identity result</returns>
+            <response code="200">OK</response>
+            <response code="401">Unauthorized</response>
+            <response code="404">Not Found</response>
+            <response code="403">Forbidden</response>
+            <response code="500">Server error</response>
+        </member>
         <member name="M:SpringBoard.Presentation.Controllers.V1.SkillController.Create(Shared.DataTransferObjects.SkillRequest)">
              <summary>
              Creates a new skill.
@@ -834,7 +882,7 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserInfo(System.String)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.GetUserInfo(System.Guid)">
             <summary>
             End-point to get user information by user id
             </summary>
@@ -847,7 +895,7 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error.</response>
         </member>
-        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateUserInfo(System.String)">
+        <member name="M:SpringBoard.Presentation.Controllers.V1.UserInformationController.CreateUserInfo(System.Guid)">
             <summary>
             End-point to create a new user information
             </summary>

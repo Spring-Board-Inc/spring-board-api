@@ -62,7 +62,7 @@ namespace SpringBoardApi.Extensions
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("JwtSettings");
-            var secretKey = Environment.GetEnvironmentVariable("SECRET");
+            var secretKey = jwtSettings["Kokoro"];// Environment.GetEnvironmentVariable("SECRET");
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -121,11 +121,12 @@ namespace SpringBoardApi.Extensions
                 });
             });
 
-        public static void ConfigureMailJet(this IServiceCollection services) => 
+        public static void ConfigureMailJet(this IServiceCollection services, IConfiguration configuration) => 
             services.AddHttpClient<IMailjetClient, MailjetClient>(client =>
             {
-                var apiKey = Environment.GetEnvironmentVariable("MAILJETAPIKEY");
-                var apiSecret = Environment.GetEnvironmentVariable("MAILJETSECRET");
+                var settings = configuration.GetSection("Mj");
+                var apiKey = settings["Kokoro"];//Environment.GetEnvironmentVariable("MAILJETAPIKEY");
+                var apiSecret = settings["Asiri"];// Environment.GetEnvironmentVariable("MAILJETSECRET");
                 client.UseBasicAuthentication(apiKey, apiSecret);
             });
 

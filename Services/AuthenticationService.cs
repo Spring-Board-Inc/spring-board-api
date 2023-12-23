@@ -280,7 +280,8 @@ namespace Services
 
         private SigningCredentials GetSigningCredentials()
         {
-            var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
+            var setting = _configuration.GetSection("JwtSettings");
+            var key = Encoding.UTF8.GetBytes(setting["Kokoro"]);// Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
