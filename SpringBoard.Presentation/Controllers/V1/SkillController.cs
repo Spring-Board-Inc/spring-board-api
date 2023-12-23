@@ -29,7 +29,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpPost]
-        [Authorize(Roles = "SuperAdministrator, Administrator")]
+        //[Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -108,7 +108,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet]
-        [Authorize(Roles = "SuperAdministrator, Administrator, Applicant")]
+        //[Authorize(Roles = "SuperAdministrator, Administrator, Applicant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

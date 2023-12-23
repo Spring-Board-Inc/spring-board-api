@@ -72,7 +72,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Get(SearchParameters parameters)
         {
-            var skills = await _repository.Skills.FindSkills(parameters, false);
+            var skills = _repository.Skills.FindSkills(parameters, false);
             var data = _mapper.Map<IEnumerable<SkillDto>>(skills);
 
             var paged = PaginatedListDto<SkillDto>.Paginate(data, skills.MetaData);

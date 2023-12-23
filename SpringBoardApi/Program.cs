@@ -11,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
     "/nlog.config"));
 
+builder.Services.ConfigureMongoConnection(builder.Configuration);
+builder.Services.ConfigureMongoIdentity(builder.Configuration);
 builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureLoggerService();
@@ -21,7 +23,7 @@ builder.Services.ConfigureMailJet();
 
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAuthentication();
-builder.Services.ConfigureIdentity();
+//builder.Services.ConfigureIdentity();
 
 builder.Services.ConfigureEmailService();
 builder.Services.ConfigureCloudinaryService();

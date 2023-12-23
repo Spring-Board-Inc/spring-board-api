@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using MongoDbGenericRepository.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
+    [CollectionName("Skills")]
     public class Skill : BaseEntity
     {
-        [Required, Column(TypeName = "nvarchar(30)")]
+        [Required]
         public string Description { get; set; }
-        
+
     }
 }

@@ -81,13 +81,14 @@ namespace Services
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);
             var users = await _repositoryContext.Users.AsQueryable()
-                                    .Where(u => u.CreatedAt >= searchParameters.StartDate && u.CreatedAt <= endDate)
-                                    .Search(searchParameters.SearchBy)
-                                    .OrderByDescending(u => u.CreatedAt)
-                                    .ThenBy(u => u.FirstName)
+                                    //.Where(u => u >= searchParameters.StartDate && u.CreatedAt <= endDate)
+                                    .Where(_=> true)
+                                    //.Search(searchParameters.SearchBy)
+                                    //.OrderByDescending(u => u.CreatedAt)
+                                    //.ThenBy(u => u.FirstName)
                                     .ToListAsync();
 
-            var pagedList = PagedList<AppUser>.ToPagedList(users, searchParameters.PageNumber, searchParameters.PageSize);
+            var pagedList = PagedList<AppUser>.ToPagedList(new List<AppUser>(), searchParameters.PageNumber, searchParameters.PageSize);
 
             var usersDto = _mapper.Map<IEnumerable<DetailedUserToReturnDto>>(pagedList);
             var pagedDataList = PaginatedListDto<DetailedUserToReturnDto>.Paginate(usersDto, pagedList.MetaData);

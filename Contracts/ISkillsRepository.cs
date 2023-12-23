@@ -5,7 +5,7 @@ namespace Contracts
 {
     public interface ISkillsRepository
     {
-        Task<PagedList<Skill>> FindSkills(SearchParameters parameters, bool trackChanges);
+        PagedList<Skill> FindSkills(SearchParameters parameters, bool trackChanges);
         Task<IEnumerable<Skill>> FindSkillsAsync(bool trackChanges);
         Task<Skill?> FindSkillAsync(Guid id, bool trackChanges);
         void UpdateSkill(Skill skill);

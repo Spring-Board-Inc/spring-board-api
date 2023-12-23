@@ -2,14 +2,12 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Extensions;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
 using Shared.RequestFeatures;
-using System.Security.Claims;
 using Entities.Enums;
 using Microsoft.AspNetCore.Identity;
 
@@ -168,8 +166,8 @@ namespace Services
                 .Include(x => x.CareerSummary);
 
             var usersInfo = await (from user in users
-                        join userJob in userJobs on user.Id equals userJob.UserId
-                        orderby userJob.CreatedAt ascending
+                        //join userJob in userJobs on user.Id equals userJob.UserId
+                        //orderby userJob.CreatedAt ascending
                         select user).Search(searchParams.SearchBy).ToListAsync();
 
             var pagedList = PagedList<AppUser>.ToPagedList(usersInfo, searchParams.PageNumber, searchParams.PageSize);
@@ -191,7 +189,7 @@ namespace Services
                 .Where(u => u.Id.Equals(applicantId.ToString()));
 
             var singleUser = await (from user in userQuery
-                              join userJob in userJobQuery on user.Id equals userJob.UserId
+                              //join userJob in userJobQuery on user.Id equals userJob.UserId
                               select user).FirstOrDefaultAsync();
 
             if (singleUser == null)
@@ -205,22 +203,23 @@ namespace Services
             if (!dto.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var userInfo = await _repository.UserInformation.FindUserInformationAsync(applicantId, false);
-            if (userInfo == null)
+            var userInfo = await _repository.UserInformation.GetByUserIdAsync(Guid.Parse(applicantId));
+            var user = await userManager.FindByIdAsync(userInfo.UserId.ToString());
+            if (userInfo == null || user == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
             
             var job = await _repository.Job.FindJobAsync(jobId, true);
             if(job == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
-            var exists = await _repository.UserJob.Exists(applicantId, jobId);
+            var exists = await _repository.UserJob.Exists(applicantId.ToString(), jobId);
             if (exists)
                 return new BadRequestResponse(ResponseMessages.AlreadyApplied);
             
             if (job.ClosingDate < DateTime.Now)
                 return new BadRequestResponse(ResponseMessages.JobExpired);
             
-            var message = ApplicationMessage(job, userInfo);
+            var message = await ApplicationMessage(job, userInfo);
 
             var isValidFile = Commons.ValidateDocumentFile(dto.Cv);
             if (!isValidFile.Successful)
@@ -229,7 +228,7 @@ namespace Services
             var isSent = await _emailService.SendMailAsync(new ApplicationRequestParameters
             {
                 To = job.Company.Email,
-                Subject = $"{userInfo.User.FirstName} {userInfo.User.LastName}: Application for the position of {job.Title}",
+                Subject = $"{user.FirstName} {user.LastName}: Application for the position of {job.Title}",
                 Message = message,
                 File = dto.Cv
             });
@@ -237,7 +236,7 @@ namespace Services
             if (!isSent)
                 return new BadRequestResponse(ResponseMessages.ApplicationFailed);
 
-            var userJob = new UserJob { UserId = applicantId, JobId = jobId };
+            var userJob = new UserJob { UserId = applicantId.ToString(), JobId = jobId };
             job.NumberOfApplicants++;
 
             await _repository.UserJob.CreateUserJob(userJob);
@@ -270,18 +269,19 @@ namespace Services
         }
 
         #region Private Methods
-        private string? ApplicationMessage(Job job, UserInformation userInformation)
+        private async Task<string?> ApplicationMessage(Job job, UserInformation userInformation)
         {
-            var possessivePronoun = userInformation.User.Gender == EGender.Male.ToString() ? "his" : "her";
-            var objectivePronoun = userInformation.User.Gender == EGender.Male.ToString() ? "him" : "her";
-            var hasPhoneNumber = !string.IsNullOrEmpty(userInformation.User.PhoneNumber);
-            var whenHasPhone = hasPhoneNumber ? $" and phone number: {userInformation.User.PhoneNumber}" : "";
+            var user = await userManager.FindByIdAsync(userInformation.UserId.ToString());
+            var possessivePronoun = user.Gender == EGender.Male.ToString() ? "his" : "her";
+            var objectivePronoun = user.Gender == EGender.Male.ToString() ? "him" : "her";
+            var hasPhoneNumber = !string.IsNullOrEmpty(user.PhoneNumber);
+            var whenHasPhone = hasPhoneNumber ? $" and phone number: {user.PhoneNumber}" : "";
 
             var applicationDetails = new UserJobApplicationDetails 
             { 
-                FirstName = userInformation.User.FirstName,
-                LastName = userInformation.User.LastName,
-                Email = userInformation.User.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
                 JobTitle = job.Title,
                 PossessivePronoun = possessivePronoun,
                 ObjectivePronoun = objectivePronoun,

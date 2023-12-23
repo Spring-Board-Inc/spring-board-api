@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Repositories;
+using Repositories.Configurations;
 using Services;
 using Services.Contracts;
 using System.Text;
@@ -35,6 +36,9 @@ namespace SpringBoardApi.Extensions
             {
                 
             });
+
+        public static void ConfigureMongoConnection(this IServiceCollection services, IConfiguration configuration) =>
+            services.Configure<MongoDbSettings>(configuration.GetSection("SpringBoardMongoDb"));
 
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddSingleton<ILoggerManager, LoggerManager>();
@@ -148,6 +152,15 @@ namespace SpringBoardApi.Extensions
                 opt.SignIn.RequireConfirmedEmail = false;
                 opt.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<RepositoryContext>().AddDefaultTokenProviders();
+
+        public static void ConfigureMongoIdentity(this IServiceCollection services, IConfiguration configuration)
+        {
+            var databaseName = configuration.GetValue<string>("SpringBoardMongoDb:DatabaseName");
+            var connectionStr = configuration.GetValue<string>("SpringBoardMongoDb:ConnectionString");
+            services.AddIdentity<AppUser, AppRole>()
+                .AddMongoDbStores<AppUser, AppRole, Guid>(connectionStr, databaseName)
+                .AddDefaultTokenProviders();
+        }
 
         public static void ConfigureResponseCaching(this IServiceCollection services) =>
             services.AddResponseCaching();

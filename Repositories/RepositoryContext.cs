@@ -5,7 +5,7 @@ using Repositories.Configurations;
 
 namespace Repositories
 {
-    public class RepositoryContext : IdentityDbContext<AppUser>
+    public class RepositoryContext : IdentityDbContext
     {
         public RepositoryContext(DbContextOptions<RepositoryContext> options) : base(options)
         {

@@ -38,7 +38,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserInfo(string userId)
+        public async Task<IActionResult> GetUserInfo(Guid userId)
         {
             var baseResult = await _service.UserInformation.Get(userId);
             if (!baseResult.Success)
@@ -66,7 +66,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserInfo(string userId)
+        public async Task<IActionResult> CreateUserInfo(Guid userId)
         {
             var exists = await _service.UserInformation.Exists(userId);
             if (exists)
