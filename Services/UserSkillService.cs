@@ -43,27 +43,24 @@ namespace Services
             userSkill.SkillId = skillId;
             userSkill.UserInformationId = userInfoId;
 
-            await _repository.UserSkill.CreateUserSkill(userSkill);
-            await _repository.SaveAsync();
-
+            await _repository.UserSkill.AddAsync(userSkill);
             return new ApiOkResponse<UserSkill>(userSkill);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid userInfoId, Guid skillId)
         {
-            var userSkill = await _repository.UserSkill.FindUserSkillAsync(userInfoId, skillId, true);
+            var userSkill = await _repository.UserSkill.FindAsync(userInfoId, skillId);
             if (userSkill == null)
                 return new BadRequestResponse(ResponseMessages.UserSkillNotFound);
 
-            _repository.UserSkill.DeleteUserSkill(userSkill);
-            await _repository.SaveAsync();
-
+            await _repository.UserSkill
+                .DeleteAsync(x => x.UserInformationId.Equals(userInfoId) && x.SkillId.Equals(skillId));
             return new ApiOkResponse<string>(ResponseMessages.NoContent);
         }
 
         public async Task<ApiBaseResponse> Get(Guid userInfoId, Guid skillId)
         {
-            var userSkill = await _repository.UserSkill.FindUserSkillAsync(userInfoId, skillId, false);
+            var userSkill = await _repository.UserSkill.FindAsync(userInfoId, skillId);
             if (userSkill == null)
                 return new BadRequestResponse(ResponseMessages.UserSkillNotFound);
 
@@ -71,9 +68,9 @@ namespace Services
             return new ApiOkResponse<UserSkillMinInfo>(data);
         }
 
-        public async Task<IEnumerable<UserSkillMinInfo>> Get(Guid userInfoId)
+        public IEnumerable<UserSkillMinInfo> Get(Guid userInfoId)
         {
-            var userSkills = await _repository.UserSkill.FindUserSkillsAsync(userInfoId, false);
+            var userSkills = _repository.UserSkill.FindAsList(userInfoId);
             return _mapper.Map<IEnumerable<UserSkillMinInfo>>(userSkills);
         }
 
@@ -91,14 +88,13 @@ namespace Services
                 )
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var userSkill = await _repository.UserSkill.FindUserSkillAsync(userInfoId, skillId, true);
+            var userSkill = await _repository.UserSkill.FindAsync(userInfoId, skillId);
             if (userSkill == null)
                 return new NotFoundResponse(ResponseMessages.UserSkillNotFound);
 
             userSkill.Level = request.Level;
-            _repository.UserSkill.UpdateUserSkill(userSkill);
-            await _repository.SaveAsync();
-
+            await _repository.UserSkill
+                .EditAsync(x => x.UserInformationId.Equals(userInfoId) && x.SkillId.Equals(skillId), userSkill);
             return new ApiOkResponse<string>(ResponseMessages.NoContent);
         }
     }

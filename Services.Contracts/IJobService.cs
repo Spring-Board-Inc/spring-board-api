@@ -1,5 +1,4 @@
 ﻿using Entities.Response;
-using Microsoft.AspNetCore.Http;
 using Shared.DataTransferObjects;
 using Shared.RequestFeatures;
 
@@ -11,11 +10,11 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Update(Guid id, JobRequestObject request);
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Get(Guid id);
-        Task<ApiBaseResponse> Get(SearchParameters searchParameters);
-        Task<ApiBaseResponse> Get(JobSearchParams searchParams);
+        ApiBaseResponse Get(SearchParameters searchParameters);
+        ApiBaseResponse Get(JobSearchParams searchParams);
         Task<ApiBaseResponse> Apply(Guid jobId, string applicantId, CvToSendDto dto);
-        Task<ApiBaseResponse> Get(Guid companyId, SearchParameters searchParams);
-        Task<ApiBaseResponse> Get(string userId, SearchParameters searchParams);
+        ApiBaseResponse Get(Guid companyId, SearchParameters searchParams);
+        ApiBaseResponse Get(string userId, SearchParameters searchParams);
         Task<ApiBaseResponse> GetApplicants(Guid jobId, SearchParameters searchParams);
         Task<ApiBaseResponse> JobStats();
         Task<ApiBaseResponse> GetApplicant(Guid jobId, Guid applicantId);

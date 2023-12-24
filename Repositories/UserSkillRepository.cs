@@ -1,31 +1,35 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class UserSkillRepository : RepositoryBase<UserSkill>, IUserSkillRepository
+    public class UserSkillRepository : MongoRepositoryBase<UserSkill>, IUserSkillRepository
     {
-        public UserSkillRepository(RepositoryContext context) : base(context)
+        public UserSkillRepository(IOptions<MongoDbSettings> options) : base(options)
         {}
 
-        public async Task CreateUserSkill(UserSkill userSkill) => await Create(userSkill);
+        public async Task AddAsync(UserSkill userSkill) => 
+            await CreateAsync(userSkill);
 
-        public void UpdateUserSkill(UserSkill userSkill) => Update(userSkill);
+        public async Task EditAsync(Expression<Func<UserSkill, bool>> expression, UserSkill userSkill) => 
+            await UpdateAsync(expression, userSkill);
 
-        public void DeleteUserSkill(UserSkill userSkill) => Delete(userSkill);
+        public async Task DeleteAsync(Expression<Func<UserSkill, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<UserSkill?> FindUserSkillAsync(Guid userInfoId, Guid skillId, bool trackChanges) =>
-            await FindByCondition(us => us.UserInformationId.Equals(userInfoId) && us.SkillId.Equals(skillId), trackChanges)
-                .FirstOrDefaultAsync();
+        public async Task<UserSkill?> FindAsync(Guid userInfoId, Guid skillId) =>
+            await GetAsync(us => us.UserInformationId.Equals(userInfoId) && us.SkillId.Equals(skillId));
 
-        public async Task<IEnumerable<UserSkill>> FindUserSkillsAsync(Guid userInfoId, bool trackChanges) =>
-            await FindByCondition(us => us.UserInformationId.Equals(userInfoId), trackChanges)
+        public IEnumerable<UserSkill> FindAsList(Guid userInfoId) =>
+            GetAsQueryable(us => us.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(us => us.Skill)
-                .ToListAsync();
+                .ToList();
 
-        public IQueryable<UserSkill> FindUserSkills(Guid userInfoId, bool trackChanges) =>
-            FindByCondition(us => us.UserInformationId.Equals(userInfoId), trackChanges)
+        public IQueryable<UserSkill> FindAsQueryable(Guid userInfoId) =>
+            GetAsQueryable(us => us.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(us => us.Skill);
     }
 }

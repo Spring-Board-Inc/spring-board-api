@@ -1,17 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Entities.Models
 {
     public class UserJob
     {
-        [Key]
-        [Column(Order = 1)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid JobId { get; set; }
-        [Key]
-        [Column(Order = 2)]
         public string UserId { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsDeprecated { get; set; } = false;
     }
 }

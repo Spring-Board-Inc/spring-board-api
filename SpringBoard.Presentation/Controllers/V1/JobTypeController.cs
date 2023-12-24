@@ -78,9 +78,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            var result = await _service.JobType.Get();
+            var result = _service.JobType.Get();
             return Ok(result);
         }
 

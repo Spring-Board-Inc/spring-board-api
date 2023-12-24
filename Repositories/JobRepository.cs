@@ -1,24 +1,30 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class JobRepository : RepositoryBase<Job>, IJobRepository
+    public class JobRepository : MongoRepositoryBase<Job>, IJobRepository
     {
-        public JobRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public JobRepository(IOptions<MongoDbSettings> options) : base(options)
         {}
 
-        public async Task CreateJobAsync(Job job) => await Create(job);
+        public async Task AddAsync(Job job) => 
+            await CreateAsync(job);
 
-        public void UpdateJob(Job job) => Update(job);
+        public async Task EditAsync(Expression<Func<Job, bool>> expression, Job job) => 
+            await UpdateAsync(expression, job);
 
-        public void DeleteJob(Job job) => Delete(job);
+        public async Task DeleteAsync(Expression<Func<Job, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<Job?> FindJobAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(j => j.Id.Equals(id), trackChanges)
+        public async Task<Job?> FindAsync(Guid id) =>
+            await GetAsQueryable(j => j.Id.Equals(id))
                     .Include(j => j.Company)
                     .Include(j => j.Industry)
                     .Include(j => j.Type)
@@ -26,45 +32,42 @@ namespace Repositories
                     .Include(j => j.Country)
                     .FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<Job>> FindJobsAsync(bool trackChanges) =>
-            await FindAll(trackChanges)
+        public IEnumerable<Job> FindAsync() =>
+            GetAsQueryable(x => x.IsDeprecated == false)
                     .OrderByDescending(j => j.CreatedAt)
                     .ThenBy(j => j.Title)
-                    .ToListAsync();
+                    .ToList();
 
-        public IQueryable<Job> FindJobs(bool trackChanges) =>
-            FindAll(trackChanges)
+        public IQueryable<Job> FindAsQueryable() =>
+            GetAsQueryable(x => x.IsDeprecated == false)
                .OrderByDescending(j => j.CreatedAt)
                .ThenBy(j => j.Title);
 
-        public async Task<PagedList<Job>> FindJobs(SearchParameters parameters)
+        public PagedList<Job> Find(SearchParameters parameters)
         {
             var endDate = parameters.EndDate == DateTime.MaxValue ? parameters.EndDate : parameters.EndDate.AddDays(1);
-            var jobs = await FindByCondition(j => j.IsDeprecated == false &&   
-                                    (j.CreatedAt >= parameters.StartDate && j.CreatedAt <= endDate), false)
-                                .Search(parameters.SearchBy)
+            var jobs = GetAsQueryable(j => j.IsDeprecated == false && (j.CreatedAt >= parameters.StartDate && j.CreatedAt <= endDate))
                                 .Include(j => j.Industry)
                                 .Include(j => j.Company)
                                 .Include(j => j.State)
                                 .Include(j => j.Country)
                                 .Include(j => j.Type)
                                 .OrderByDescending(j => j.CreatedAt)
-                                .ToListAsync();
+                                .Search(parameters.SearchBy);
 
             return PagedList<Job>.ToPagedList(jobs, parameters.PageNumber, parameters.PageSize);
         }
 
-        public async Task<PagedList<Job>> FindJobs(SearchParameters parameters, bool trackChanges)
+        public PagedList<Job> FindNoDateFilter(SearchParameters parameters)
         {
-            var jobs = await FindByCondition(j => j.IsDeprecated == false, trackChanges)
-                                .Search(parameters.SearchBy)
+            var jobs = GetAsQueryable(j => j.IsDeprecated == false)
                                 .Include(j => j.Industry)
                                 .Include(j => j.Company)
                                 .Include(j => j.State)
                                 .Include(j => j.Country)
                                 .Include(j => j.Type)
                                 .OrderByDescending(j => j.CreatedAt)
-                                .ToListAsync();
+                                .Search(parameters.SearchBy);
 
             return PagedList<Job>.ToPagedList(jobs, parameters.PageNumber, parameters.PageSize);
         }

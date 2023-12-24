@@ -322,9 +322,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetWorkExperiences(Guid userInfoId)
+        public IActionResult GetWorkExperiences(Guid userInfoId)
         {
-            return Ok(await _service.WorkExperience.Get(userInfoId, false));     
+            return Ok(_service.WorkExperience.GetAsList(userInfoId));     
         }
 
         ///<summary>
@@ -517,9 +517,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserSkills(Guid userInfoId)
+        public IActionResult GetUserSkills(Guid userInfoId)
         {
-            return Ok(await _service.UserSkill.Get(userInfoId));
+            return Ok(_service.UserSkill.Get(userInfoId));
         }
 
         #endregion
