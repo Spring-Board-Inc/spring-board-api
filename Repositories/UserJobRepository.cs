@@ -1,45 +1,47 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class UserJobRepository : RepositoryBase<UserJob>, IUserJobRepository
+    public class UserJobRepository : MongoRepositoryBase<UserJob>, IUserJobRepository
     {
-        public UserJobRepository(RepositoryContext context) : base(context) { }
+        public UserJobRepository(IOptions<MongoDbSettings> options) : base(options) { }
 
-        public async Task CreateUserJob(UserJob userJob) => await Create(userJob);
+        public async Task AddAsync(UserJob userJob) => 
+            await CreateAsync(userJob);
 
-        public void UpdateUserJob(UserJob userJob) => Update(userJob);
+        public async Task EditAsync(Expression<Func<UserJob, bool>> expression, UserJob userJob) => 
+            await UpdateAsync(expression, userJob);
 
-        public void DeleteUserJob(UserJob userJob) => Delete(userJob);
+        public async Task DeleteAsync(Expression<Func<UserJob, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<UserJob?> FindUserJobAsync(string userId, Guid jobId, bool trackChanges) =>
-            await FindByCondition(uj => uj.UserId.Equals(userId) && uj.JobId.Equals(jobId), trackChanges)
-                .FirstOrDefaultAsync();
+        public async Task<UserJob?> FindAsync(string userId, Guid jobId) =>
+            await GetAsync(uj => uj.UserId.Equals(userId) && uj.JobId.Equals(jobId));
 
-        public async Task<IEnumerable<UserJob>> FindUserJobsAsync(string userId, bool trackChanges) =>
-            await FindByCondition(uj => uj.UserId.Equals(userId), trackChanges)
+        public IEnumerable<UserJob> FindByUserId(string userId) =>
+            GetAsQueryable(uj => uj.UserId.Equals(userId))
                 .OrderByDescending(uj => uj.CreatedAt)
-                .ToListAsync();
+                .ToList();
 
-        public IQueryable<UserJob> FindUserJobs
-            (string userId, bool trackChanges) =>
-            FindByCondition(uj => uj.UserId.Equals(userId), trackChanges)
+        public IQueryable<UserJob> FindAsQueryable(string userId) =>
+            GetAsQueryable(uj => uj.UserId.Equals(userId))
                 .OrderByDescending(uj => uj.CreatedAt);
 
-        public async Task<IEnumerable<UserJob>> FindUserJobsAsync(Guid jobId, bool trackChanges) =>
-            await FindByCondition(uj => uj.JobId.Equals(jobId), trackChanges)
+        public IEnumerable<UserJob> FindByJobId(Guid jobId) =>
+            GetAsQueryable(uj => uj.JobId.Equals(jobId))
                 .OrderByDescending(uj => uj.CreatedAt)
-                .ToListAsync();
+                .ToList();
 
-        public IQueryable<UserJob> FindUserJobs
-            (Guid jobId, bool trackChanges) =>
-            FindByCondition(uj => uj.JobId.Equals(jobId), trackChanges)
+        public IQueryable<UserJob> FindByJobIdAsQueryable(Guid jobId) =>
+            GetAsQueryable(uj => uj.JobId.Equals(jobId))
                 .OrderByDescending(uj => uj.CreatedAt);
 
-        public IQueryable<UserJob> FindUserJob(Guid jobId, Guid userId, bool trackChanges) =>
-            FindByCondition(uj => uj.JobId.Equals(jobId) && userId.Equals(userId), trackChanges);
+        public IQueryable<UserJob> FindAsQueryable(Guid jobId, Guid userId) =>
+            GetAsQueryable(uj => uj.JobId.Equals(jobId) && userId.Equals(userId));
 
         public async Task<bool> Exists(string userId, Guid jobId) => 
             await ExistsAsync(uj => uj.UserId.Equals(userId) && uj.JobId.Equals(jobId));

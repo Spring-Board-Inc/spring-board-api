@@ -322,9 +322,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetWorkExperiences(Guid userInfoId)
+        public IActionResult GetWorkExperiences(Guid userInfoId)
         {
-            return Ok(await _service.WorkExperience.Get(userInfoId, false));     
+            return Ok(_service.WorkExperience.GetAsList(userInfoId));     
         }
 
         ///<summary>

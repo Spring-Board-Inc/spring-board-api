@@ -36,7 +36,7 @@ namespace Repositories
             _educationRepository = new Lazy<IEducationRepository>(() => new
                 EducationRepository(mongoDbSettings));
             _workExperienceRepository = new Lazy<IWorkExperienceRepository>(() => new
-                WorkExperienceRepository(repositoryContext));
+                WorkExperienceRepository(mongoDbSettings));
             _skillsRepository = new Lazy<ISkillsRepository>(() => new
                 SkillsRepository(mongoDbSettings));
             _companyRepository = new Lazy<ICompanyRepository>(() => new
@@ -46,13 +46,13 @@ namespace Repositories
             _industryRepository = new Lazy<IIndustryRepository>(() => new
                 IndustryRepository(mongoDbSettings));
             _jobTypeRepository = new Lazy<IJobTypeRepository>(() => new
-                JobTypeRepository(repositoryContext));
+                JobTypeRepository(mongoDbSettings));
             _jobRepository = new Lazy<IJobRepository>(() => new
-                JobRepository(repositoryContext));
+                JobRepository(mongoDbSettings));
             _userSkillRepository = new Lazy<IUserSkillRepository>(() => new
                 UserSkillRepository(repositoryContext));
             _userJobRepository = new Lazy<IUserJobRepository>(() => new
-                UserJobRepository(repositoryContext));
+                UserJobRepository(mongoDbSettings));
             _stateRepository = new Lazy<IStateRepository>(() => new 
                 StateRepository(mongoDbSettings));
             _countryRepository = new Lazy<ICountryRepository>(() => new

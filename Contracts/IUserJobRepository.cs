@@ -1,18 +1,18 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IUserJobRepository
     {
-        Task CreateUserJob(UserJob userJob);
-        void UpdateUserJob(UserJob userJob);
-        void DeleteUserJob(UserJob userJob);
-        Task<UserJob?> FindUserJobAsync(string userId, Guid jobId, bool trackChanges);
-        Task<IEnumerable<UserJob>> FindUserJobsAsync(string userId, bool trackChanges);
-        IQueryable<UserJob> FindUserJobs(string userId, bool trackChanges);
-        Task<IEnumerable<UserJob>> FindUserJobsAsync(Guid jobId, bool trackChanges);
-        IQueryable<UserJob> FindUserJobs(Guid jobId, bool trackChanges);
+        Task AddAsync(UserJob userJob);
+        Task DeleteAsync(Expression<Func<UserJob, bool>> expression);
+        Task EditAsync(Expression<Func<UserJob, bool>> expression, UserJob userJob);
         Task<bool> Exists(string userId, Guid jobId);
-        IQueryable<UserJob> FindUserJob(Guid jobId, Guid userId, bool trackChanges);
+        IQueryable<UserJob> FindAsQueryable(string userId);
+        IQueryable<UserJob> FindAsQueryable(Guid jobId, Guid userId);
+        Task<UserJob?> FindAsync(string userId, Guid jobId);
+        IQueryable<UserJob> FindByJobIdAsQueryable(Guid jobId);
+        IEnumerable<UserJob> FindByUserId(string userId);
     }
 }

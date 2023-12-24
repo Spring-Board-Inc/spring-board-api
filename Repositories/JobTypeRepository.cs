@@ -1,31 +1,35 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class JobTypeRepository : RepositoryBase<JobType>, IJobTypeRepository
+    public class JobTypeRepository : MongoRepositoryBase<JobType>, IJobTypeRepository
     {
-        public JobTypeRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public JobTypeRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}
 
-        public async Task CreateJobTypeAsync(JobType jobType) => await Create(jobType);
+        public async Task AddAsync(JobType jobType) => 
+            await CreateAsync(jobType);
 
-        public void UpdateJobType(JobType jobType) => Update(jobType);
+        public async Task EditAsync(Expression<Func<JobType, bool>> expression, JobType jobType) => 
+            await UpdateAsync(expression, jobType);
 
-        public void DeleteJobType(JobType jobType) => Delete(jobType);
+        public async Task DeleteAsync(Expression<Func<JobType, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<JobType?> FindJobTypeAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(jt => jt.Id.Equals(id), trackChanges)
-                    .FirstOrDefaultAsync();
+        public async Task<JobType?> FindAsync(Guid id) =>
+            await GetAsync(jt => jt.Id.Equals(id));
 
-        public async Task<IEnumerable<JobType>> FindJobTypesAsync(bool trackChanges) =>
-            await FindAll(trackChanges)
+        public IEnumerable<JobType> FindAsList() =>
+            GetAsQueryable(x => x.IsDeprecated == false)
                     .OrderByDescending(jt => jt.CreatedAt)
-                    .ToListAsync();
+                    .ToList();
 
-        public IQueryable<JobType> FindJobTypes(bool trackChanges) =>
-            FindAll(trackChanges)
+        public IQueryable<JobType> FindAsQueryable() =>
+            GetAsQueryable(x => x.IsDeprecated == false)
                 .OrderByDescending(jt => jt.CreatedAt);
     }
 }

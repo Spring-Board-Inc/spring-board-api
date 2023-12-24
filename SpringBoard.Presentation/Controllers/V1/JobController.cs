@@ -124,9 +124,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]SearchParameters searchParameters)
+        public IActionResult Get([FromQuery]SearchParameters searchParameters)
         {
-            return Ok((await _service.Job.Get(searchParameters)).GetResult<PaginatedListDto<JobToReturnDto>>());
+            return Ok((_service.Job.Get(searchParameters)).GetResult<PaginatedListDto<JobToReturnDto>>());
         }
 
         ///<summary>End-point to get paginated list of jobs filtered by location, company, job type and industry.</summary>
@@ -142,9 +142,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("filter")]
-        public async Task<IActionResult> Get([FromQuery] JobSearchParams searchParameters)
+        public IActionResult Get([FromQuery] JobSearchParams searchParameters)
         {
-            return Ok((await _service.Job.Get(searchParameters)).GetResult<PaginatedListDto<JobToReturnDto>>());
+            return Ok((_service.Job.Get(searchParameters)).GetResult<PaginatedListDto<JobToReturnDto>>());
         }
 
         ///<summary>End-point to get paginated list of applicants that applied for a particular job</summary>
@@ -203,9 +203,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("company-jobs/{companyId}")]
         [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
-        public async Task<IActionResult> Get(Guid companyId, [FromQuery]SearchParameters searchParameters)
+        public IActionResult Get(Guid companyId, [FromQuery]SearchParameters searchParameters)
         {
-            return Ok((await _service.Job.Get(companyId, searchParameters)).GetResult<PaginatedListDto<JobToReturnDto>>());
+            return Ok((_service.Job.Get(companyId, searchParameters)).GetResult<PaginatedListDto<JobToReturnDto>>());
         }
 
         ///<summary>End-point to get job by by applicant</summary>
@@ -222,9 +222,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("applicant-jobs/{applicantId}")]
         [Authorize(Roles = "SuperAdministrator, Administrator, Applicant")]
-        public async Task<IActionResult> Get(string applicantId, [FromQuery]SearchParameters searchParams)
+        public IActionResult Get(string applicantId, [FromQuery]SearchParameters searchParams)
         {
-            return Ok((await _service.Job.Get(applicantId, searchParams)).GetResult<PaginatedListDto<JobToReturnDto>>());
+            return Ok((_service.Job.Get(applicantId, searchParams)).GetResult<PaginatedListDto<JobToReturnDto>>());
         }
 
         ///<summary>End point for user to submit job applications</summary>

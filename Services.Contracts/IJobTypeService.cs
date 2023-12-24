@@ -9,7 +9,7 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Create(JobTypeRequestObject request);
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Update(Guid id, JobTypeRequestObject request);
-        Task<IEnumerable<JobTypeToReturnDto>> Get();
+        IEnumerable<JobTypeToReturnDto> Get();
         Task<ApiBaseResponse> Get(Guid id);
     }
 }
