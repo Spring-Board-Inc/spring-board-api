@@ -2,6 +2,8 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -13,12 +15,14 @@ namespace Services
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
         private readonly IRepositoryManager _repositoryManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public UserInformationService(ILoggerManager logger, IMapper mapper, IRepositoryManager repositoryManager)
+        public UserInformationService(ILoggerManager logger, IMapper mapper, IRepositoryManager repositoryManager, UserManager<AppUser> userManager)
         {
             _logger = logger;
             _mapper = mapper;
             _repositoryManager = repositoryManager;
+            _userManager = userManager;
         }
 
         public async Task<ApiBaseResponse> Create(Guid userId)
@@ -36,7 +40,11 @@ namespace Services
         {
             var userInfo = await _repositoryManager.UserInformation
                 .GetByUserIdAsync(userId);
-            if (userInfo == null)
+
+            var user = _userManager.Users
+                .FirstOrDefault(x => x.Id.Equals(userId));
+
+            if (userInfo == null || user == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
 
             var userEducations = _repositoryManager.Education.FindByUserInfoIdAsQueryable(userInfo.Id)
@@ -55,6 +63,11 @@ namespace Services
             userInfo.UserSkills = userSkills;
 
             var data = _mapper.Map<UserInformationToReturn>(userInfo);
+            data.Street = user.Street;
+            data.State = user.State;
+            data.PostalCode = user.PostalCode;
+            data.Town = user.City;
+            data.Country = user.Country;
             return new ApiOkResponse<UserInformationToReturn?>(data);
         }
 
@@ -70,7 +83,7 @@ namespace Services
 
         public async Task<bool> Exists(Guid userId)
         {
-            return await _repositoryManager.UserInformation.ExistsAsync(userId);
+            return await _repositoryManager.UserInformation.Exists(userId);
         }
     }
 }

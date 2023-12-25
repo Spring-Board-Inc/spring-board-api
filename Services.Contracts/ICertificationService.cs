@@ -8,7 +8,7 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Create(Guid userInfoId, CertificationRequest request);
         Task<ApiBaseResponse> Update(Guid id, CertificationRequest request);
         Task<ApiBaseResponse> Delete(Guid id);
-        Task<IEnumerable<CertificationMinInfo>> Get(Guid id, bool track);
+        IEnumerable<CertificationMinInfo> Get(Guid id, bool track);
         Task<ApiBaseResponse> Get(Guid id);
     }
 }

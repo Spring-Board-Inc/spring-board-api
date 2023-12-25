@@ -31,8 +31,6 @@ namespace Services
             certification.UserInformationId = userInfoId;
 
             await _repository.Certification.AddAsync(certification);
-            userInfo.Certifications.Add(certification);
-            await _repository.UserInformation.EditAsync(x => x.Id.Equals(userInfo), userInfo);
             var certificationToReturn = _mapper.Map<CertificationDto>(certification);
             return new ApiOkResponse<CertificationDto>(certificationToReturn);
         }
@@ -47,9 +45,9 @@ namespace Services
             return new ApiOkResponse<CertificationMinInfo>(certForReturn);
         }
 
-        public async Task<IEnumerable<CertificationMinInfo>> Get(Guid id, bool track)
+        public IEnumerable<CertificationMinInfo> Get(Guid id, bool track)
         {
-            var certs = await _repository.Certification.FindByUserInfoIdAsync(id);
+            var certs = _repository.Certification.FindByUserInfoIdAsync(id);
             return _mapper.Map<IEnumerable<CertificationMinInfo>>(certs);
         }
 
@@ -75,15 +73,7 @@ namespace Services
             if (certificationForDelete == null)
                 return new NotFoundResponse(ResponseMessages.CertificationNotFound);
 
-            var userInfo = await _repository.UserInformation.GetByIdAsync(certificationForDelete.UserInformationId);
-
-            if (userInfo != null)
-            {
-                userInfo.Certifications.Remove(certificationForDelete);
-            }
-
             await _repository.Certification.DeleteAsync(x => x.Id.Equals(id));
-            await _repository.UserInformation.EditAsync(x => x.Id.Equals(userInfo.Id), userInfo);
             return new ApiOkResponse<string>(ResponseMessages.CertificationDeleted);
         }
     }

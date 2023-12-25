@@ -19,7 +19,7 @@ namespace Services.Contracts
         Task<ApiBaseResponse> UpdateUserPhoto(PhotoToUploadDto model, string userId);
         Task<ApiBaseResponse> RemoveProfilePhoto(string userId);
         Task<ApiBaseResponse> Get(string id);
-        ApiBaseResponse GetDetails(Guid id);
+        Task<ApiBaseResponse> GetDetails(Guid id);
         ApiBaseResponse Get(SearchParameters searchParameters);
         Task<ApiBaseResponse> UpdateUserNames(string userId, UserNamesForUpdateDto request);
         Task<ApiBaseResponse> UpdateUserAddress(string userId, UserAddressForUpdateDto request);

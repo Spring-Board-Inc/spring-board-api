@@ -61,9 +61,9 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult GetDetails([FromRoute]Guid id)
+    public async Task<IActionResult> GetDetails([FromRoute]Guid id)
     {
-        var baseResult = _service.User.GetDetails(id);
+        var baseResult = await _service.User.GetDetails(id);
         if (!baseResult.Success)
             return ProcessError(baseResult);
 

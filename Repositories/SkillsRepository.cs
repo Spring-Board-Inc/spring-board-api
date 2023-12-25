@@ -37,5 +37,8 @@ namespace Repositories
 
         public async Task EditAsync(Expression<Func<Skill, bool>> expression, Skill skill) =>
             await UpdateAsync(expression, skill);
+
+        public async Task<bool> Exists(Expression<Func<Skill, bool>> expression) =>
+            await ExistsAsync(expression);
     }
 }

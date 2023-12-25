@@ -4,7 +4,7 @@ namespace Entities.Enums
 {
     public enum ESkillLevel
     {
-        Beginer,
+        Beginner,
         Proficient,
         Advance,
         Expert

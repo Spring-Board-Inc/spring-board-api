@@ -27,20 +27,22 @@ namespace Services
 
             request.Level = Commons.Capitalize(request.Level);
 
-            if (
-                skillId == Guid.Empty ||
-                userInfoId == Guid.Empty ||
-                !Enum.IsDefined(typeof(ESkillLevel), request.Level)
-                )
-                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+            if (!Enum.IsDefined(typeof(ESkillLevel), request.Level))
+                return new BadRequestResponse(ResponseMessages.InvalidSkillLevel);
 
             var skill = await _repository.Skills.FindByIdAsync(skillId);
             if (skill == null)
-                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+                return new BadRequestResponse(ResponseMessages.SkillNotFound);
+
+            if (!await _repository.UserInformation.Exists(x => x.Id.Equals(userInfoId)))
+                return new BadRequestResponse(ResponseMessages.UserInformationNotFound);
+
+            if (await _repository.UserSkill.Exists(x => x.UserInformationId.Equals(userInfoId) && x.SkillId.Equals(skill.Id)))
+                return new BadRequestResponse(ResponseMessages.UserSkillExists);
 
             var userSkill = _mapper.Map<UserSkill>(request);
             userSkill.Skill = skill.Description;
-            userSkill.SkillId = skillId;
+            userSkill.SkillId = skill.Id;
             userSkill.UserInformationId = userInfoId;
 
             await _repository.UserSkill.AddAsync(userSkill);
@@ -81,12 +83,14 @@ namespace Services
 
             request.Level = Commons.Capitalize(request.Level);
 
-            if (
-                skillId == Guid.Empty || 
-                userInfoId == Guid.Empty || 
-                !Enum.IsDefined(typeof(ESkillLevel), request.Level)
-                )
-                return new BadRequestResponse(ResponseMessages.InvalidRequest);
+            if (!Enum.IsDefined(typeof(ESkillLevel), request.Level))
+                return new BadRequestResponse(ResponseMessages.InvalidSkillLevel);
+
+            if (!await _repository.Skills.Exists(x => x.Id.Equals(skillId)))
+                return new BadRequestResponse(ResponseMessages.SkillNotFound);
+
+            if (!await _repository.UserInformation.Exists(x => x.Id.Equals(userInfoId)))
+                return new BadRequestResponse(ResponseMessages.UserInformationNotFound);
 
             var userSkill = await _repository.UserSkill.FindAsync(userInfoId, skillId);
             if (userSkill == null)
@@ -95,7 +99,7 @@ namespace Services
             userSkill.Level = request.Level;
             await _repository.UserSkill
                 .EditAsync(x => x.UserInformationId.Equals(userInfoId) && x.SkillId.Equals(skillId), userSkill);
-            return new ApiOkResponse<string>(ResponseMessages.NoContent);
+            return new ApiOkResponse<string>(ResponseMessages.UserSkillUpdated);
         }
     }
 }

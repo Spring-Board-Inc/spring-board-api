@@ -12,5 +12,6 @@ namespace Contracts
         Task<IEnumerable<Skill>> Find();
         Task<Skill?> FindByIdAsync(Guid id);
         Task EditAsync(Expression<Func<Skill, bool>> expression, Skill skill);
+        Task<bool> Exists(Expression<Func<Skill, bool>> expression);
     }
 }

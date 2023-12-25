@@ -45,9 +45,9 @@ namespace Services
             _authenticationService = new Lazy<IAuthenticationService>(() => new 
                 AuthenticationService(logger, mapper, userManager, config, emailService, repositoryManager, signInManager));
             _userService = new Lazy<IUserService>(() => new 
-                UserService(mapper, userManager, cloudinaryService, httpContextAccessor));
+                UserService(mapper, userManager, cloudinaryService, httpContextAccessor, repositoryManager));
             _userInformationService = new Lazy<IUserInformationService>(() => new
-                UserInformationService(logger, mapper, repositoryManager));
+                UserInformationService(logger, mapper, repositoryManager, userManager));
             _educationService = new Lazy<IEducationService>(() => new
                 EducationService(repositoryManager, mapper));
             _workExperienceService = new Lazy<IWorkExperienceService>(() => new

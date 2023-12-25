@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
-    public class UserSkill
+    public class UserSkill : BaseEntity
     {
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid UserInformationId { get; set; }

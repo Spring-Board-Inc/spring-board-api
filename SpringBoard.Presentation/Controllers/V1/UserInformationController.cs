@@ -655,9 +655,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCertifications(Guid userInfoId)
+        public IActionResult GetCertifications(Guid userInfoId)
         {
-            return Ok(await _service.Certification.Get(userInfoId, false));   
+            return Ok(_service.Certification.Get(userInfoId, false));   
         }
 
         #endregion

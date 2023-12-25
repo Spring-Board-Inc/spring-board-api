@@ -10,6 +10,7 @@ namespace Contracts
         Task<UserInformation?> GetByUserIdAsync(Guid userId);
         Task<UserInformation?> GetByIdAsync(Guid id);
         Task EditAsync(Expression<Func<UserInformation, bool>> expression, UserInformation userInformation);
-        Task<bool> ExistsAsync(Guid userId);
+        Task<bool> Exists(Guid userId);
+        Task<bool> Exists(Expression<Func<UserInformation, bool>> expression);
     }
 }

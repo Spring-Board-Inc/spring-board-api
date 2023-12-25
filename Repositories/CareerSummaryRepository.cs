@@ -19,6 +19,9 @@ namespace Repositories
         public async Task EditAsync(Expression<Func<CareerSummary, bool>> expression, CareerSummary entity) => 
             await UpdateAsync(expression, entity);
 
+        public async Task<CareerSummary?> FindAsync(Expression<Func<CareerSummary, bool>> expression) =>
+            await GetAsync(expression);
+
         public IQueryable<CareerSummary> FindQueryable(Guid userId) =>
             GetAsQueryable(cs => cs.UserId.Equals(userId));
 

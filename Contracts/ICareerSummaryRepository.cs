@@ -9,6 +9,7 @@ namespace Contracts
         Task DeleteAsync(Expression<Func<CareerSummary, bool>> expression);
         Task EditAsync(Expression<Func<CareerSummary, bool>> expression, CareerSummary entity);
         Task<bool> Exists(Guid userId);
+        Task<CareerSummary?> FindAsync(Expression<Func<CareerSummary, bool>> expression);
         IQueryable<CareerSummary> FindByIdAsQueryable(Guid id, Guid userId);
         IQueryable<CareerSummary> FindQueryable(Guid userId);
     }

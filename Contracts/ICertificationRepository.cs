@@ -10,6 +10,6 @@ namespace Contracts
         Task EditAsync(Expression<Func<Certification, bool>> expression, Certification certification);
         Task<Certification?> FindByIdAsync(Guid id);
         IQueryable<Certification> FindByUserInfoIdAsQueryable(Guid userInfoId);
-        Task<List<Certification>> FindByUserInfoIdAsync(Guid userInfoId);
+        List<Certification> FindByUserInfoIdAsync(Guid userInfoId);
     }
 }

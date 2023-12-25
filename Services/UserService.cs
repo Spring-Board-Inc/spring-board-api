@@ -4,7 +4,6 @@ using Entities.Models;
 using Entities.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Repositories.Extensions;
 using Services.Contracts;
 using Shared.DataTransferObjects;
@@ -20,19 +19,22 @@ namespace Services
         private readonly UserManager<AppUser> _userManager;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IRepositoryManager repositoryManager;
 
         public UserService
         (
             IMapper mapper,
             UserManager<AppUser> userManager,
             ICloudinaryService cloudinaryService,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IRepositoryManager repositoryManager
         )
         {
             _mapper = mapper;
             _userManager = userManager;
             _cloudinaryService = cloudinaryService;
             _httpContextAccessor = httpContextAccessor;
+            this.repositoryManager = repositoryManager;
         }
 
         public async Task<ApiBaseResponse> Get(string id)
@@ -45,21 +47,32 @@ namespace Services
             return new ApiOkResponse<DetailedUserToReturnDto>(userToReturn);
         }
 
-        public ApiBaseResponse GetDetails(Guid id)
+        public async Task<ApiBaseResponse> GetDetails(Guid id)
         {
             var user = _userManager.Users
-                .Include(u => u.UserInformation.Educations)
-                .Include(u => u.UserInformation.WorkExperiences)
-                .Include(u => u.UserInformation.UserSkills)
-                .Include(u => u.UserInformation.Certifications)
-                .Include(u => u.CareerSummary)
                 .Where(u => u.Id.Equals(id))
                 .FirstOrDefault();
 
-            if (user == null)
+            var userInfo = await repositoryManager.UserInformation.GetByUserIdAsync(id);
+            if (user == null || userInfo == null)
                 return new BadRequestResponse(ResponseMessages.UserNotFound);
 
-            return new ApiOkResponse<ApplicantInformation>(_mapper.Map<ApplicantInformation>(user));
+            var careerSummary = await repositoryManager.CareerSummary.FindAsync(x => x.UserId.Equals(id));
+            var education = repositoryManager.Education.FindByUserInfoId(userInfo.Id);
+            var experience = repositoryManager.WorkExperience.FindByUserInfoId(userInfo.Id);
+            var skills = repositoryManager.UserSkill.FindAsList(userInfo.Id);
+            var certifications = repositoryManager.Certification
+                .FindByUserInfoIdAsQueryable(userInfo.Id)
+                .ToList();
+
+            var data = _mapper.Map<ApplicantInformation>(user);
+            data.CareerSummary = careerSummary.Summary;
+            data.Educations = _mapper.Map<ICollection<EducationMinInfo>>(education);
+            data.WorkExperiences = _mapper.Map<ICollection<WorkExperienceMinInfo>>(experience);
+            data.Certifications = _mapper.Map<ICollection<CertificationMinInfo>>(certifications);
+            data.UserSkills = _mapper.Map<ICollection<UserSkillMinInfo>>(skills);
+
+            return new ApiOkResponse<ApplicantInformation>(data);
         }
 
         public ApiBaseResponse Get(SearchParameters searchParameters)

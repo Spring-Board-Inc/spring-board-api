@@ -24,8 +24,8 @@ namespace Repositories
         public async Task<Certification?> FindByIdAsync(Guid id) =>
             await GetAsync(ct => ct.Id.Equals(id));
 
-        public async Task<List<Certification>> FindByUserInfoIdAsync(Guid userInfoId) =>
-            await GetAsQueryable(ct => ct.UserInformationId.Equals(userInfoId)).ToListAsync();
+        public List<Certification> FindByUserInfoIdAsync(Guid userInfoId) =>
+            GetAsQueryable(ct => ct.UserInformationId.Equals(userInfoId)).ToList();
 
         public IQueryable<Certification> FindByUserInfoIdAsQueryable(Guid userInfoId) =>
             GetAsQueryable(ct => ct.UserInformationId.Equals(userInfoId))
