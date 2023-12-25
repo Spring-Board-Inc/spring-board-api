@@ -20,6 +20,5 @@
         IContactRepository Contact { get; }
         IAboutUsRepository AboutUs { get; }
         IFaqRepository Faq { get; }
-        Task SaveAsync();
     }
 }

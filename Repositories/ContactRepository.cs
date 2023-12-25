@@ -22,19 +22,19 @@ namespace Repositories
         public async Task DeleteAsync(Expression<Func<Contact, bool>> expression) => 
             await RemoveAsync(expression);
 
-        public async Task<Contact> FindAsync(Guid id) =>
-            await GetAsQueryable(c => c.Id.Equals(id) && c.IsDeprecated == false)
+        public Contact FindAsync(Guid id) =>
+            GetAsQueryable(c => c.Id.Equals(id) && c.IsDeprecated == false)
                     .Include(c => c.Address)
                     .Include(c => c.Phones)
                     .Include(c => c.Email)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefault();
 
-        public async Task<Contact> FindAsync() =>
-            await GetAsQueryable(c => c.IsDeprecated == false)
+        public Contact FindAsync() =>
+            GetAsQueryable(c => c.IsDeprecated == false)
                     .Include(c => c.Address)
                     .Include(c => c.Phones)
                     .Include(c => c.Email)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefault();
 
         public async Task<bool> Exists() =>
             await ExistsAsync(c => c.IsDeprecated == false);

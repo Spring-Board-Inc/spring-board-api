@@ -2,7 +2,6 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
-using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Extensions;
 using Shared;
@@ -43,11 +42,11 @@ namespace Services
             return new ApiOkResponse<CareerSummaryReturnDto>(data);
         }
 
-        public async Task<ApiBaseResponse> GetMany(string userId)
+        public ApiBaseResponse GetMany(string userId)
         {
-            List<CareerSummary> entity = await repository.CareerSummary
+            List<CareerSummary> entity = repository.CareerSummary
                 .FindQueryable(userId.StringToGuid())
-                .ToListAsync();
+                .ToList();
 
             if (entity == null) return new NotFoundResponse(ResponseMessages.CareerSummaryNotFound);
 
@@ -55,11 +54,11 @@ namespace Services
             return new ApiOkResponse<List<CareerSummaryReturnDto>>(data);
         }
 
-        public async Task<ApiBaseResponse> Get(string userId)
+        public ApiBaseResponse Get(string userId)
         {
-            CareerSummary entity = await repository.CareerSummary
+            CareerSummary entity = repository.CareerSummary
                 .FindQueryable(userId.StringToGuid())
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
 
             if (entity == null) return new NotFoundResponse(ResponseMessages.CareerSummaryNotFound);
 
@@ -75,9 +74,9 @@ namespace Services
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
             }
 
-            CareerSummary entity = await repository.CareerSummary
+            CareerSummary entity = repository.CareerSummary
                 .FindByIdAsQueryable(id, userId.StringToGuid())
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
 
             if (entity == null) return new NotFoundResponse(ResponseMessages.CareerSummaryNotFound);
 
@@ -89,9 +88,9 @@ namespace Services
 
         public async Task<ApiBaseResponse> Delete(Guid id, string userId)
         {
-            CareerSummary entity = await repository.CareerSummary
+            CareerSummary entity = repository.CareerSummary
                 .FindByIdAsQueryable(id, userId.StringToGuid())
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
 
             if (entity == null) return new NotFoundResponse(ResponseMessages.CareerSummaryNotFound);
 

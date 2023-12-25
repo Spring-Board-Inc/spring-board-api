@@ -33,18 +33,18 @@ namespace Services
             return new ApiOkResponse<ContactToReturnDto>(data);
         }
 
-        public async Task<ApiBaseResponse> Get()
+        public ApiBaseResponse Get()
         {
-            var contact = await manager.Contact.FindAsync();
+            var contact = manager.Contact.FindAsync();
             if(contact == null) return new ContactNotFoundResponse();
 
             var data = mapper.Map<ContactToReturnDto>(contact);
             return new ApiOkResponse<ContactToReturnDto>(data);
         }
 
-        public async Task<ApiBaseResponse> Get(Guid id)
+        public ApiBaseResponse Get(Guid id)
         {
-            var contact = await manager.Contact.FindAsync(id);
+            var contact = manager.Contact.FindAsync(id);
             if (contact == null) return new ContactNotFoundResponse(id);
 
             var data = mapper.Map<ContactToReturnDto>(contact);
@@ -53,7 +53,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, ContactForUpdateDto request)
         {
-            var contact = await manager.Contact.FindAsync(id);
+            var contact = manager.Contact.FindAsync(id);
             if (contact == null) return new ContactNotFoundResponse(id);
 
             mapper.Map(request, contact);
@@ -65,7 +65,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
-            var contact = await manager.Contact.FindAsync(id);
+            var contact = manager.Contact.FindAsync(id);
             if (contact == null) return new ContactNotFoundResponse(id);
 
             await manager.Contact.DeleteAsync(x => x.Id.Equals(id));
@@ -75,7 +75,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Deprecate(Guid id)
         {
-            var contact = await manager.Contact.FindAsync(id);
+            var contact = manager.Contact.FindAsync(id);
             if (contact == null) return new ContactNotFoundResponse(id);
 
             contact.IsDeprecated = true;

@@ -1196,7 +1196,7 @@
             <response code="403">Forbidden</response>
             <response code="500">Server error</response>
         </member>
-        <member name="M:UserController.GetDetails(System.String)">
+        <member name="M:UserController.GetDetails(System.Guid)">
             <summary>
             End-point to get a user (who has in Applicant role) detailed info
             </summary>

@@ -6,7 +6,6 @@ namespace Repositories
 {
     public sealed class RepositoryManager : IRepositoryManager
     {
-        private readonly RepositoryContext _repositoryContext;
         private readonly Lazy<ITokenRepository> _tokenRepository;
         private readonly Lazy<IUserInformationRepository> _userInformationRepository;
         private readonly Lazy<IEducationRepository> _educationRepository;
@@ -26,9 +25,8 @@ namespace Repositories
         private readonly Lazy<IContactRepository> _contactRepository;
         private readonly Lazy<IFaqRepository> _faqRepository;
 
-        public RepositoryManager(RepositoryContext repositoryContext, IOptions<MongoDbSettings> mongoDbSettings)
+        public RepositoryManager(IOptions<MongoDbSettings> mongoDbSettings)
         {
-            _repositoryContext = repositoryContext;
             _tokenRepository = new Lazy<ITokenRepository>(() => new 
                 TokenRepository(mongoDbSettings));
             _userInformationRepository = new Lazy<IUserInformationRepository>(() => new
@@ -63,7 +61,7 @@ namespace Repositories
                 AboutUsRepository(mongoDbSettings));
             _contactRepository = new Lazy<IContactRepository>(() => new
                 ContactRepository(mongoDbSettings));
-            _faqRepository = new Lazy<IFaqRepository>(() => new 
+            _faqRepository = new Lazy<IFaqRepository>(() => new
                 FaqRepository(mongoDbSettings));
         }
        
@@ -85,6 +83,5 @@ namespace Repositories
         public IContactRepository Contact => _contactRepository.Value;
         public IAboutUsRepository AboutUs => _aboutUsRepository.Value;
         public IFaqRepository Faq => _faqRepository.Value;
-        public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
     }
 }

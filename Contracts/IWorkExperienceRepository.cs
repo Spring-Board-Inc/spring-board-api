@@ -11,5 +11,6 @@ namespace Contracts
         Task<WorkExperience?> FindAsync(Guid id);
         IEnumerable<WorkExperience> FindByUserInfoId(Guid userInfoId);
         Task AddAsync(WorkExperience workExperience);
+        IQueryable<WorkExperience> FindByUserInfoIdAsQueryable(Guid userInfoId);
     }
 }

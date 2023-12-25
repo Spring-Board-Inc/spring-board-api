@@ -29,6 +29,9 @@ namespace Services
             if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
+            var userInfo = await _repositoryManager.UserInformation.GetByIdAsync(userInfoId);
+            if(userInfo == null) return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
+
             var levelOfEducation = ((ELevel)request.Level).AsString(EnumFormat.Description);
             var education = _mapper.Map<Education>(request);
             education.LevelOfEducation = levelOfEducation;

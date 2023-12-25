@@ -2,7 +2,6 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
-using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -77,8 +76,8 @@ namespace Services
             return new ApiOkResponse<PaginatedListDto<CountryDto>>(pagedData);
         }
 
-        public async Task<IEnumerable<CountryDto>> GetAll() =>
-            _mapper.Map<IEnumerable<CountryDto>>(await _repository.Country.FindAsQueryable().ToListAsync());
+        public IEnumerable<CountryDto> GetAll() =>
+            _mapper.Map<IEnumerable<CountryDto>>(_repository.Country.FindAsQueryable().ToList());
 
         public async Task<ApiBaseResponse> GetCountry(Guid id)
         {
@@ -105,19 +104,19 @@ namespace Services
             return new ApiOkResponse<PaginatedListDto<StateDto>>(pagedData);
         }
 
-        public async Task<IEnumerable<StateDto>> GetAll(Guid countryId)
+        public IEnumerable<StateDto> GetAll(Guid countryId)
         {
             if(!countryId.Equals(Guid.Empty))
-                return _mapper.Map<IEnumerable<StateDto>>(await _repository.State.FindByCountryAsQueryable(countryId)
-                    .ToListAsync());
+                return _mapper.Map<IEnumerable<StateDto>>(_repository.State.FindByCountryAsQueryable(countryId)
+                    .ToList());
 
             return new List<StateDto>();
         }
 
-        public async Task<ApiBaseResponse> GetState(Guid id)
+        public ApiBaseResponse GetState(Guid id)
         {
-            var entity = await _repository.State.FindByIdAsQueryable(id)
-                .FirstOrDefaultAsync();
+            var entity = _repository.State.FindByIdAsQueryable(id)
+                .FirstOrDefault();
             if (entity == null)
                 return new NotFoundResponse(ResponseMessages.StateNotFound);
 

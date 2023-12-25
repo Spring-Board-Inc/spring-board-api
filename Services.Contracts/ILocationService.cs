@@ -7,7 +7,7 @@ namespace Services.Contracts
 {
     public interface ILocationService
     {
-        Task<ApiBaseResponse> GetState(Guid id);
+        ApiBaseResponse GetState(Guid id);
         ApiBaseResponse GetStates(StateSearchParameters searchParameters);
         Task<ApiBaseResponse> CreateState(StateForCreationDto state);
         Task<ApiBaseResponse> DeleteState(Guid id);
@@ -17,7 +17,7 @@ namespace Services.Contracts
         Task<ApiBaseResponse> CreateCountry(CountryForCreationDto state);
         Task<ApiBaseResponse> DeleteCountry(Guid id);
         Task<ApiBaseResponse> UpdateCountry(Guid id, CountryForUpdateDto stateForUpdate);
-        Task<IEnumerable<StateDto>> GetAll(Guid countryId);
-        Task<IEnumerable<CountryDto>> GetAll();
+        IEnumerable<StateDto> GetAll(Guid countryId);
+        IEnumerable<CountryDto> GetAll();
     }
 }

@@ -4,7 +4,6 @@ using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Repositories;
 using Services.Contracts;
 
 namespace Services
@@ -38,7 +37,6 @@ namespace Services
             IEmailService emailService,
             SignInManager<AppUser> signInManager,
             ICloudinaryService cloudinaryService,
-            RepositoryContext repositoryContext,
             IHttpContextAccessor httpContextAccessor
             )
         {
@@ -47,7 +45,7 @@ namespace Services
             _authenticationService = new Lazy<IAuthenticationService>(() => new 
                 AuthenticationService(logger, mapper, userManager, config, emailService, repositoryManager, signInManager));
             _userService = new Lazy<IUserService>(() => new 
-                UserService(logger, mapper, userManager, config, repositoryManager, cloudinaryService, repositoryContext, httpContextAccessor));
+                UserService(mapper, userManager, cloudinaryService, httpContextAccessor));
             _userInformationService = new Lazy<IUserInformationService>(() => new
                 UserInformationService(logger, mapper, repositoryManager));
             _educationService = new Lazy<IEducationService>(() => new

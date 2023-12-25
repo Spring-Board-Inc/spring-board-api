@@ -54,7 +54,6 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet, Route("country/{id}")]
-        //[Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -80,7 +79,6 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet("country")]
-        //[Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -101,14 +99,13 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet("country/all")]
-        //[Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            return Ok(await _service.Location.GetAll());
+            return Ok(_service.Location.GetAll());
         }
 
         /// <summary>
@@ -205,15 +202,14 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet, Route("state/{id}")]
-        //[Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetSingleState(Guid id)
+        public IActionResult GetSingleState(Guid id)
         {
-            var baseResult = await _service.Location.GetState(id);
+            var baseResult = _service.Location.GetState(id);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
@@ -231,7 +227,6 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet("state")]
-        //[Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -252,14 +247,13 @@ namespace SpringBoard.Presentation.Controllers.V1
         ///<response code="403">Forbidden</response>
         ///<response code="500">Server error</response>
         [HttpGet("state/all/{countryId}")]
-        //[Authorize(Roles = "SuperAdministrator, Administrator")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllStates([FromRoute] Guid countryId)
+        public IActionResult GetAllStates([FromRoute] Guid countryId)
         {
-            return Ok(await _service.Location.GetAll(countryId));
+            return Ok(_service.Location.GetAll(countryId));
         }
 
         /// <summary>

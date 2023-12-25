@@ -28,8 +28,6 @@ namespace Services
                 UserId = userId
             };
             await _repositoryManager.UserInformation.AddAsync(userInformation);
-            await _repositoryManager.SaveAsync();
-
             var data = _mapper.Map<UserInformationToReturnDto>(userInformation);
             return new ApiOkResponse<UserInformationToReturnDto>(data);
         }
@@ -38,25 +36,23 @@ namespace Services
         {
             var userInfo = await _repositoryManager.UserInformation
                 .GetByUserIdAsync(userId);
-            //if (userInfo == null)
-            //    return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
+            if (userInfo == null)
+                return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
 
-            //var userEducations = await _repositoryManager.Education.GetEducations(userInfo.Id, false)
-            //                                       .OrderByDescending(ui => ui.StartDate)
-            //                                       .ToListAsync();
-            //var userWorkExperiences = await _repositoryManager.WorkExperience.FindExperiences(userInfo.Id, false)
-            //                                       .OrderByDescending(ui => ui.StartDate)
-            //                                       .ToListAsync();
-            //var userCertifications = await _repositoryManager.Certification.FindCertifications(userInfo.Id, false)
-            //                                       .OrderByDescending(ui => ui.IssuingDate)
-            //                                       .ToListAsync();
-            //var userSkills = await _repositoryManager.UserSkill.FindUserSkills(userInfo.Id, false)
-            //                                       .ToListAsync();
+            var userEducations = _repositoryManager.Education.FindByUserInfoIdAsQueryable(userInfo.Id)
+                                                   .OrderByDescending(ui => ui.StartDate)
+                                                   .ToList();
+            var userWorkExperiences = _repositoryManager.WorkExperience.FindByUserInfoIdAsQueryable(userInfo.Id)
+                                                   .ToList();
+            var userCertifications = _repositoryManager.Certification.FindByUserInfoIdAsQueryable(userInfo.Id)
+                                                   .ToList();
+            var userSkills = _repositoryManager.UserSkill.FindAsQueryable(userInfo.Id)
+                                                   .ToList();
 
-            //userInfo.Educations = userEducations;
-            //userInfo.WorkExperiences = userWorkExperiences;
-            //userInfo.Certifications = userCertifications;
-            //userInfo.UserSkills = userSkills;
+            userInfo.Educations = userEducations;
+            userInfo.WorkExperiences = userWorkExperiences;
+            userInfo.Certifications = userCertifications;
+            userInfo.UserSkills = userSkills;
 
             var data = _mapper.Map<UserInformationToReturn>(userInfo);
             return new ApiOkResponse<UserInformationToReturn?>(data);

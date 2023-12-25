@@ -1,23 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models
 {
     public class WorkExperience : BaseEntity
     {
-        [Required, Column(TypeName = "nvarchar(100)")]
+        [Required]
         public string Company { get; set; }
-        [Required, Column(TypeName = "nvarchar(80)")]
+        [Required]
         public string Location { get; set; }
-        [Required, Column(TypeName = "nvarchar(50)")]
+        [Required]
         public string Designation { get; set; }
-        [Required, Column(TypeName = "nvarchar(1500)")]
+        [Required]
         public string? Descriptions { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        [ForeignKey(nameof(UserInformation))]
         public Guid UserInformationId { get; set; }
-        public UserInformation? UserInformation { get; set; }
     }
 }

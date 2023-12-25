@@ -9,7 +9,7 @@ namespace Contracts
         Task DeleteAsync(Expression<Func<Contact, bool>> expression);
         Task EditAsync(Expression<Func<Contact, bool>> expression, Contact contact);
         Task<bool> Exists();
-        Task<Contact> FindAsync(Guid id);
-        Task<Contact> FindAsync();
+        Contact FindAsync(Guid id);
+        Contact FindAsync();
     }
 }

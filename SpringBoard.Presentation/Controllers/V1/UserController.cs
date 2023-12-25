@@ -61,9 +61,9 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetDetails(string id)
+    public IActionResult GetDetails([FromRoute]Guid id)
     {
-        var baseResult = await _service.User.GetDetails(id);
+        var baseResult = _service.User.GetDetails(id);
         if (!baseResult.Success)
             return ProcessError(baseResult);
 
@@ -86,9 +86,9 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Get([FromQuery] SearchParameters searchParameters)
+    public IActionResult Get([FromQuery] SearchParameters searchParameters)
     {
-        var baseResult = await _service.User.Get(searchParameters);
+        var baseResult = _service.User.Get(searchParameters);
         var result = baseResult.GetResult<PaginatedListDto<DetailedUserToReturnDto>>();
         return Ok(result);
     }
