@@ -1,15 +1,16 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IAboutUsRepository
     {
-        Task CreateAsync(AboutUs aboutUs);
-        void UpdateAbout(AboutUs aboutUs);
-        void DeleteAbout(AboutUs aboutUs);
-        Task<AboutUs> Get(bool trackChanges);
-        Task<AboutUs> Get(Guid id, bool trackChanges);
+        Task AddAsync(AboutUs aboutUs);
+        Task DeleteAsync(Expression<Func<AboutUs, bool>> expression);
         Task<bool> Exists();
-        Task<IEnumerable<AboutUs>> GetAll(bool trackChanges);
+        Task<IEnumerable<AboutUs>> FindAllAsync();
+        Task<AboutUs> FindByIdAsync(Guid id);
+        Task<AboutUs> FindFirstAsync(Expression<Func<AboutUs, bool>> expression);
+        Task EditAsync(Expression<Func<AboutUs, bool>> expression, AboutUs aboutUs);
     }
 }

@@ -1,15 +1,16 @@
 ﻿using Entities.Models;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IIndustryRepository
     {
-        Task CreateIndustryAsync(Industry industry);
-        void UpdateIndustry(Industry industry);
-        void DeleteIndustry(Industry industry);
-        Task<Industry?> FindIndustryAsync(Guid id, bool trackChanges);
-        Task<PagedList<Industry>> FindIndustriesAsync(SearchParameters searchTerms, bool trackChanges);
-        IQueryable<Industry> FindIndustries(bool trackChanges);
+        Task AddAsync(Industry industry);
+        Task DeleteAsync(Expression<Func<Industry, bool>> expression);
+        Task EditAsync(Expression<Func<Industry, bool>> expression, Industry industry);
+        PagedList<Industry> Find(SearchParameters searchTerms);
+        IQueryable<Industry> FindAsQueryable();
+        Task<Industry?> FindAsync(Guid id);
     }
 }

@@ -26,22 +26,18 @@ namespace Services
 
             var jobType = _mapper.Map<JobType>(request);
 
-            await _repository.JobType.CreateJobTypeAsync(jobType);
-            await _repository.SaveAsync();
-
+            await _repository.JobType.AddAsync(jobType);
             var jobTypeToReturn = _mapper.Map<JobTypeToReturnDto>(jobType);
             return new ApiOkResponse<JobTypeToReturnDto>(jobTypeToReturn);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
-            var jobType = await _repository.JobType.FindJobTypeAsync(id, true);
+            var jobType = await _repository.JobType.FindAsync(id);
             if (jobType == null)
                 return new NotFoundResponse(ResponseMessages.JobTypeNotFound);
 
-            _repository.JobType.DeleteJobType(jobType);
-            await _repository.SaveAsync();
-
+            await _repository.JobType.DeleteAsync(x => x.Id.Equals(id));
             return new ApiOkResponse<bool>(true);
         }
 
@@ -50,28 +46,26 @@ namespace Services
             if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var jobType = await _repository.JobType.FindJobTypeAsync(id, true);
+            var jobType = await _repository.JobType.FindAsync(id);
             if (jobType == null)
                 return new NotFoundResponse(ResponseMessages.JobTypeNotFound);
 
             jobType.Name = request.JobType;
-            jobType.UpdatedAt = DateTime.Now;
+            jobType.UpdatedAt = DateTime.UtcNow;
 
-            _repository.JobType.UpdateJobType(jobType);
-            await _repository.SaveAsync();
-
+            await _repository.JobType.EditAsync(x => x.Id.Equals(id), jobType);
             return new ApiOkResponse<bool>(true);
         }
 
-        public async Task<IEnumerable<JobTypeToReturnDto>> Get()
+        public IEnumerable<JobTypeToReturnDto> Get()
         {
-            var jobTypes = await _repository.JobType.FindJobTypesAsync(false);
+            var jobTypes = _repository.JobType.FindAsList();
             return _mapper.Map<IEnumerable<JobTypeToReturnDto>>(jobTypes);
         }
 
         public async Task<ApiBaseResponse> Get(Guid id)
         {
-            var jobType = await _repository.JobType.FindJobTypeAsync(id, false);
+            var jobType = await _repository.JobType.FindAsync(id);
             if (jobType == null)
                 return new NotFoundResponse(ResponseMessages.JobTypeNotFound);
 

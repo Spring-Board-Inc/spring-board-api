@@ -55,9 +55,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get(string userId)
+        public IActionResult Get(string userId)
         {
-            var baseResult = await service.CareerSummary.Get(userId);
+            var baseResult = service.CareerSummary.Get(userId);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
@@ -79,9 +79,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMany(string userId)
+        public IActionResult GetMany(string userId)
         {
-            var baseResult = await service.CareerSummary.GetMany(userId);
+            var baseResult = service.CareerSummary.GetMany(userId);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 

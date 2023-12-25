@@ -1,14 +1,16 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IUserSkillRepository
     {
-        Task CreateUserSkill(UserSkill userSkill);
-        void UpdateUserSkill(UserSkill userSkill);
-        void DeleteUserSkill(UserSkill userSkill);
-        Task<UserSkill?> FindUserSkillAsync(Guid userInfoId, Guid skillId, bool trackChanges);
-        Task<IEnumerable<UserSkill>> FindUserSkillsAsync(Guid userInfoId, bool trackChanges);
-        IQueryable<UserSkill> FindUserSkills(Guid userInfoId, bool trackChanges);
+        Task AddAsync(UserSkill userSkill);
+        Task DeleteAsync(Expression<Func<UserSkill, bool>> expression);
+        Task EditAsync(Expression<Func<UserSkill, bool>> expression, UserSkill userSkill);
+        Task<bool> Exists(Expression<Func<UserSkill, bool>> expression);
+        IEnumerable<UserSkill> FindAsList(Guid userInfoId);
+        IQueryable<UserSkill> FindAsQueryable(Guid userInfoId);
+        Task<UserSkill?> FindAsync(Guid userInfoId, Guid skillId);
     }
 }

@@ -4,9 +4,6 @@ using Entities.Models;
 using Entities.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Repositories;
 using Repositories.Extensions;
 using Services.Contracts;
 using Shared.DataTransferObjects;
@@ -18,36 +15,26 @@ namespace Services
 {
     public class UserService : IUserService
     {
-        private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
-        private readonly IConfiguration _configuration;
-        private readonly IRepositoryManager _repositoryManager;
         private readonly ICloudinaryService _cloudinaryService;
-        private readonly RepositoryContext _repositoryContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        const int PHOTO_MAX_ALLOWABLE_SIZE = 1000000;
+        private readonly IRepositoryManager repositoryManager;
 
         public UserService
         (
-            ILoggerManager logger,
             IMapper mapper,
             UserManager<AppUser> userManager,
-            IConfiguration configuration,
-            IRepositoryManager repositoryManager,
             ICloudinaryService cloudinaryService,
-            RepositoryContext repositoryContext,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IRepositoryManager repositoryManager
         )
         {
-            _logger = logger;
             _mapper = mapper;
             _userManager = userManager;
-            _configuration = configuration;
-            _repositoryManager = repositoryManager;
             _cloudinaryService = cloudinaryService;
-            _repositoryContext = repositoryContext;
             _httpContextAccessor = httpContextAccessor;
+            this.repositoryManager = repositoryManager;
         }
 
         public async Task<ApiBaseResponse> Get(string id)
@@ -60,35 +47,45 @@ namespace Services
             return new ApiOkResponse<DetailedUserToReturnDto>(userToReturn);
         }
 
-        public async Task<ApiBaseResponse> GetDetails(string id)
+        public async Task<ApiBaseResponse> GetDetails(Guid id)
         {
-            var user = await _userManager.Users
-                .Include(u => u.UserInformation.Educations)
-                .Include(u => u.UserInformation.WorkExperiences)
-                .Include(u => u.UserInformation.UserSkills)
-                .Include(u => u.UserInformation.Certifications)
-                .Include(u => u.CareerSummary)
+            var user = _userManager.Users
                 .Where(u => u.Id.Equals(id))
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
 
-            if (user == null)
+            var userInfo = await repositoryManager.UserInformation.GetByUserIdAsync(id);
+            if (user == null || userInfo == null)
                 return new BadRequestResponse(ResponseMessages.UserNotFound);
 
-            return new ApiOkResponse<ApplicantInformation>(_mapper.Map<ApplicantInformation>(user));
+            var careerSummary = await repositoryManager.CareerSummary.FindAsync(x => x.UserId.Equals(id));
+            var education = repositoryManager.Education.FindByUserInfoId(userInfo.Id);
+            var experience = repositoryManager.WorkExperience.FindByUserInfoId(userInfo.Id);
+            var skills = repositoryManager.UserSkill.FindAsList(userInfo.Id);
+            var certifications = repositoryManager.Certification
+                .FindByUserInfoIdAsQueryable(userInfo.Id)
+                .ToList();
+
+            var data = _mapper.Map<ApplicantInformation>(user);
+            data.CareerSummary = careerSummary.Summary;
+            data.Educations = _mapper.Map<ICollection<EducationMinInfo>>(education);
+            data.WorkExperiences = _mapper.Map<ICollection<WorkExperienceMinInfo>>(experience);
+            data.Certifications = _mapper.Map<ICollection<CertificationMinInfo>>(certifications);
+            data.UserSkills = _mapper.Map<ICollection<UserSkillMinInfo>>(skills);
+
+            return new ApiOkResponse<ApplicantInformation>(data);
         }
 
-        public async Task<ApiBaseResponse> Get(SearchParameters searchParameters)
+        public ApiBaseResponse Get(SearchParameters searchParameters)
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);
-            var users = await _repositoryContext.Users.AsQueryable()
-                                    //.Where(u => u >= searchParameters.StartDate && u.CreatedAt <= endDate)
-                                    .Where(_=> true)
-                                    //.Search(searchParameters.SearchBy)
-                                    //.OrderByDescending(u => u.CreatedAt)
-                                    //.ThenBy(u => u.FirstName)
-                                    .ToListAsync();
+            var users = _userManager.Users.AsQueryable()
+                                    .Where(u => u.CreatedOn >= searchParameters.StartDate && u.CreatedOn <= endDate)
+                                    .Search(searchParameters.SearchBy)
+                                    .OrderByDescending(u => u.CreatedOn)
+                                    .ThenBy(u => u.FirstName)
+                                    .ToList();
 
-            var pagedList = PagedList<AppUser>.ToPagedList(new List<AppUser>(), searchParameters.PageNumber, searchParameters.PageSize);
+            var pagedList = PagedList<AppUser>.ToPagedList(users, searchParameters.PageNumber, searchParameters.PageSize);
 
             var usersDto = _mapper.Map<IEnumerable<DetailedUserToReturnDto>>(pagedList);
             var pagedDataList = PaginatedListDto<DetailedUserToReturnDto>.Paginate(usersDto, pagedList.MetaData);
@@ -196,11 +193,14 @@ namespace Services
             if (uploadResult == null)
                 return new BadRequestResponse(ResponseMessages.PhotoUploadFailed);
 
-            await _cloudinaryService.DeleteFile(user.PublicId);
+            if (!string.IsNullOrEmpty(user.PublicId))
+            {
+                await _cloudinaryService.DeleteFile(user.PublicId);
+            }
 
             user.PhotoUrl = uploadResult.Url;
             user.PublicId = uploadResult.PublicId;
-            user.UpdatedAt = DateTime.Now;
+            user.UpdatedAt = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
 
             return new ApiOkResponse<string>(ResponseMessages.PhotoUpdateSuccessful);

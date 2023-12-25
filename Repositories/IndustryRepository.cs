@@ -1,38 +1,42 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class IndustryRepository : RepositoryBase<Industry>, IIndustryRepository
+    public class IndustryRepository : MongoRepositoryBase<Industry>, IIndustryRepository
     {
-        public IndustryRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public IndustryRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}
 
-        public async Task CreateIndustryAsync(Industry industry) => await Create(industry);
+        public async Task AddAsync(Industry industry) => 
+            await CreateAsync(industry);
 
-        public void UpdateIndustry(Industry industry) => Update(industry);
+        public async Task EditAsync(Expression<Func<Industry, bool>> expression, Industry industry) => 
+            await UpdateAsync(expression, industry);
 
-        public void DeleteIndustry(Industry industry) => Delete(industry);
+        public async Task DeleteAsync(Expression<Func<Industry, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<Industry?> FindIndustryAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(i => i.Id.Equals(id), trackChanges)
-                    .FirstOrDefaultAsync();
+        public async Task<Industry?> FindAsync(Guid id) =>
+            await GetAsync(i => i.Id.Equals(id));
 
-        public async Task<PagedList<Industry>> FindIndustriesAsync(SearchParameters searchTerms, bool trackChanges)
+        public PagedList<Industry> Find(SearchParameters searchTerms)
         {
-            var industries = await FindByCondition(i => i.IsDeprecated == false, trackChanges)
-                    .Search(searchTerms.SearchBy)
+            var industries = GetAsQueryable(i => i.IsDeprecated == false)
                     .OrderBy(i => i.Name)
-                    .ToListAsync();
+                    .Search(searchTerms.SearchBy);
 
             return PagedList<Industry>.ToPagedList(industries, searchTerms.PageNumber, searchTerms.PageSize);
         }
 
-        public IQueryable<Industry> FindIndustries(bool trackChanges) =>
-            FindAll(trackChanges)
+        public IQueryable<Industry> FindAsQueryable() =>
+            GetAsQueryable(x => x.IsDeprecated == false)
                 .OrderBy(i => i.Name);
     }
 }

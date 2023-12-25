@@ -1,6 +1,4 @@
-﻿using Entities.Models;
-
-namespace Shared.Helpers
+﻿namespace Shared.Helpers
 {
     public static class ResponseMessages
     {
@@ -75,8 +73,11 @@ namespace Shared.Helpers
         public static readonly string CountryNotFound = "Country not found";
         public static readonly string StateNotFound = "State not found.";
         public static readonly string AccountNotExisting = "Your account has been suspended. Please contact support.";
-        public static readonly string CareerSummaryExists;
-        public static readonly string CareerSummaryNotFound;
-        internal static readonly string InvalidDocumentFormat = "Invalid document type. Must be one of PDF, DOC or DOCX";
+        public static readonly string CareerSummaryExists = "There is an existing record for this user. Please update the existing record or delete to add new one";
+        public static readonly string CareerSummaryNotFound = "Career summary record not found.";
+        public static readonly string InvalidDocumentFormat = "Invalid document type. Must be one of PDF, DOC or DOCX";
+        public static readonly string InvalidSkillLevel = "Invalid skill level specified.";
+        public static readonly string UserSkillExists = "The skill you're trying to add to your profile already exists.";
+        public static readonly string UserSkillUpdated = "Skill successfully updated.";
     }
 }

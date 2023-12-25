@@ -1,14 +1,15 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface ICertificationRepository
     {
-        IQueryable<Certification> FindCertifications(Guid userInfoId, bool trackChanges);
-        Task<IEnumerable<Certification>> FindCertificationsAsync(Guid userInfoId, bool trackChanges);
-        Task<Certification?> FindCertification(Guid id, bool trackChanges);
-        void UpdateCertification(Certification certification);
-        void DeleteCertification(Certification certification);
-        Task CreateCertificationAsync(Certification certification);
+        Task AddAsync(Certification certification);
+        Task DeleteAsync(Expression<Func<Certification, bool>> expression);
+        Task EditAsync(Expression<Func<Certification, bool>> expression, Certification certification);
+        Task<Certification?> FindByIdAsync(Guid id);
+        IQueryable<Certification> FindByUserInfoIdAsQueryable(Guid userInfoId);
+        List<Certification> FindByUserInfoIdAsync(Guid userInfoId);
     }
 }

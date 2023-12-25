@@ -76,9 +76,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Get([FromQuery] SearchParameters parameters)
+        public IActionResult Get([FromQuery] SearchParameters parameters)
         {
-            return Ok(await _service.Industry.Get(parameters));
+            return Ok(_service.Industry.Get(parameters));
         }
 
         ///<summary>End-point to get a no-paging list of industries</summary>
@@ -90,9 +90,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            return Ok(await _service.Industry.GetAll());
+            return Ok(_service.Industry.GetAll());
         }
 
         ///<summary>

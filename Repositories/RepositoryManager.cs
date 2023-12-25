@@ -6,7 +6,6 @@ namespace Repositories
 {
     public sealed class RepositoryManager : IRepositoryManager
     {
-        private readonly RepositoryContext _repositoryContext;
         private readonly Lazy<ITokenRepository> _tokenRepository;
         private readonly Lazy<IUserInformationRepository> _userInformationRepository;
         private readonly Lazy<IEducationRepository> _educationRepository;
@@ -26,45 +25,44 @@ namespace Repositories
         private readonly Lazy<IContactRepository> _contactRepository;
         private readonly Lazy<IFaqRepository> _faqRepository;
 
-        public RepositoryManager(RepositoryContext repositoryContext, IOptions<MongoDbSettings> mongoDbSettings)
+        public RepositoryManager(IOptions<MongoDbSettings> mongoDbSettings)
         {
-            _repositoryContext = repositoryContext;
             _tokenRepository = new Lazy<ITokenRepository>(() => new 
                 TokenRepository(mongoDbSettings));
             _userInformationRepository = new Lazy<IUserInformationRepository>(() => new
                 UserInformationRepository(mongoDbSettings));
             _educationRepository = new Lazy<IEducationRepository>(() => new
-                EducationRepository(repositoryContext));
+                EducationRepository(mongoDbSettings));
             _workExperienceRepository = new Lazy<IWorkExperienceRepository>(() => new
-                WorkExperienceRepository(repositoryContext));
+                WorkExperienceRepository(mongoDbSettings));
             _skillsRepository = new Lazy<ISkillsRepository>(() => new
                 SkillsRepository(mongoDbSettings));
             _companyRepository = new Lazy<ICompanyRepository>(() => new
-                CompanyRepository(repositoryContext));
+                CompanyRepository(mongoDbSettings));
             _certificationRepository = new Lazy<ICertificationRepository>(() => new
-                CertificationRepository(repositoryContext));
+                CertificationRepository(mongoDbSettings));
             _industryRepository = new Lazy<IIndustryRepository>(() => new
-                IndustryRepository(repositoryContext));
+                IndustryRepository(mongoDbSettings));
             _jobTypeRepository = new Lazy<IJobTypeRepository>(() => new
-                JobTypeRepository(repositoryContext));
+                JobTypeRepository(mongoDbSettings));
             _jobRepository = new Lazy<IJobRepository>(() => new
-                JobRepository(repositoryContext));
+                JobRepository(mongoDbSettings));
             _userSkillRepository = new Lazy<IUserSkillRepository>(() => new
-                UserSkillRepository(repositoryContext));
+                UserSkillRepository(mongoDbSettings));
             _userJobRepository = new Lazy<IUserJobRepository>(() => new
-                UserJobRepository(repositoryContext));
+                UserJobRepository(mongoDbSettings));
             _stateRepository = new Lazy<IStateRepository>(() => new 
-                StateRepository(repositoryContext));
+                StateRepository(mongoDbSettings));
             _countryRepository = new Lazy<ICountryRepository>(() => new
-                CountryRepository(repositoryContext));
+                CountryRepository(mongoDbSettings));
             _careerSummaryRepository = new Lazy<ICareerSummaryRepository>(() => new
-                CareerSummaryRepository(repositoryContext));
+                CareerSummaryRepository(mongoDbSettings));
             _aboutUsRepository = new Lazy<IAboutUsRepository>(() => new
-                AboutUsRepository(repositoryContext));
+                AboutUsRepository(mongoDbSettings));
             _contactRepository = new Lazy<IContactRepository>(() => new
-                ContactRepository(repositoryContext));
-            _faqRepository = new Lazy<IFaqRepository>(() => new 
-                FaqRepository(repositoryContext));
+                ContactRepository(mongoDbSettings));
+            _faqRepository = new Lazy<IFaqRepository>(() => new
+                FaqRepository(mongoDbSettings));
         }
        
         public ITokenRepository Token => _tokenRepository.Value;
@@ -85,6 +83,5 @@ namespace Repositories
         public IContactRepository Contact => _contactRepository.Value;
         public IAboutUsRepository AboutUs => _aboutUsRepository.Value;
         public IFaqRepository Faq => _faqRepository.Value;
-        public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
     }
 }

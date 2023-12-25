@@ -2,7 +2,6 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
-using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
@@ -22,22 +21,23 @@ namespace Services
 
         public async Task<ApiBaseResponse> Create(Guid userInfoId, CertificationRequest request)
         {
+            var userInfo = await _repository.UserInformation.GetByIdAsync(userInfoId);
+            if (userInfo == null) return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
+
             if(!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             Certification certification = _mapper.Map<Certification>(request);
             certification.UserInformationId = userInfoId;
 
-            await _repository.Certification.CreateCertificationAsync(certification);
-            await _repository.SaveAsync();
-
+            await _repository.Certification.AddAsync(certification);
             var certificationToReturn = _mapper.Map<CertificationDto>(certification);
             return new ApiOkResponse<CertificationDto>(certificationToReturn);
         }
 
         public async Task<ApiBaseResponse> Get(Guid id)
         {
-            var cert = await _repository.Certification.FindCertification(id, false);
+            var cert = await _repository.Certification.FindByIdAsync(id);
             if (cert == null)
                 return new NotFoundResponse(ResponseMessages.EducationNotFound);
 
@@ -45,9 +45,9 @@ namespace Services
             return new ApiOkResponse<CertificationMinInfo>(certForReturn);
         }
 
-        public async Task<IEnumerable<CertificationMinInfo>> Get(Guid id, bool track)
+        public IEnumerable<CertificationMinInfo> Get(Guid id, bool track)
         {
-            var certs = await _repository.Certification.FindCertifications(id, track).ToListAsync();
+            var certs = _repository.Certification.FindByUserInfoIdAsync(id);
             return _mapper.Map<IEnumerable<CertificationMinInfo>>(certs);
         }
 
@@ -56,28 +56,24 @@ namespace Services
             if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var certificationForUpdate = await _repository.Certification.FindCertification(id, true);
+            var certificationForUpdate = await _repository.Certification.FindByIdAsync(id);
             if (certificationForUpdate == null)
                 return new NotFoundResponse(ResponseMessages.CertificationNotFound);
 
             _mapper.Map(request, certificationForUpdate);
-            certificationForUpdate.UpdatedAt = DateTime.Now;
+            certificationForUpdate.UpdatedAt = DateTime.UtcNow;
 
-            _repository.Certification.UpdateCertification(certificationForUpdate);
-            await _repository.SaveAsync();
-
+            await _repository.Certification.EditAsync(x => x.Id.Equals(id), certificationForUpdate);
             return new ApiOkResponse<string>(ResponseMessages.CertificationUpdated);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
-            var certificationForDelete = await _repository.Certification.FindCertification(id, true);
+            var certificationForDelete = await _repository.Certification.FindByIdAsync(id);
             if (certificationForDelete == null)
                 return new NotFoundResponse(ResponseMessages.CertificationNotFound);
 
-            _repository.Certification.DeleteCertification(certificationForDelete);
-            await _repository.SaveAsync();
-
+            await _repository.Certification.DeleteAsync(x => x.Id.Equals(id));
             return new ApiOkResponse<string>(ResponseMessages.CertificationDeleted);
         }
     }

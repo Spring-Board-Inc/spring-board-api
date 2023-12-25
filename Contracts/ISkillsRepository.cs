@@ -1,15 +1,17 @@
 ﻿using Entities.Models;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface ISkillsRepository
     {
-        PagedList<Skill> FindSkills(SearchParameters parameters, bool trackChanges);
-        Task<IEnumerable<Skill>> FindSkillsAsync(bool trackChanges);
-        Task<Skill?> FindSkillAsync(Guid id, bool trackChanges);
-        void UpdateSkill(Skill skill);
-        void DeleteSkill(Skill skill);
-        Task CreateSkillAsync(Skill skill);
+        Task AddAsync(Skill skill);
+        Task DeleteAsync(Expression<Func<Skill, bool>> expression);
+        PagedList<Skill> Find(SearchParameters parameters);
+        Task<IEnumerable<Skill>> Find();
+        Task<Skill?> FindByIdAsync(Guid id);
+        Task EditAsync(Expression<Func<Skill, bool>> expression, Skill skill);
+        Task<bool> Exists(Expression<Func<Skill, bool>> expression);
     }
 }

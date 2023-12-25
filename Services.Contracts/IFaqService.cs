@@ -9,7 +9,7 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Create(FaqForCreationDto request);
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Get(Guid id);
-        Task<PaginatedListDto<FaqToReturnDto>> Get(SearchParameters parameters);
+        PaginatedListDto<FaqToReturnDto> Get(SearchParameters parameters);
         Task<ApiBaseResponse> Update(Guid id, FaqForUpdateDto request);
     }
 }

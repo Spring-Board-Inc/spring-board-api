@@ -8,8 +8,8 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Create(ContactForCreationDto request);
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Deprecate(Guid id);
-        Task<ApiBaseResponse> Get();
-        Task<ApiBaseResponse> Get(Guid id);
+        ApiBaseResponse Get();
+        ApiBaseResponse Get(Guid id);
         Task<ApiBaseResponse> Update(Guid id, ContactForUpdateDto request);
     }
 }

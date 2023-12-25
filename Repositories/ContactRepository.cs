@@ -1,34 +1,40 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class ContactRepository : RepositoryBase<Contact>, IContactRepository
+    public class ContactRepository : MongoRepositoryBase<Contact>, IContactRepository
     {
-        public ContactRepository(RepositoryContext context)
-            : base(context)
+        public ContactRepository(IOptions<MongoDbSettings> settings)
+            : base(settings)
         {}
 
-        public async Task CreateAsync(Contact contact) => await Create(contact);
+        public async Task AddAsync(Contact contact) => 
+            await CreateAsync(contact);
 
-        public void UpdateContact(Contact contact) => Update(contact);
+        public async Task EditAsync(Expression<Func<Contact, bool>> expression, Contact contact) => 
+            await UpdateAsync(expression, contact);
 
-        public void DeleteContact(Contact contact) => Delete(contact);
+        public async Task DeleteAsync(Expression<Func<Contact, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<Contact> GetAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(c => c.Id.Equals(id), trackChanges)
+        public Contact FindAsync(Guid id) =>
+            GetAsQueryable(c => c.Id.Equals(id) && c.IsDeprecated == false)
                     .Include(c => c.Address)
                     .Include(c => c.Phones)
                     .Include(c => c.Email)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefault();
 
-        public async Task<Contact> GetAsync(bool trackChanges) =>
-            await FindByCondition(c => c.IsDeprecated == false, trackChanges)
+        public Contact FindAsync() =>
+            GetAsQueryable(c => c.IsDeprecated == false)
                     .Include(c => c.Address)
                     .Include(c => c.Phones)
                     .Include(c => c.Email)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefault();
 
         public async Task<bool> Exists() =>
             await ExistsAsync(c => c.IsDeprecated == false);

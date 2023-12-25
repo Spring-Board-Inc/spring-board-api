@@ -1,14 +1,16 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface ICareerSummaryRepository
     {
-        Task CreateCareerSummaryAsync(CareerSummary entity);
-        void DeleteCareerSummary(CareerSummary entity);
-        void UpdateCareerSummary(CareerSummary entity);
-        IQueryable<CareerSummary> FindCareerSummary(string userId, bool trackChanges);
-        IQueryable<CareerSummary> FindCareerSummary(Guid id, string userId, bool trackChanges);
-        Task<bool> Exists(string userId);
+        Task AddAsync(CareerSummary entity);
+        Task DeleteAsync(Expression<Func<CareerSummary, bool>> expression);
+        Task EditAsync(Expression<Func<CareerSummary, bool>> expression, CareerSummary entity);
+        Task<bool> Exists(Guid userId);
+        Task<CareerSummary?> FindAsync(Expression<Func<CareerSummary, bool>> expression);
+        IQueryable<CareerSummary> FindByIdAsQueryable(Guid id, Guid userId);
+        IQueryable<CareerSummary> FindQueryable(Guid userId);
     }
 }

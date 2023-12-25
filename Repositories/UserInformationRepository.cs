@@ -22,7 +22,10 @@ namespace Repositories
         public async Task<UserInformation?> GetByIdAsync(Guid id) =>
             await GetAsync(ui => ui.Id == id);
 
-        public async Task<bool> ExistsAsync(Guid userId) =>
+        public async Task<bool> Exists(Guid userId) =>
             await ExistsAsync(ui => ui.UserId.Equals(userId));
+
+        public async Task<bool> Exists(Expression<Func<UserInformation, bool>> expression) =>
+           await ExistsAsync(expression);
     }
 }

@@ -55,9 +55,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            var baseResult = await service.Contact.Get();
+            var baseResult = service.Contact.Get();
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 
@@ -81,9 +81,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Administrator, SuperAdministrator")]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
+        public IActionResult Get([FromRoute] Guid id)
         {
-            var baseResult = await service.Contact.Get(id);
+            var baseResult = service.Contact.Get(id);
             if (!baseResult.Success)
                 return ProcessError(baseResult);
 

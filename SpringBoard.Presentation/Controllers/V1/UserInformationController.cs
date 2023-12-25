@@ -1,5 +1,4 @@
-﻿using Entities.Enums;
-using Entities.Models;
+﻿using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -212,9 +211,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserEducations(Guid userInfoId)
+        public IActionResult GetUserEducations(Guid userInfoId)
         {
-            return Ok(await _service.Education.Get(userInfoId, false));
+            return Ok(_service.Education.GetByUserInfoId(userInfoId));
         }
 
         ///<summary>
@@ -322,9 +321,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetWorkExperiences(Guid userInfoId)
+        public IActionResult GetWorkExperiences(Guid userInfoId)
         {
-            return Ok(await _service.WorkExperience.Get(userInfoId, false));     
+            return Ok(_service.WorkExperience.GetAsList(userInfoId));     
         }
 
         ///<summary>
@@ -517,9 +516,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserSkills(Guid userInfoId)
+        public IActionResult GetUserSkills(Guid userInfoId)
         {
-            return Ok(await _service.UserSkill.Get(userInfoId));
+            return Ok(_service.UserSkill.Get(userInfoId));
         }
 
         #endregion
@@ -656,9 +655,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCertifications(Guid userInfoId)
+        public IActionResult GetCertifications(Guid userInfoId)
         {
-            return Ok(await _service.Certification.Get(userInfoId, false));   
+            return Ok(_service.Certification.Get(userInfoId, false));   
         }
 
         #endregion

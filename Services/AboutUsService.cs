@@ -25,9 +25,7 @@ namespace Services
             if (await manager.AboutUs.Exists()) return new AboutUsExistsReponse();
 
             var about = mapper.Map<AboutUs>(request);
-            await manager.AboutUs.CreateAsync(about);
-            await manager.SaveAsync();
-
+            await manager.AboutUs.AddAsync(about);
             var data = mapper.Map<AboutUsToReturnDto>(about);
 
             return new ApiOkResponse<AboutUsToReturnDto>(data);
@@ -35,14 +33,13 @@ namespace Services
 
         public async Task<ApiBaseResponse> Update(Guid id, AboutUsForUpdateDto request)
         {
-            var about = await manager.AboutUs.Get(id, true);
+            var about = await manager.AboutUs.FindByIdAsync(id);
             if(about == null) return new AboutUsNotFoundResponse(id);
 
             mapper.Map(request, about);
-            about.UpdatedAt = DateTime.Now;
+            about.UpdatedAt = DateTime.UtcNow;
 
-            manager.AboutUs.UpdateAbout(about);
-            await manager.SaveAsync();
+            await manager.AboutUs.EditAsync(x => x.Id.Equals(id), about);
 
             var data = mapper.Map<AboutUsToReturnDto>(about);
             return new ApiOkResponse<AboutUsToReturnDto>(data);
@@ -50,19 +47,19 @@ namespace Services
 
         public async Task<AboutUsToReturnDto> Get()
         {
-            var about = await manager.AboutUs.Get(false);
+            var about = await manager.AboutUs.FindFirstAsync(_=> true);
             return mapper.Map<AboutUsToReturnDto>(about);
         }
 
         public async Task<IEnumerable<AboutUsToReturnDto>> GetAll()
         {
-            var abouts = await manager.AboutUs.GetAll(false);
+            var abouts = await manager.AboutUs.FindAllAsync();
             return mapper.Map<IEnumerable<AboutUsToReturnDto>>(abouts);
         }
 
         public async Task<ApiBaseResponse> Get(Guid id)
         {
-            var about = await manager.AboutUs.Get(id, false);
+            var about = await manager.AboutUs.FindByIdAsync(id);
             if (about == null) return new AboutUsNotFoundResponse(id);
 
             var data = mapper.Map<AboutUsToReturnDto>(about);
@@ -71,26 +68,23 @@ namespace Services
 
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
-            var about = await manager.AboutUs.Get(id, true);
+            var about = await manager.AboutUs.FindByIdAsync(id);
             if (about == null) return new AboutUsNotFoundResponse(id);
 
-            manager.AboutUs.DeleteAbout(about);
-            await manager.SaveAsync();
+            await manager.AboutUs.DeleteAsync(x => x.Id.Equals(about.Id));
 
             return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Deprecate(Guid id)
         {
-            var about = await manager.AboutUs.Get(id, true);
+            var about = await manager.AboutUs.FindByIdAsync(id);
             if (about == null) return new AboutUsNotFoundResponse(id);
 
             about.IsDeprecated = true;
-            about.UpdatedAt = DateTime.Now;
+            about.UpdatedAt = DateTime.UtcNow;
 
-            manager.AboutUs.UpdateAbout(about);
-            await manager.SaveAsync();
-
+            await manager.AboutUs.EditAsync(x => x.Id.Equals(id), about);
             return new ApiOkResponse<bool>(true);
         }
     }

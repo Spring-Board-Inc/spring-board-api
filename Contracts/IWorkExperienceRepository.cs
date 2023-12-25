@@ -1,15 +1,16 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IWorkExperienceRepository
     {
-        IQueryable<WorkExperience> FindExperiences(Guid userInfoId, bool trackChanges);
-        Task<IEnumerable<WorkExperience>> FindWorkExperiencesAsync(Guid userInfoId, bool trackChanges);
-        Task<WorkExperience?> FindWorkExperienceAsync(Guid id, bool trackChanges);
-        void UpdateWorkExperience(WorkExperience workExperience);
-        void DeleteWorkExperience(WorkExperience workExperience);
-        Task CreateWorkExperienceAsync(WorkExperience workExperience);
-        IQueryable<WorkExperience> FindExperiences(Guid id);
+        Task DeleteAsync(Expression<Func<WorkExperience, bool>> expression);
+        Task EditAsync(Expression<Func<WorkExperience, bool>> expression, WorkExperience workExperience);
+        IQueryable<WorkExperience> FindByIdAsQueryable(Guid id);
+        Task<WorkExperience?> FindAsync(Guid id);
+        IEnumerable<WorkExperience> FindByUserInfoId(Guid userInfoId);
+        Task AddAsync(WorkExperience workExperience);
+        IQueryable<WorkExperience> FindByUserInfoIdAsQueryable(Guid userInfoId);
     }
 }

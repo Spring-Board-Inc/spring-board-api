@@ -29,7 +29,7 @@ namespace Repositories
         public void Update(T entity) => RepositoryContext.Set<T>().Update(entity);
         public void Delete(T entity) => RepositoryContext.Set<T>().Remove(entity);
 
-        public IQueryable<T> QueryAll(Expression<Func<T, bool>> predicate = null) =>
+        public IQueryable<T> QueryAll(Expression<Func<T, bool>> predicate = null!) =>
             predicate == null ? RepositoryContext.Set<T>() : RepositoryContext.Set<T>().Where(predicate);
 
         public async Task<int> CountAsync(Expression<Func<T, bool>> predicate) =>

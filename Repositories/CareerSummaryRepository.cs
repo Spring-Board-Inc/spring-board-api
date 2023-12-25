@@ -1,25 +1,34 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class CareerSummaryRepository : RepositoryBase<CareerSummary>, ICareerSummaryRepository
+    public class CareerSummaryRepository : MongoRepositoryBase<CareerSummary>, ICareerSummaryRepository
     {
-        public CareerSummaryRepository(RepositoryContext context) : base(context) {}
+        public CareerSummaryRepository(IOptions<MongoDbSettings> settings) : base(settings) {}
 
-        public async Task CreateCareerSummaryAsync(CareerSummary entity) => await Create(entity);
+        public async Task AddAsync(CareerSummary entity) => 
+            await CreateAsync(entity);
 
-        public void DeleteCareerSummary(CareerSummary entity) => Delete(entity);
+        public async Task DeleteAsync(Expression<Func<CareerSummary, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public void UpdateCareerSummary(CareerSummary entity) => Update(entity);
+        public async Task EditAsync(Expression<Func<CareerSummary, bool>> expression, CareerSummary entity) => 
+            await UpdateAsync(expression, entity);
 
-        public IQueryable<CareerSummary> FindCareerSummary(string userId, bool trackChanges) =>
-            FindByCondition(cs => cs.UserId.Equals(userId), trackChanges);
+        public async Task<CareerSummary?> FindAsync(Expression<Func<CareerSummary, bool>> expression) =>
+            await GetAsync(expression);
 
-        public IQueryable<CareerSummary> FindCareerSummary(Guid id, string userId, bool trackChanges) =>
-            FindByCondition(cs => cs.Id.Equals(id) && cs.UserId.Equals(userId), trackChanges);
+        public IQueryable<CareerSummary> FindQueryable(Guid userId) =>
+            GetAsQueryable(cs => cs.UserId.Equals(userId));
 
-        public async Task<bool> Exists(string userId) => 
+        public IQueryable<CareerSummary> FindByIdAsQueryable(Guid id, Guid userId) =>
+            GetAsQueryable(cs => cs.Id.Equals(id) && cs.UserId.Equals(userId));
+
+        public async Task<bool> Exists(Guid userId) => 
             await ExistsAsync(cs => cs.UserId.Equals(userId));
     }
 }

@@ -2,8 +2,8 @@
 using Contracts;
 using Entities.Models;
 using Entities.Response;
-using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
+using Services.Extensions;
 using Shared;
 using Shared.Helpers;
 
@@ -30,33 +30,36 @@ namespace Services
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
             }
 
-            bool exists = await repository.CareerSummary.Exists(userId);
+            bool exists = await repository.CareerSummary.Exists(userId.StringToGuid());
             if(exists) return new BadRequestResponse(ResponseMessages.CareerSummaryExists);
 
             CareerSummary entity = mapper.Map<CareerSummary>(request);
 
-            entity.UserId = userId;
-            await repository.CareerSummary.CreateCareerSummaryAsync(entity);
-            await repository.SaveAsync();
+            entity.UserId = userId.StringToGuid();
+            await repository.CareerSummary.AddAsync(entity);
 
             CareerSummaryReturnDto data = mapper.Map<CareerSummaryReturnDto>(entity);
             return new ApiOkResponse<CareerSummaryReturnDto>(data);
         }
 
-        public async Task<ApiBaseResponse> GetMany(string userId)
+        public ApiBaseResponse GetMany(string userId)
         {
-            List<CareerSummary> entity = await repository.CareerSummary.FindCareerSummary(userId, false)
-                                            .ToListAsync();
+            List<CareerSummary> entity = repository.CareerSummary
+                .FindQueryable(userId.StringToGuid())
+                .ToList();
+
             if (entity == null) return new NotFoundResponse(ResponseMessages.CareerSummaryNotFound);
 
             List<CareerSummaryReturnDto> data = mapper.Map<List<CareerSummaryReturnDto>>(entity);
             return new ApiOkResponse<List<CareerSummaryReturnDto>>(data);
         }
 
-        public async Task<ApiBaseResponse> Get(string userId)
+        public ApiBaseResponse Get(string userId)
         {
-            CareerSummary entity = await repository.CareerSummary.FindCareerSummary(userId, false)
-                                               .FirstOrDefaultAsync();
+            CareerSummary entity = repository.CareerSummary
+                .FindQueryable(userId.StringToGuid())
+                .FirstOrDefault();
+
             if (entity == null) return new NotFoundResponse(ResponseMessages.CareerSummaryNotFound);
 
             CareerSummaryReturnDto data = mapper.Map<CareerSummaryReturnDto>(entity);
@@ -71,26 +74,28 @@ namespace Services
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
             }
 
-            CareerSummary entity = await repository.CareerSummary.FindCareerSummary(id, userId, true)
-                                               .FirstOrDefaultAsync();
+            CareerSummary entity = repository.CareerSummary
+                .FindByIdAsQueryable(id, userId.StringToGuid())
+                .FirstOrDefault();
+
             if (entity == null) return new NotFoundResponse(ResponseMessages.CareerSummaryNotFound);
 
             mapper.Map(request, entity);
-            entity.UpdatedAt = DateTime.Now;
-            repository.CareerSummary.UpdateCareerSummary(entity);
-            await repository.SaveAsync();
-
+            entity.UpdatedAt = DateTime.UtcNow;
+            await repository.CareerSummary.EditAsync(x => x.Id.Equals(id), entity);
             return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id, string userId)
         {
-            CareerSummary entity = await repository.CareerSummary.FindCareerSummary(id, userId, true)
-                                               .FirstOrDefaultAsync();
+            CareerSummary entity = repository.CareerSummary
+                .FindByIdAsQueryable(id, userId.StringToGuid())
+                .FirstOrDefault();
+
             if (entity == null) return new NotFoundResponse(ResponseMessages.CareerSummaryNotFound);
 
-            repository.CareerSummary.DeleteCareerSummary(entity);
-            await repository.SaveAsync();
+            await repository.CareerSummary
+                .DeleteAsync(x => x.Id.Equals(entity.Id));
 
             return new ApiOkResponse<bool>(true);
         }

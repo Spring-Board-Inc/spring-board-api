@@ -1,30 +1,34 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class CertificationRepository : RepositoryBase<Certification>, ICertificationRepository
+    public class CertificationRepository : MongoRepositoryBase<Certification>, ICertificationRepository
     {
-        public CertificationRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public CertificationRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}
 
-        public async Task CreateCertificationAsync(Certification certification) => await Create(certification);
+        public async Task AddAsync(Certification certification) => 
+            await CreateAsync(certification);
 
-        public void DeleteCertification(Certification certification) => Delete(certification);
+        public async Task DeleteAsync(Expression<Func<Certification, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public void UpdateCertification(Certification certification) => Update(certification);
+        public async Task EditAsync(Expression<Func<Certification, bool>> expression, Certification certification) => 
+            await UpdateAsync(expression, certification);
 
-        public async Task<Certification?> FindCertification(Guid id, bool trackChanges) =>
-            await FindByCondition(ct => ct.Id.Equals(id), trackChanges)
-                    .FirstOrDefaultAsync();
+        public async Task<Certification?> FindByIdAsync(Guid id) =>
+            await GetAsync(ct => ct.Id.Equals(id));
 
-        public async Task<IEnumerable<Certification>> FindCertificationsAsync(Guid userInfoId, bool trackChanges) =>
-            await FindByCondition(ct => ct.UserInformationId.Equals(userInfoId), trackChanges)
-                     .ToListAsync();
+        public List<Certification> FindByUserInfoIdAsync(Guid userInfoId) =>
+            GetAsQueryable(ct => ct.UserInformationId.Equals(userInfoId)).ToList();
 
-        public IQueryable<Certification> FindCertifications(Guid userInfoId, bool trackChanges) =>
-            FindByCondition(ct => ct.UserInformationId.Equals(userInfoId), trackChanges)
+        public IQueryable<Certification> FindByUserInfoIdAsQueryable(Guid userInfoId) =>
+            GetAsQueryable(ct => ct.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(ct => ct.IssuingDate);
     }
 }

@@ -9,6 +9,6 @@ namespace Services.Contracts
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Update(Guid id, EducationForUpdateDto request);
         Task<ApiBaseResponse> Get(Guid id);
-        Task<IEnumerable<EducationToReturnDto>> Get(Guid id, bool track);
+        IEnumerable<EducationToReturnDto> GetByUserInfoId(Guid userInfoId);
     }
 }

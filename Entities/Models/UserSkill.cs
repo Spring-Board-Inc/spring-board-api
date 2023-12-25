@@ -1,15 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
-    public class UserSkill
+    public class UserSkill : BaseEntity
     {
-        [Key]
-        [Column(Order = 1)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid UserInformationId { get; set; }
-        [Key]
-        [Column(Order = 2)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid SkillId { get; set; }
         [Required]
         public string Skill { get; set; }

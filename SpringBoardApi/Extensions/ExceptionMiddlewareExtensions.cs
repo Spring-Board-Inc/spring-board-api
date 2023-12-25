@@ -31,7 +31,7 @@ namespace SpringBoardApi.Extensions
                         await context.Response.WriteAsync(new ErrorDetails()
                         {
                             StatusCode = context.Response.StatusCode,
-                            Message = contextFeature.Error.ToString()
+                            Message = contextFeature.Error?.Message
                         }.ToString());
                     }
                 });

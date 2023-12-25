@@ -1,33 +1,34 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class AboutUsRepository: RepositoryBase<AboutUs>, IAboutUsRepository
+    public class AboutUsRepository: MongoRepositoryBase<AboutUs>, IAboutUsRepository
     {
-        public AboutUsRepository(RepositoryContext context)
-            : base(context)
+        public AboutUsRepository(IOptions<MongoDbSettings> options)
+            : base(options)
         {}
 
-        public async Task CreateAsync(AboutUs aboutUs) => await Create(aboutUs);
+        public async Task AddAsync(AboutUs aboutUs) => 
+            await CreateAsync(aboutUs);
 
-        public void UpdateAbout(AboutUs aboutUs) => Update(aboutUs);
+        public async Task EditAsync(Expression<Func<AboutUs, bool>> expression, AboutUs aboutUs) => 
+            await UpdateAsync(expression, aboutUs);
 
-        public void DeleteAbout(AboutUs aboutUs) => Delete(aboutUs);
+        public async Task DeleteAsync(Expression<Func<AboutUs, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<AboutUs> Get(bool trackChanges) =>
-            await FindByCondition(a => a.IsDeprecated == false, trackChanges)
-                    .FirstOrDefaultAsync();
+        public async Task<AboutUs> FindFirstAsync(Expression<Func<AboutUs, bool>> expression) =>
+            await GetAsync(expression);
 
-        public async Task<IEnumerable<AboutUs>> GetAll(bool trackChanges) =>
-            await FindAll(trackChanges)
-                    .ToListAsync();
+        public async Task<IEnumerable<AboutUs>> FindAllAsync() =>
+            await GetAsync();
 
-        public async Task<AboutUs> Get(Guid id, bool trackChanges) =>
-            await FindByCondition(a => a.Id.Equals(id) && a.IsDeprecated == false, trackChanges)
-                    .OrderByDescending(a => a.CreatedAt)
-                    .FirstOrDefaultAsync();
+        public async Task<AboutUs> FindByIdAsync(Guid id) =>
+            await GetAsync(a => a.Id.Equals(id) && a.IsDeprecated == false);
 
         public async Task<bool> Exists() =>
             await ExistsAsync(a => a.IsDeprecated == false);

@@ -7,10 +7,10 @@ namespace Services.Contracts
     public interface ISkillService
     {
         Task<ApiBaseResponse> Create(SkillRequest request);
-        Task<ApiBaseResponse> Get(SearchParameters parameters);
+        ApiBaseResponse Get(SearchParameters parameters);
         Task<ApiBaseResponse> Delete(Guid id);
         Task<ApiBaseResponse> Update(Guid id, SkillRequest request);
         Task<ApiBaseResponse> Get(Guid id);
-        Task<IEnumerable<SkillDto>> GetAll();
+        Task<List<SkillDto>> GetAll();
     }
 }

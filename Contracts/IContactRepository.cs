@@ -1,14 +1,15 @@
 ﻿using Entities.Models;
+using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IContactRepository
     {
-        Task CreateAsync(Contact contact);
-        void UpdateContact(Contact contact);
-        void DeleteContact(Contact contact);
-        Task<Contact> GetAsync(Guid id, bool trackChanges);
-        Task<Contact> GetAsync(bool trackChanges);
+        Task AddAsync(Contact contact);
+        Task DeleteAsync(Expression<Func<Contact, bool>> expression);
+        Task EditAsync(Expression<Func<Contact, bool>> expression, Contact contact);
         Task<bool> Exists();
+        Contact FindAsync(Guid id);
+        Contact FindAsync();
     }
 }

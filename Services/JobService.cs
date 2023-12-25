@@ -45,10 +45,7 @@ namespace Services
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
             var job = _mapper.Map<Job>(request);
-
-            await _repository.Job.CreateJobAsync(job);
-            await _repository.SaveAsync();
-
+            await _repository.Job.AddAsync(job);
             return new ApiOkResponse<bool>(true);
         }
 
@@ -63,50 +60,45 @@ namespace Services
             if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var jobForUpdate = await _repository.Job.FindJobAsync(id, true);
+            var jobForUpdate = await _repository.Job.FindAsync(id);
             if (jobForUpdate == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
             _mapper.Map(request, jobForUpdate);
-
-            jobForUpdate.UpdatedAt = DateTime.Now;
-            _repository.Job.UpdateJob(jobForUpdate);
-            await _repository.SaveAsync();
-
+            jobForUpdate.UpdatedAt = DateTime.UtcNow;
+            await _repository.Job.EditAsync(x => x.Id.Equals(id), jobForUpdate);
             return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
-            var job = await _repository.Job.FindJobAsync(id, true);
+            var job = await _repository.Job.FindAsync(id);
             if (job == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
-            _repository.Job.DeleteJob(job);
-            await _repository.SaveAsync();
-
+            await _repository.Job.DeleteAsync(x => x.Id.Equals(id));
             return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> Get(Guid id)
         {
-            var job = await _repository.Job.FindJobAsync(id, true);
+            var job = await _repository.Job.FindAsync(id);
             if (job == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
             return new ApiOkResponse<JobToReturnDto>(_mapper.Map<JobToReturnDto>(job));
         }
 
-        public async Task<ApiBaseResponse> Get(SearchParameters searchParameters)
+        public ApiBaseResponse Get(SearchParameters searchParameters)
         {
-            var jobs = await _repository.Job.FindJobs(searchParameters);
+            var jobs = _repository.Job.Find(searchParameters);
 
             var jobDto = _mapper.Map<IEnumerable<JobToReturnDto>>(jobs);
             var pagedDataList = PaginatedListDto<JobToReturnDto>.Paginate(jobDto, jobs.MetaData);
             return new ApiOkResponse<PaginatedListDto<JobToReturnDto>>(pagedDataList);
         }
 
-        public async Task<ApiBaseResponse> Get(JobSearchParams searchParams)
+        public ApiBaseResponse Get(JobSearchParams searchParams)
         {
             var searchTerms = new SearchParameters 
             { 
@@ -115,7 +107,7 @@ namespace Services
                 SearchBy = searchParams.SearchBy 
             };
 
-            var jobs = await _repository.Job.FindJobs(searchTerms, false);
+            var jobs = _repository.Job.FindNoDateFilter(searchTerms);
 
             var jobsToReturn = _mapper.Map<IEnumerable<JobToReturnDto>>(jobs);
             if (!searchParams.JobTypeId.Equals(Guid.Empty))
@@ -128,9 +120,9 @@ namespace Services
             return new ApiOkResponse<PaginatedListDto<JobToReturnDto>>(pagedDataList);
         }
 
-        public async Task<ApiBaseResponse> Get(Guid companyId, SearchParameters searchParams)
+        public ApiBaseResponse Get(Guid companyId, SearchParameters searchParams)
         {
-            var jobs = await _repository.Job.FindJobs(searchParams, false);
+            var jobs = _repository.Job.Find(searchParams);
 
             var jobsToReturn = _mapper.Map<IEnumerable<JobToReturnDto>>(jobs)
                                     .Where(j => j.CompanyId.Equals(companyId));
@@ -139,11 +131,11 @@ namespace Services
 
         }
 
-        public async Task<ApiBaseResponse> Get(string userId, SearchParameters searchParams)
+        public ApiBaseResponse Get(string userId, SearchParameters searchParams)
         {
-            var jobs = await _repository.Job.FindJobs(searchParams, false);
+            var jobs = _repository.Job.Find(searchParams);
 
-            var userJobsIds = await _repository.UserJob.FindUserJobs(userId, false).Select(i => i.JobId).ToListAsync();
+            var userJobsIds = _repository.UserJob.FindAsQueryable(userId).Select(i => i.JobId).ToList();
             var jobsToReturn = _mapper.Map<IEnumerable<JobToReturnDto>>(jobs);
 
             var jobsAppliedFor = (from job in jobsToReturn
@@ -157,7 +149,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> GetApplicants(Guid jobId, SearchParameters searchParams)
         {
-            var userJobs = _repository.UserJob.FindUserJobs(jobId, false);
+            var userJobs = _repository.UserJob.FindByJobIdAsQueryable(jobId);
             var users = userManager.Users
                 .Include(x => x.UserInformation.Educations)
                 .Include(x => x.UserInformation.WorkExperiences)
@@ -179,7 +171,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> GetApplicant(Guid jobId, Guid applicantId)
         {
-            var userJobQuery = _repository.UserJob.FindUserJob(jobId, applicantId, false);
+            var userJobQuery = _repository.UserJob.FindAsQueryable(jobId, applicantId);
             var userQuery = userManager.Users
                 .Include(u => u.UserInformation.Educations)
                 .Include(u => u.UserInformation.WorkExperiences)
@@ -208,11 +200,11 @@ namespace Services
             if (userInfo == null || user == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
             
-            var job = await _repository.Job.FindJobAsync(jobId, true);
+            var job = await _repository.Job.FindAsync(jobId);
             if(job == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
-            var exists = await _repository.UserJob.Exists(applicantId.ToString(), jobId);
+            var exists = await _repository.UserJob.Exists(applicantId, jobId);
             if (exists)
                 return new BadRequestResponse(ResponseMessages.AlreadyApplied);
             
@@ -236,18 +228,18 @@ namespace Services
             if (!isSent)
                 return new BadRequestResponse(ResponseMessages.ApplicationFailed);
 
-            var userJob = new UserJob { UserId = applicantId.ToString(), JobId = jobId };
+            var userJob = new UserJob { UserId = applicantId, JobId = jobId };
             job.NumberOfApplicants++;
 
-            await _repository.UserJob.CreateUserJob(userJob);
-            await _repository.SaveAsync();
+            await _repository.Job.EditAsync(x => x.Id.Equals(jobId), job);
+            await _repository.UserJob.AddAsync(userJob);
 
             return new ApiOkResponse<bool>(true);
         }
 
         public async Task<ApiBaseResponse> JobStats()
         {
-            var allJobs = await _repository.Job.FindJobsAsync(false);
+            var allJobs = _repository.Job.FindAsQueryable();
             var activeJobs = allJobs.Where(x => x.ClosingDate >= DateTime.Now);
             var activeJobsNumbersToBeHired = activeJobs.Sum(x => x.NumbersToBeHired);
             int activeJobsCount = activeJobs.Count();
@@ -259,7 +251,7 @@ namespace Services
                 jobsFilled += job?.NumberOfApplicants < job?.NumbersToBeHired ? job.NumberOfApplicants : job.NumbersToBeHired;
             }
 
-            var companyCount = await _repository.Company.Count(false);
+            var companyCount = await _repository.Company.Count(x => x.IsDeprecated == false);
 
             var applicant = await userManager.GetUsersInRoleAsync(ERoles.Applicant.ToString());
             var applicantCount = applicant.Where(x => x.EmailConfirmed).Count();

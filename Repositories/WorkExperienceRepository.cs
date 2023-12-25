@@ -1,33 +1,37 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class WorkExperienceRepository : RepositoryBase<WorkExperience>, IWorkExperienceRepository
+    public class WorkExperienceRepository : MongoRepositoryBase<WorkExperience>, IWorkExperienceRepository
     {
-        public WorkExperienceRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public WorkExperienceRepository(IOptions<MongoDbSettings> options) : base(options)
         {}
 
-        public async Task CreateWorkExperienceAsync(WorkExperience workExperience) => await Create(workExperience);
+        public async Task AddAsync(WorkExperience workExperience) => 
+            await CreateAsync(workExperience);
 
-        public void DeleteWorkExperience(WorkExperience workExperience) => Delete(workExperience);
+        public async Task DeleteAsync(Expression<Func<WorkExperience, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public void UpdateWorkExperience(WorkExperience workExperience) => Update(workExperience);
+        public async Task EditAsync(Expression<Func<WorkExperience, bool>> expression, WorkExperience workExperience) => 
+            await UpdateAsync(expression, workExperience);
 
-        public async Task<WorkExperience?> FindWorkExperienceAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(exp => exp.Id.Equals(id), trackChanges)
-                    .FirstOrDefaultAsync();
+        public async Task<WorkExperience?> FindAsync(Guid id) =>
+            await GetAsync(exp => exp.Id.Equals(id));
 
-        public async Task<IEnumerable<WorkExperience>> FindWorkExperiencesAsync(Guid userInfoId, bool trackChanges) =>
-            await FindByCondition(exp => exp.UserInformationId.Equals(userInfoId), trackChanges)
-                    .ToListAsync();
-        public IQueryable<WorkExperience> FindExperiences(Guid id) =>
-            FindByCondition(exp => exp.Id.Equals(id), false)
+        public IEnumerable<WorkExperience> FindByUserInfoId(Guid userInfoId) =>
+            GetAsQueryable(exp => exp.UserInformationId.Equals(userInfoId))
+                    .ToList();
+        public IQueryable<WorkExperience> FindByIdAsQueryable(Guid id) =>
+            GetAsQueryable(exp => exp.Id.Equals(id))
                 .OrderByDescending(exp => exp.StartDate);
 
-        public IQueryable<WorkExperience> FindExperiences(Guid userInfoId, bool trackChanges) =>
-            FindByCondition(exp => exp.UserInformationId.Equals(userInfoId), trackChanges)
+        public IQueryable<WorkExperience> FindByUserInfoIdAsQueryable(Guid userInfoId) =>
+            GetAsQueryable(exp => exp.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(exp => exp.StartDate);
     }
 }

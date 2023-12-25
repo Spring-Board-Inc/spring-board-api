@@ -23,6 +23,9 @@ namespace Repositories
         public IQueryable<TCollection> GetAsQueryable(Expression<Func<TCollection, bool>> expression) =>
             _collection.AsQueryable().Where(expression);
 
+        public IQueryable<TCollection> GetAsQueryable() =>
+            _collection.AsQueryable();
+
         public async Task<TCollection?> GetAsync(Expression<Func<TCollection, bool>> expression) =>
             await _collection.Find(expression).FirstOrDefaultAsync();
 

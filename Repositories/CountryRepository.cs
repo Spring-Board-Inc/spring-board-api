@@ -1,39 +1,43 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Repositories.Configurations;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class CountryRepository : RepositoryBase<Country>, ICountryRepository
+    public class CountryRepository : MongoRepositoryBase<Country>, ICountryRepository
     {
-        public CountryRepository(RepositoryContext repositoryContext) : base(repositoryContext){}
+        public CountryRepository(IOptions<MongoDbSettings> settings) : base(settings){}
 
-        public async Task CreateCountryAsync(Country country) => await Create(country);
+        public async Task AddAsync(Country country) => 
+            await CreateAsync(country);
 
-        public void DeleteCountry(Country country) => Delete(country);
+        public async Task DeleteAsync(Expression<Func<Country, bool>> expression) => 
+            await RemoveAsync(expression);
 
-        public async Task<Country?> GetCountryAsync(Guid id, bool trackChanges) =>
-            await FindByCondition(c => c.Id.Equals(id), trackChanges).FirstOrDefaultAsync();
+        public async Task<Country?> FindAsync(Guid id) =>
+            await GetAsync(c => c.Id.Equals(id));
 
-        public IQueryable<Country> GetCountries(bool trackChanges) =>
-            FindAll(trackChanges)
+        public IQueryable<Country> FindAsQueryable() =>
+            GetAsQueryable(x => x.IsDeprecated == false)
                 .OrderBy(c => c.Name);
 
-        public async Task<PagedList<Country>> GetCountriesAsync(SearchParameters searchParameters, bool trackChanges)
+        public PagedList<Country> FindAsync(SearchParameters searchParameters)
         {
             var endDate = searchParameters.EndDate == DateTime.MaxValue ? searchParameters.EndDate : searchParameters.EndDate.AddDays(1);
-            var countries = await FindAll(trackChanges)
-                            .Where(c => c.CreatedAt >= searchParameters.StartDate && c.CreatedAt <= endDate)
+            var countries = GetAsQueryable(c => c.IsDeprecated == false && c.CreatedAt >= searchParameters.StartDate && c.CreatedAt <= endDate)
                             .OrderBy(c => c.Name)
                             .ThenByDescending(c => c.CreatedAt)
-                            .Search(searchParameters.SearchBy)
-                            .ToListAsync();
+                            .Search(searchParameters.SearchBy);
 
             return PagedList<Country>.ToPagedList(countries, searchParameters.PageNumber, searchParameters.PageSize);
         }
 
-        public void UpdateCountry(Country country) => Update(country);
+        public async Task EditAsync(Expression<Func<Country, bool>> expression, Country country) => 
+            await UpdateAsync(expression, country);
     }
 }

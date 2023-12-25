@@ -6,6 +6,7 @@
         Task CreateAsync(TCollection newDocument);
         Task<bool> ExistsAsync(System.Linq.Expressions.Expression<Func<TCollection, bool>> expression);
         IQueryable<TCollection> GetAsQueryable(System.Linq.Expressions.Expression<Func<TCollection, bool>> expression);
+        IQueryable<TCollection> GetAsQueryable();
         Task<List<TCollection>> GetAsync();
         Task<TCollection?> GetAsync(System.Linq.Expressions.Expression<Func<TCollection, bool>> expression);
         Task RemoveAsync(System.Linq.Expressions.Expression<Func<TCollection, bool>> expression);
