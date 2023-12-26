@@ -30,5 +30,8 @@ namespace Repositories
         public IQueryable<Education> FindByUserInfoIdAsQueryable(Guid userInfoId) =>
             GetAsQueryable(ed => ed.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(ed => ed.StartDate);
+
+        public IQueryable<Education> FindAsQueryable(Expression<Func<Education, bool>> expression) =>
+            GetAsQueryable(expression);
     }
 }

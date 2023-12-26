@@ -97,6 +97,8 @@ namespace Services
                 UserId = user.Id,
             };
             await _repositoryManager.UserInformation.AddAsync(userInformation);
+            user.UserInformationId = userInformation.Id;
+            await _userManager.UpdateAsync(user);
             return new ApiOkResponse<IdentityResult>(result);
         }
 
@@ -166,10 +168,10 @@ namespace Services
 
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             var refreshToken = GenerateRefreshToken();
-            _user.RefreshToken = refreshToken;
+            _user.RefreshToken = refreshToken;            await _userManager.UpdateAsync(_user);
+
             if (populateExp)
                 _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
-            await _userManager.UpdateAsync(_user);
             var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             return new TokenDto(accessToken, refreshToken, userClaims);
         }

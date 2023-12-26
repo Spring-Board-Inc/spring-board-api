@@ -11,6 +11,7 @@ namespace Contracts
         Task<bool> Exists(Expression<Func<UserSkill, bool>> expression);
         IEnumerable<UserSkill> FindAsList(Guid userInfoId);
         IQueryable<UserSkill> FindAsQueryable(Guid userInfoId);
+        IQueryable<UserSkill> FindAsQueryable(Expression<Func<UserSkill, bool>> expression);
         Task<UserSkill?> FindAsync(Guid userInfoId, Guid skillId);
     }
 }

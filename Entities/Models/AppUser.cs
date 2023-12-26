@@ -1,4 +1,6 @@
 ﻿using AspNetCore.Identity.MongoDbCore.Models;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDbGenericRepository.Attributes;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,8 +31,10 @@ namespace Entities.Models
         public string State { get; set; }
         [Required]
         public string Country { get; set; }
-        public UserInformation? UserInformation { get; set; }
-        public CareerSummary? CareerSummary { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid UserInformationId { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid CareerSummaryId { get; set; }
         public string PhotoUrl { get; set; } = string.Empty;
         public string PublicId { get; set; } = string.Empty;
     }

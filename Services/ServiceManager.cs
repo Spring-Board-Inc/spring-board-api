@@ -67,7 +67,7 @@ namespace Services
             _industryService = new Lazy<IIndustryService>(() => new
                 IndustryService(repositoryManager, mapper));
             _careerSummaryService = new Lazy<ICareerSummaryService>(() => new
-                CareerSummaryService(repositoryManager, mapper, logger));
+                CareerSummaryService(repositoryManager, mapper, logger, userManager));
             _aboutUsService = new Lazy<IAboutUsService>(() => new
                 AboutUsService(repositoryManager, mapper, logger));
             _contactService = new Lazy<IContactService>(() => new

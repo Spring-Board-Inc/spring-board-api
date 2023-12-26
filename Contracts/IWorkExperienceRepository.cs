@@ -12,5 +12,6 @@ namespace Contracts
         IEnumerable<WorkExperience> FindByUserInfoId(Guid userInfoId);
         Task AddAsync(WorkExperience workExperience);
         IQueryable<WorkExperience> FindByUserInfoIdAsQueryable(Guid userInfoId);
+        IQueryable<WorkExperience> FindAsQueryable(Expression<Func<WorkExperience, bool>> expression);
     }
 }

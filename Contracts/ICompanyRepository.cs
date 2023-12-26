@@ -10,6 +10,7 @@ namespace Contracts
         Task<long> Count(Expression<Func<Company, bool>> expression);
         Task DeleteAsync(Expression<Func<Company, bool>> expression);
         Task EditAsync(Expression<Func<Company, bool>> expression, Company company);
+        IQueryable<Company> FindAsQueryable(Expression<Func<Company, bool>> expression);
         Task<Company?> FindAsync(Guid id);
         PagedList<Company> FindAsync(SearchParameters parameters, Guid userId, bool isEmployer = false);
     }

@@ -32,6 +32,9 @@ namespace Repositories
             GetAsQueryable(us => us.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(us => us.Skill);
 
+        public IQueryable<UserSkill> FindAsQueryable(Expression<Func<UserSkill, bool>> expression) =>
+            GetAsQueryable(expression);
+
         public async Task<bool> Exists(Expression<Func<UserSkill, bool>> expression) =>
             await ExistsAsync(expression);
     }

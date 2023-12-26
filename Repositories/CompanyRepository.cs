@@ -50,6 +50,9 @@ namespace Repositories
             return PagedList<Company>.ToPagedList(companies, parameters.PageNumber, parameters.PageSize);
         }
 
+        public IQueryable<Company> FindAsQueryable(Expression<Func<Company, bool>> expression) =>
+            GetAsQueryable(expression);
+
         public async Task<long> Count(Expression<Func<Company, bool>> expression)
         {
             return await CountAsync(expression);

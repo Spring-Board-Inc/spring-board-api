@@ -54,9 +54,9 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public IActionResult Get(Guid id)
         {
-            return Ok((await _service.Job.Get(id)).GetResult<JobToReturnDto>());
+            return Ok((_service.Job.Get(id)).GetResult<JobToReturnDto>());
         }
 
         ///<summary>End-point to create a job</summary>
@@ -160,10 +160,10 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("{jobId}/applicants")]
-       // [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
-        public async Task<IActionResult> GetApplicants(Guid jobId, [FromQuery]SearchParameters searchParameters)
+        [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
+        public IActionResult GetApplicants(Guid jobId, [FromQuery]SearchParameters searchParameters)
         {
-            return Ok((await _service.Job.GetApplicants(jobId, searchParameters)).GetResult<PaginatedListDto<ApplicantInformation>>());
+            return Ok((_service.Job.GetApplicants(jobId, searchParameters)).GetResult<PaginatedListDto<ApplicantInformation>>());
         }
 
         ///<summary>End-point to get the details of an applicant</summary>
@@ -179,7 +179,7 @@ namespace SpringBoard.Presentation.Controllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet, Route("{jobId}/applicants/{applicantId}")]
-        // [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
+        [Authorize(Roles = "SuperAdministrator, Administrator, Employer")]
         public async Task<IActionResult> GetApplicant(Guid jobId, Guid applicantId)
         {
             var baseResult = await _service.Job.GetApplicant(jobId, applicantId);

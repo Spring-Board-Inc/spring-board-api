@@ -23,14 +23,9 @@ namespace Repositories
         public async Task DeleteAsync(Expression<Func<Job, bool>> expression) => 
             await RemoveAsync(expression);
 
-        public async Task<Job?> FindAsync(Guid id) =>
-            await GetAsQueryable(j => j.Id.Equals(id))
-                    .Include(j => j.Company)
-                    .Include(j => j.Industry)
-                    .Include(j => j.Type)
-                    .Include(j => j.State)
-                    .Include(j => j.Country)
-                    .FirstOrDefaultAsync();
+        public Job? FindAsync(Guid id) =>
+            GetAsQueryable(j => j.Id.Equals(id))
+                    .FirstOrDefault();
 
         public IEnumerable<Job> FindAsync() =>
             GetAsQueryable(x => x.IsDeprecated == false)
@@ -47,11 +42,6 @@ namespace Repositories
         {
             var endDate = parameters.EndDate == DateTime.MaxValue ? parameters.EndDate : parameters.EndDate.AddDays(1);
             var jobs = GetAsQueryable(j => j.IsDeprecated == false && (j.CreatedAt >= parameters.StartDate && j.CreatedAt <= endDate))
-                                .Include(j => j.Industry)
-                                .Include(j => j.Company)
-                                .Include(j => j.State)
-                                .Include(j => j.Country)
-                                .Include(j => j.Type)
                                 .OrderByDescending(j => j.CreatedAt)
                                 .Search(parameters.SearchBy);
 
@@ -61,11 +51,6 @@ namespace Repositories
         public PagedList<Job> FindNoDateFilter(SearchParameters parameters)
         {
             var jobs = GetAsQueryable(j => j.IsDeprecated == false)
-                                .Include(j => j.Industry)
-                                .Include(j => j.Company)
-                                .Include(j => j.State)
-                                .Include(j => j.Country)
-                                .Include(j => j.Type)
                                 .OrderByDescending(j => j.CreatedAt)
                                 .Search(parameters.SearchBy);
 

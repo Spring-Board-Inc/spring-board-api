@@ -11,6 +11,7 @@ namespace Contracts
         Task<bool> Exists(Guid userId);
         Task<CareerSummary?> FindAsync(Expression<Func<CareerSummary, bool>> expression);
         IQueryable<CareerSummary> FindByIdAsQueryable(Guid id, Guid userId);
-        IQueryable<CareerSummary> FindQueryable(Guid userId);
+        IQueryable<CareerSummary> FindAsQueryable(Guid userId);
+        IQueryable<CareerSummary> FindAsQueryable(Expression<Func<CareerSummary, bool>> expression);
     }
 }

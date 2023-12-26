@@ -59,5 +59,8 @@ namespace Repositories
 
         public async Task EditAsync(Expression<Func<State, bool>> expression, State state) => 
             await UpdateAsync(expression, state);
+
+        public IQueryable<State> FindAsQueryable(Expression<Func<State, bool>> expression) =>
+            GetAsQueryable(expression);
     }
 }
