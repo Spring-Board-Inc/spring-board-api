@@ -47,9 +47,7 @@ namespace Repositories.Extensions
                 return jobs;
 
             var lowerCaseTerm = searchTerm.Trim().ToLower();
-            return jobs.Where(j => j.Title.ToLower().Contains(lowerCaseTerm) 
-                        || j.Company.Name.ToLower().Contains(lowerCaseTerm)
-                        || j.Type.Name.ToLower().Contains(lowerCaseTerm)
+            return jobs.Where(j => j.Title.ToLower().Contains(lowerCaseTerm)
                         || j.Descriptions.ToLower().Contains(lowerCaseTerm));
         }
 

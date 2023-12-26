@@ -14,5 +14,6 @@ namespace Contracts
         PagedList<State> FindByCountryIdAsync(StateSearchParameters parameters);
         PagedList<State> FindStates(StateSearchParameters searchParameters);
         Task EditAsync(Expression<Func<State, bool>> expression, State state);
+        IQueryable<State> FindAsQueryable(Expression<Func<State, bool>> expression);
     }
 }

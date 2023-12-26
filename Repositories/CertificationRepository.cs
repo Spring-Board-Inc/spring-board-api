@@ -30,5 +30,8 @@ namespace Repositories
         public IQueryable<Certification> FindByUserInfoIdAsQueryable(Guid userInfoId) =>
             GetAsQueryable(ct => ct.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(ct => ct.IssuingDate);
+
+        public IQueryable<Certification> FindAsQueryable(Expression<Func<Certification, bool>> expression) =>
+            GetAsQueryable(expression);
     }
 }

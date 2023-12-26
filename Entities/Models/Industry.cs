@@ -7,6 +7,5 @@ namespace Entities.Models
     {
         [Required, Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; }
-        public ICollection<Job>? Jobs { get; set; }
     }
 }

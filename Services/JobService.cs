@@ -10,6 +10,7 @@ using Shared.Helpers;
 using Shared.RequestFeatures;
 using Entities.Enums;
 using Microsoft.AspNetCore.Identity;
+using Services.Extensions;
 
 namespace Services
 {
@@ -60,7 +61,7 @@ namespace Services
             if (!request.IsValidParams)
                 return new BadRequestResponse(ResponseMessages.InvalidRequest);
 
-            var jobForUpdate = await _repository.Job.FindAsync(id);
+            var jobForUpdate = _repository.Job.FindAsync(id);
             if (jobForUpdate == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
@@ -72,7 +73,7 @@ namespace Services
 
         public async Task<ApiBaseResponse> Delete(Guid id)
         {
-            var job = await _repository.Job.FindAsync(id);
+            var job = _repository.Job.FindAsync(id);
             if (job == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
@@ -80,9 +81,9 @@ namespace Services
             return new ApiOkResponse<bool>(true);
         }
 
-        public async Task<ApiBaseResponse> Get(Guid id)
+        public ApiBaseResponse Get(Guid id)
         {
-            var job = await _repository.Job.FindAsync(id);
+            var job = _repository.Job.FindAsync(id);
             if (job == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
 
@@ -95,6 +96,7 @@ namespace Services
 
             var jobDto = _mapper.Map<IEnumerable<JobToReturnDto>>(jobs);
             var pagedDataList = PaginatedListDto<JobToReturnDto>.Paginate(jobDto, jobs.MetaData);
+            pagedDataList.Data = AssignProps(pagedDataList.Data);
             return new ApiOkResponse<PaginatedListDto<JobToReturnDto>>(pagedDataList);
         }
 
@@ -117,6 +119,7 @@ namespace Services
                 jobsToReturn = jobsToReturn.Where(j => j.IndustryId.Equals(searchParams.IndustryId));
 
             var pagedDataList = PaginatedListDto<JobToReturnDto>.Paginate(jobsToReturn, jobs.MetaData);
+            pagedDataList.Data = AssignProps(pagedDataList.Data);
             return new ApiOkResponse<PaginatedListDto<JobToReturnDto>>(pagedDataList);
         }
 
@@ -127,6 +130,7 @@ namespace Services
             var jobsToReturn = _mapper.Map<IEnumerable<JobToReturnDto>>(jobs)
                                     .Where(j => j.CompanyId.Equals(companyId));
             var pagedData = PaginatedListDto<JobToReturnDto>.Paginate(jobsToReturn, jobs.MetaData);
+            pagedData.Data = AssignProps(pagedData.Data);
             return new ApiOkResponse<PaginatedListDto<JobToReturnDto>>(pagedData);
 
         }
@@ -144,50 +148,83 @@ namespace Services
                                  select job).ToList();
 
             var pagedData = PaginatedListDto<JobToReturnDto>.Paginate(jobsAppliedFor, jobs.MetaData);
+            pagedData.Data = AssignProps(pagedData.Data);
             return new ApiOkResponse<PaginatedListDto<JobToReturnDto>>(pagedData);
         }
 
-        public async Task<ApiBaseResponse> GetApplicants(Guid jobId, SearchParameters searchParams)
+        public ApiBaseResponse GetApplicants(Guid jobId, SearchParameters searchParams)
         {
-            var userJobs = _repository.UserJob.FindByJobIdAsQueryable(jobId);
-            var users = userManager.Users
-                .Include(x => x.UserInformation.Educations)
-                .Include(x => x.UserInformation.WorkExperiences)
-                .Include(x => x.UserInformation.UserSkills)
-                .Include(x => x.UserInformation.Certifications)
-                .Include(x => x.CareerSummary);
+            var usersJobs = _repository.UserJob.FindByJobIdAsQueryable(jobId);
+            var usersQuery = userManager.Users;
 
-            var usersInfo = await (from user in users
-                        //join userJob in userJobs on user.Id equals userJob.UserId
-                        //orderby userJob.CreatedAt ascending
-                        select user).Search(searchParams.SearchBy).ToListAsync();
+            var usersInfo = (from user in usersQuery
+                        join userJob in usersJobs on user.Id equals userJob.UserId.StringToGuid()
+                        orderby userJob.CreatedAt ascending
+                        select user).Search(searchParams.SearchBy).ToList();
 
             var pagedList = PagedList<AppUser>.ToPagedList(usersInfo, searchParams.PageNumber, searchParams.PageSize);
-
             var applicantsToReturn = _mapper.Map<IEnumerable<ApplicantInformation>>(usersInfo);
             var pagedData = PaginatedListDto<ApplicantInformation>.Paginate(applicantsToReturn, pagedList.MetaData);
+
+            var applicantsIds = pagedData.Data.Select(applicant => applicant.Id);
+            var userInfoIds = pagedData.Data.Select(user => user.UserInformationId);
+
+            var careerSummary = _repository.CareerSummary.FindAsQueryable(x => applicantsIds.Contains(x.UserId))
+                .ToList();
+            var education = _repository.Education.FindAsQueryable(x => userInfoIds.Contains(x.UserInformationId))
+                .ToList();
+            var experience = _repository.WorkExperience.FindAsQueryable(x => userInfoIds.Contains(x.UserInformationId))
+                .ToList();
+            var skills = _repository.UserSkill.FindAsQueryable(x => userInfoIds.Contains(x.UserInformationId))
+                .ToList();
+            var certifications = _repository.Certification.FindAsQueryable(x => userInfoIds.Contains(x.UserInformationId))
+                .ToList();
+
+            foreach (var user in pagedData.Data)
+            {
+                user.UserSkills = _mapper.Map<ICollection<UserSkillMinInfo>>(skills.Select(x => x.UserInformationId.Equals(user.UserInformationId)));
+                user.CareerSummary = careerSummary.FirstOrDefault(x => x.UserId.Equals(user.Id))?.Summary;
+                user.Educations = _mapper.Map<ICollection<EducationMinInfo>>(education.Select(x => x.UserInformationId.Equals(user.UserInformationId)));
+                user.WorkExperiences = _mapper.Map<ICollection<WorkExperienceMinInfo>>(experience.Select(x => x.UserInformationId.Equals(user.UserInformationId)));
+                user.Certifications = _mapper.Map<ICollection<CertificationMinInfo>>(certifications.Select(x => x.UserInformationId.Equals(user.UserInformationId)));
+            }
+
             return new ApiOkResponse<PaginatedListDto<ApplicantInformation>>(pagedData);
         }
 
         public async Task<ApiBaseResponse> GetApplicant(Guid jobId, Guid applicantId)
         {
-            var userJobQuery = _repository.UserJob.FindAsQueryable(jobId, applicantId);
-            var userQuery = userManager.Users
-                .Include(u => u.UserInformation.Educations)
-                .Include(u => u.UserInformation.WorkExperiences)
-                .Include(u => u.UserInformation.UserSkills)
-                .Include(u => u.UserInformation.Certifications)
-                .Include(u => u.CareerSummary)
-                .Where(u => u.Id.Equals(applicantId.ToString()));
+            var userJob = _repository.UserJob
+                .FindAsQueryable(jobId, applicantId)
+                .FirstOrDefault();
 
-            var singleUser = await (from user in userQuery
-                              //join userJob in userJobQuery on user.Id equals userJob.UserId
-                              select user).FirstOrDefaultAsync();
+            if (userJob == null)
+                return new BadRequestResponse(ResponseMessages.JobNotFound);
 
-            if (singleUser == null)
+            var user = userManager.Users
+                .Where(u => u.Id.Equals(userJob.UserId))
+                .FirstOrDefault();
+
+            var userInfo = await _repository.UserInformation.GetByUserIdAsync(applicantId);
+            if (user == null || userInfo == null)
                 return new BadRequestResponse(ResponseMessages.UserNotFound);
 
-            return new ApiOkResponse<ApplicantInformation>(_mapper.Map<ApplicantInformation>(singleUser));
+            var careerSummary = await _repository.CareerSummary.FindAsync(x => x.UserId.Equals(applicantId));
+            var education = _repository.Education.FindByUserInfoId(userInfo.Id);
+            var experience = _repository.WorkExperience.FindByUserInfoId(userInfo.Id);
+            var skills = _repository.UserSkill.FindAsList(userInfo.Id);
+            var certifications = _repository.Certification
+                .FindByUserInfoIdAsQueryable(userInfo.Id)
+                .ToList();
+
+            var data = _mapper.Map<ApplicantInformation>(user);
+            data.CareerSummary = careerSummary.Summary;
+            data.Educations = _mapper.Map<ICollection<EducationMinInfo>>(education);
+            data.WorkExperiences = _mapper.Map<ICollection<WorkExperienceMinInfo>>(experience);
+            data.Certifications = _mapper.Map<ICollection<CertificationMinInfo>>(certifications);
+            data.UserSkills = _mapper.Map<ICollection<UserSkillMinInfo>>(skills);
+
+            return new ApiOkResponse<ApplicantInformation>(data);
         }
 
         public async Task<ApiBaseResponse> Apply(Guid jobId, string applicantId, CvToSendDto dto)
@@ -200,9 +237,13 @@ namespace Services
             if (userInfo == null || user == null)
                 return new NotFoundResponse(ResponseMessages.UserInformationNotFound);
             
-            var job = await _repository.Job.FindAsync(jobId);
+            var job = _repository.Job.FindAsync(jobId);
             if(job == null)
                 return new NotFoundResponse(ResponseMessages.JobNotFound);
+
+            var company = await _repository.Company.FindAsync(job.CompanyId);
+            if (company == null)
+                return new NotFoundResponse(ResponseMessages.CompanyNotFound);
 
             var exists = await _repository.UserJob.Exists(applicantId, jobId);
             if (exists)
@@ -219,7 +260,7 @@ namespace Services
 
             var isSent = await _emailService.SendMailAsync(new ApplicationRequestParameters
             {
-                To = job.Company.Email,
+                To = company.Email,
                 Subject = $"{user.FirstName} {user.LastName}: Application for the position of {job.Title}",
                 Message = message,
                 File = dto.Cv
@@ -252,7 +293,6 @@ namespace Services
             }
 
             var companyCount = await _repository.Company.Count(x => x.IsDeprecated == false);
-
             var applicant = await userManager.GetUsersInRoleAsync(ERoles.Applicant.ToString());
             var applicantCount = applicant.Where(x => x.EmailConfirmed).Count();
 
@@ -280,6 +320,54 @@ namespace Services
                 WhenHasPhone = whenHasPhone
             };
             return GetEmailTemplates.GetJobApplicationEmailTemplate(applicationDetails);
+        }
+
+        private IEnumerable<JobToReturnDto> AssignProps(IEnumerable<JobToReturnDto> data)
+        {
+            IEnumerable<Guid> industriesIds = new List<Guid>();
+            IEnumerable<Guid> jobTypesIds = new List<Guid>();
+            IEnumerable<Guid> statesIds = new List<Guid>();
+            IEnumerable<Guid> countriesIds = new List<Guid>();
+            IEnumerable<Guid> companiesIds = new List<Guid>();
+
+            foreach (var item in data)
+            {
+                industriesIds = data.Select(x => x.IndustryId);
+                jobTypesIds = data.Select(x => x.TypeId);
+                countriesIds = data.Select(x => x.CountryId);
+                statesIds = data.Select(x => x.StateId);
+                companiesIds = data.Select(x => x.CompanyId);
+            }
+
+            var industries = _repository.Industry.FindAsQueryable()
+                .Where(x => industriesIds.Contains(x.Id))
+                .ToList();
+            var jobTypes = _repository.JobType.FindAsQueryable()
+                .Where(x => jobTypesIds.Contains(x.Id))
+                .ToList();
+            var countries = _repository.Country.FindAsQueryable()
+                .Where(x => countriesIds.Contains(x.Id))
+                .ToList();
+            var states = _repository.State
+                .FindAsQueryable(x => statesIds.Contains(x.Id))
+                .ToList();
+            var companies = _repository.Company
+                .FindAsQueryable(x => companiesIds.Contains(x.Id))
+                .ToList();
+
+            foreach (var job in data)
+            {
+                var company = companies.Where(x => x.Id == job.CompanyId).FirstOrDefault();
+                job.Industry = industries.Where(x => x.Id == job.IndustryId).FirstOrDefault()?.Name;
+                job.JobType = jobTypes.Where(x => x.Id == job.TypeId).FirstOrDefault()?.Name;
+                job.State = states.Where(x => x.Id == job.StateId).FirstOrDefault()?.AdminArea;
+                job.Country = countries.Where(x => x.Id == job.CountryId).FirstOrDefault()?.Name;
+                job.LogoUrl = company?.LogoUrl;
+                job.Company = company?.Name;
+                job.Email = company?.Email;
+            }
+
+            return data;
         }
         #endregion
     }

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
@@ -11,12 +13,17 @@ namespace Entities.Models
         public double? SalaryLowerRange { get; set; }
         public double? SalaryUpperRange { get; set; }
         public DateTime? ClosingDate { get; set; }
-        public Company? Company { get; set; }
-        public Industry? Industry { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid CompanyId { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid IndustryId { get; set; }
         public string City { get; set; }
-        public State? State { get; set; }
-        public Country? Country { get; set; }
-        public JobType? Type { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid StateId { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid CountryId { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid TypeId { get; set; }
         public int NumbersToBeHired { get; set; } = 1;
         public int NumberOfApplicants { get; set; } = 0;
     }

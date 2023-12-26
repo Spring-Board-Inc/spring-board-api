@@ -33,5 +33,8 @@ namespace Repositories
         public IQueryable<WorkExperience> FindByUserInfoIdAsQueryable(Guid userInfoId) =>
             GetAsQueryable(exp => exp.UserInformationId.Equals(userInfoId))
                 .OrderByDescending(exp => exp.StartDate);
+
+        public IQueryable<WorkExperience> FindAsQueryable(Expression<Func<WorkExperience, bool>> expression) =>
+            GetAsQueryable(expression);
     }
 }
