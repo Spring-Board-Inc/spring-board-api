@@ -1,15 +1,13 @@
 ﻿using Contracts;
+using Entities.Models;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Repositories.Configurations;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public abstract class MongoRepositoryBase<TCollection> : IMongoRepositoryBase<TCollection> where TCollection : class
+    public abstract class MongoRepositoryBase<TCollection> : IMongoRepositoryBase<TCollection> where TCollection : IBaseEntity
     {
         private readonly IMongoCollection<TCollection> _collection;
 
@@ -45,6 +43,6 @@ namespace Repositories
             await _collection.CountDocumentsAsync(expression);
 
         public async Task<List<TCollection>> GetAsync() =>
-            await _collection.Find(_ => true).ToListAsync();
+            await _collection.Find(i => i.IsDeprecated == false).ToListAsync();
     }
 }

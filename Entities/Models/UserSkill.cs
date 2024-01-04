@@ -4,8 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
-    public class UserSkill : BaseEntity
+    public class UserSkill : IBaseEntity
     {
+        [BsonId]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid Id { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsDeprecated { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid UserInformationId { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
