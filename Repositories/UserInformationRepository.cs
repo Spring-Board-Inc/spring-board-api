@@ -1,12 +1,13 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class UserInformationRepository : MongoRepositoryBase<UserInformation>, IUserInformationRepository
+    public class UserInformationRepository : Repository<UserInformation>, IUserInformationRepository
     {
         public UserInformationRepository(IOptions<MongoDbSettings> options) : base(options)
         {}

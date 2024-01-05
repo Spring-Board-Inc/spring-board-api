@@ -1,12 +1,13 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class WorkExperienceRepository : MongoRepositoryBase<WorkExperience>, IWorkExperienceRepository
+    public class WorkExperienceRepository : Repository<WorkExperience>, IWorkExperienceRepository
     {
         public WorkExperienceRepository(IOptions<MongoDbSettings> options) : base(options)
         {}

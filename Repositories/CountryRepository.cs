@@ -1,15 +1,15 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class CountryRepository : MongoRepositoryBase<Country>, ICountryRepository
+    public class CountryRepository : Repository<Country>, ICountryRepository
     {
         public CountryRepository(IOptions<MongoDbSettings> settings) : base(settings){}
 

@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Microsoft.Extensions.Options;
+using Mongo.Common.Settings;
 using Repositories.Configurations;
 
 namespace Repositories

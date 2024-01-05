@@ -1,6 +1,4 @@
-﻿using Shared.DataTransferObjects;
-
-namespace Shared.RequestFeatures
+﻿namespace Shared.RequestFeatures
 {
     public class PagedList<T> : List<T>
     {
