@@ -1,6 +1,6 @@
-﻿using MongoDB.Bson;
+﻿using Mongo.Common;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models
 {

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Mongo.Common;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Entities.Models

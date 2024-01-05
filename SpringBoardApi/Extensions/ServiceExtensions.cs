@@ -37,9 +37,6 @@ namespace SpringBoardApi.Extensions
                 
             });
 
-        public static void ConfigureMongoConnection(this IServiceCollection services, IConfiguration configuration) =>
-            services.Configure<MongoDbSettings>(configuration.GetSection(nameof(MongoDbSettings)));
-
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddSingleton<ILoggerManager, LoggerManager>();
 

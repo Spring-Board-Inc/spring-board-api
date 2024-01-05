@@ -3,6 +3,7 @@ using Entities.Settings;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Mongo.Common.MongoDB;
 using NLog;
 using SpringBoardApi.Extensions;
 

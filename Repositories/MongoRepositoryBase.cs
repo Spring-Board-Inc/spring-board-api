@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.Extensions.Options;
+using Mongo.Common;
 using MongoDB.Driver;
 using Repositories.Configurations;
 using System.Linq.Expressions;
