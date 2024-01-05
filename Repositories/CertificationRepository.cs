@@ -1,13 +1,13 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class CertificationRepository : MongoRepositoryBase<Certification>, ICertificationRepository
+    public class CertificationRepository : Repository<Certification>, ICertificationRepository
     {
         public CertificationRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}

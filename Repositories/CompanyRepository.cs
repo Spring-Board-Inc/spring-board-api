@@ -1,14 +1,15 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class CompanyRepository : MongoRepositoryBase<Company>, ICompanyRepository
+    public class CompanyRepository : Repository<Company>, ICompanyRepository
     {
         public CompanyRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}

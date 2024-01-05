@@ -1,12 +1,13 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class JobTypeRepository : MongoRepositoryBase<JobType>, IJobTypeRepository
+    public class JobTypeRepository : Repository<JobType>, IJobTypeRepository
     {
         public JobTypeRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {}

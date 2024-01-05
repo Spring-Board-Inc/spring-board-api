@@ -1,15 +1,15 @@
 ﻿using Contracts;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using Repositories.Extensions;
 using Shared.RequestFeatures;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class FaqRepository : MongoRepositoryBase<Faq>, IFaqRepository
+    public class FaqRepository : Repository<Faq>, IFaqRepository
     {
         public FaqRepository(IOptions<MongoDbSettings> options)
             : base(options) { }

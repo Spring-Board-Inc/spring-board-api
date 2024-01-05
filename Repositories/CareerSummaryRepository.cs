@@ -1,12 +1,13 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class CareerSummaryRepository : MongoRepositoryBase<CareerSummary>, ICareerSummaryRepository
+    public class CareerSummaryRepository : Repository<CareerSummary>, ICareerSummaryRepository
     {
         public CareerSummaryRepository(IOptions<MongoDbSettings> settings) : base(settings) {}
 

@@ -2,12 +2,13 @@
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Repositories.Configurations;
+using Mongo.Common.MongoDB;
+using Mongo.Common.Settings;
 using System.Linq.Expressions;
 
 namespace Repositories
 {
-    public class ContactRepository : MongoRepositoryBase<Contact>, IContactRepository
+    public class ContactRepository : Repository<Contact>, IContactRepository
     {
         public ContactRepository(IOptions<MongoDbSettings> settings)
             : base(settings)
