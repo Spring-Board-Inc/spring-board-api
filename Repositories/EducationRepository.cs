@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class EducationRepository : Repository<Education>, IEducationRepository
     {
-        public EducationRepository(IOptions<MongoDbSettings> settings) : base(settings)
+        public EducationRepository(MongoDbSettings settings) : base(settings)
         {}
 
         public async Task AddAsync(Education education) => 

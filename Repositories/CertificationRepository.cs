@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class CertificationRepository : Repository<Certification>, ICertificationRepository
     {
-        public CertificationRepository(IOptions<MongoDbSettings> settings) : base(settings)
+        public CertificationRepository(MongoDbSettings settings) : base(settings)
         {}
 
         public async Task AddAsync(Certification certification) => 

@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class TokenRepository : Repository<Token>, ITokenRepository
     {
-        public TokenRepository(IOptions<MongoDbSettings> settings) 
+        public TokenRepository(MongoDbSettings settings) 
             : base(settings){}
 
         public async Task CreateToken(Token token) => await CreateAsync(token);

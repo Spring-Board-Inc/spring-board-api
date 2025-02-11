@@ -1,0 +1,21 @@
+name: Build and Push Docker Image to Docker Hub
+on:
+  pull_request:
+    branches:
+      - development
+    types:
+      - closed
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build the Docker image
+        run: docker build -t ojotobar777/spring-board:dev -f SpringBoardApi/Dockerfile .
+      - name: Push Image to Docker Hub
+        run: |
+          docker login -u ojotobar777 -p ${{ secrets.SPRING_BOARD_DOCKER_HUB_TOKEN }}
+          docker push ojotobar777/spring-board:dev

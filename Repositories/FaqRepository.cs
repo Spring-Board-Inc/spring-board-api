@@ -11,7 +11,7 @@ namespace Repositories
 {
     public class FaqRepository : Repository<Faq>, IFaqRepository
     {
-        public FaqRepository(IOptions<MongoDbSettings> options)
+        public FaqRepository(MongoDbSettings options)
             : base(options) { }
 
         public async Task AddAsync(Faq faq) => 

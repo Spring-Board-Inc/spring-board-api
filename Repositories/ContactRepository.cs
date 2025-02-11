@@ -10,7 +10,7 @@ namespace Repositories
 {
     public class ContactRepository : Repository<Contact>, IContactRepository
     {
-        public ContactRepository(IOptions<MongoDbSettings> settings)
+        public ContactRepository(MongoDbSettings settings)
             : base(settings)
         {}
 

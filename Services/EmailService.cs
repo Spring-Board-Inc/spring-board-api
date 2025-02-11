@@ -10,13 +10,11 @@ namespace Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration _config;
         private readonly IMailjetClient _client;
         private const string EMAIL_ADDRESS = "ojotobar@gmail.com";
 
-        public EmailService(IConfiguration config, IMailjetClient client)
+        public EmailService(IMailjetClient client)
         {
-            _config = config;
             _client = client;
         }
         

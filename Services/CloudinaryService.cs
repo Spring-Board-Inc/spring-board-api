@@ -11,17 +11,15 @@ namespace Services
 {
     public class CloudinaryService : ICloudinaryService
     {
-        private Cloudinary _cloud;
-        public CloudinaryService(IOptions<CloudinarySettings> cloudSettings, IConfiguration configuration)
+        private readonly Cloudinary _cloud;
+        public CloudinaryService(CloudinarySettings cloudSettings)
         {
              
             Account cloudAccount = new Account
             {
-                ApiKey = configuration.GetSection("CloudinarySettings").GetSection("Kokoro").Value,
-                ApiSecret = configuration.GetSection("CloudinarySettings").GetSection("Asiri").Value,
-                //ApiKey = cloudSettings.Value.ApiKey,
-                //ApiSecret = cloudSettings.Value.ApiSecret,
-                Cloud = cloudSettings.Value.CloudName
+                ApiKey = cloudSettings.ApiKey,
+                ApiSecret = cloudSettings.ApiSecret,
+                Cloud = cloudSettings.CloudName
             };
             _cloud = new Cloudinary(cloudAccount);
         }
