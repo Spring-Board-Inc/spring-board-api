@@ -11,7 +11,7 @@ namespace Repositories
 {
     public class IndustryRepository : Repository<Industry>, IIndustryRepository
     {
-        public IndustryRepository(IOptions<MongoDbSettings> settings) : base(settings)
+        public IndustryRepository(MongoDbSettings settings) : base(settings)
         {}
 
         public async Task AddAsync(Industry industry) => 

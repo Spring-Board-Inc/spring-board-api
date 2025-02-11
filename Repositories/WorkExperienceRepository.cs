@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class WorkExperienceRepository : Repository<WorkExperience>, IWorkExperienceRepository
     {
-        public WorkExperienceRepository(IOptions<MongoDbSettings> options) : base(options)
+        public WorkExperienceRepository(MongoDbSettings options) : base(options)
         {}
 
         public async Task AddAsync(WorkExperience workExperience) => 

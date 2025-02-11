@@ -1,5 +1,4 @@
 using Contracts;
-using Entities.Settings;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -22,7 +21,7 @@ builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureMailJet(builder.Configuration);
 
-builder.Services.ConfigureSqlContext(builder.Configuration);
+//builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAuthentication();
 //builder.Services.ConfigureIdentity();
 
@@ -30,7 +29,7 @@ builder.Services.ConfigureEmailService();
 builder.Services.ConfigureCloudinaryService();
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.ConfigureCloudinarySettings(builder.Configuration);
 builder.Services.AddApiVersioning(opt =>
 {
     opt.ReportApiVersions = true;

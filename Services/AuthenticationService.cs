@@ -5,7 +5,6 @@ using Entities.ErrorModel;
 using Entities.Models;
 using Entities.Response;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
@@ -282,8 +281,7 @@ namespace Services
 
         private SigningCredentials GetSigningCredentials()
         {
-            var setting = _configuration.GetSection("JwtSettings");
-            var key = Encoding.UTF8.GetBytes(setting["Kokoro"]);// Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Kokoro"]);
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
@@ -301,12 +299,11 @@ namespace Services
 
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
             var tokenOptions = new JwtSecurityToken
             (
-            issuer: jwtSettings["ValidIssuer"],
+            issuer: _configuration["JwtSettings:ValidIssuer"],
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(Convert.ToDouble(jwtSettings["Expires"])),
+            expires: DateTime.UtcNow.AddHours(Convert.ToDouble(_configuration["JwtSettings:Expires"])),
             signingCredentials: signingCredentials
             );
             return tokenOptions;
@@ -324,7 +321,6 @@ namespace Services
 
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
@@ -332,7 +328,7 @@ namespace Services
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"))),
                 ValidateLifetime = true,
-                ValidIssuer = jwtSettings["ValidIssuer"]
+                ValidIssuer = _configuration["JwtSettings:ValidIssuer"]
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;

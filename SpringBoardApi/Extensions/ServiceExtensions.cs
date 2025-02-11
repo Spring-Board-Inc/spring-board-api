@@ -1,6 +1,7 @@
 ﻿using AspNetCoreRateLimit;
 using Contracts;
 using Entities.Models;
+using Entities.Settings;
 using LoggerService;
 using Mailjet.Client;
 using Marvin.Cache.Headers;
@@ -12,7 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Repositories;
-using Repositories.Configurations;
 using Services;
 using Services.Contracts;
 using System.Text;
@@ -58,8 +58,7 @@ namespace SpringBoardApi.Extensions
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["Kokoro"];// Environment.GetEnvironmentVariable("SECRET");
+            var secretKey = configuration["JwtSettings:Kokoro"];
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -73,7 +72,7 @@ namespace SpringBoardApi.Extensions
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtSettings["ValidIssuer"],
+                    ValidIssuer = configuration["JwtSettings:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 };
             });
@@ -91,7 +90,7 @@ namespace SpringBoardApi.Extensions
                     {
                         Name = "Toba R. Ojo",
                         Email = "ojotobar@gmail.com",
-                        Url = new Uri("https://ojo-toba.herokuapp.com")
+                        Url = new Uri("https://ojotobar.netlify.app")
                     }
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -121,9 +120,8 @@ namespace SpringBoardApi.Extensions
         public static void ConfigureMailJet(this IServiceCollection services, IConfiguration configuration) => 
             services.AddHttpClient<IMailjetClient, MailjetClient>(client =>
             {
-                var settings = configuration.GetSection("Mj");
-                var apiKey = settings["Kokoro"];//Environment.GetEnvironmentVariable("MAILJETAPIKEY");
-                var apiSecret = settings["Asiri"];// Environment.GetEnvironmentVariable("MAILJETSECRET");
+                var apiKey = configuration["MailJet:Kokoro"];
+                var apiSecret = configuration["MailJet:Asiri"];
                 client.UseBasicAuthentication(apiKey, apiSecret);
             });
 
@@ -135,6 +133,20 @@ namespace SpringBoardApi.Extensions
 
         public static void ConfigureCloudinaryService(this IServiceCollection services) =>
             services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+        public static IServiceCollection ConfigureCloudinarySettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton(_ =>
+            {
+                return new CloudinarySettings
+                {
+                    ApiKey = configuration["CloudinarySettings:Kokoro"],
+                    ApiSecret = configuration["CloudinarySettings:Asiri"],
+                    CloudName = configuration["CloudinarySettings:CloudName"]
+                };
+            });
+            return services;
+        }
 
         public static void ConfigureServiceManager(this IServiceCollection services) =>
             services.AddScoped<IServiceManager, ServiceManager>();
@@ -153,8 +165,8 @@ namespace SpringBoardApi.Extensions
 
         public static void ConfigureMongoIdentity(this IServiceCollection services, IConfiguration configuration)
         {
-            var databaseName = configuration.GetValue<string>("SpringBoardMongoDb:DatabaseName");
-            var connectionStr = configuration.GetValue<string>("SpringBoardMongoDb:ConnectionString");
+            var databaseName = configuration["MongoDbSettings:DatabaseName"];
+            var connectionStr = configuration["MongoDbSettings:ConnectionString"];
             services.AddIdentity<AppUser, AppRole>()
                 .AddMongoDbStores<AppUser, AppRole, Guid>(connectionStr, databaseName)
                 .AddDefaultTokenProviders();

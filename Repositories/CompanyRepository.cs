@@ -11,7 +11,7 @@ namespace Repositories
 {
     public class CompanyRepository : Repository<Company>, ICompanyRepository
     {
-        public CompanyRepository(IOptions<MongoDbSettings> settings) : base(settings)
+        public CompanyRepository(MongoDbSettings settings) : base(settings)
         {}
 
         public async Task AddAsync(Company company) => 

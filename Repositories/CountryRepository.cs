@@ -11,7 +11,7 @@ namespace Repositories
 {
     public class CountryRepository : Repository<Country>, ICountryRepository
     {
-        public CountryRepository(IOptions<MongoDbSettings> settings) : base(settings){}
+        public CountryRepository(MongoDbSettings settings) : base(settings){}
 
         public async Task AddAsync(Country country) => 
             await CreateAsync(country);

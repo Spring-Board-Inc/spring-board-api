@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class AboutUsRepository: Repository<AboutUs>, IAboutUsRepository
     {
-        public AboutUsRepository(IOptions<MongoDbSettings> options)
+        public AboutUsRepository(MongoDbSettings options)
             : base(options)
         {}
 

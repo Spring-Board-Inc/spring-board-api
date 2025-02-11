@@ -12,7 +12,7 @@ namespace Repositories
 {
     public class StateRepository : Repository<State>, IStateRepository
     {
-        public StateRepository(IOptions<MongoDbSettings> settings) : base(settings)
+        public StateRepository(MongoDbSettings settings) : base(settings)
         {}
 
         public async Task AddAsync(State state) => 
