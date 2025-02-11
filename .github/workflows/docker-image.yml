@@ -13,7 +13,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build -t blueclikk/spring-board:live -f Swappa/Server/Dockerfile .
+      run: docker build -t blueclikk/spring-board:live -f SpringBoardApi/Dockerfile .
     - name: Push Image to Docker Hub
       run: |
         docker login -u blueclikk -p ${{ secrets.SPRING_BOARD_DOCKER_HUB_TOKEN }}
