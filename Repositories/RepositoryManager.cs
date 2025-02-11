@@ -1,7 +1,5 @@
 ﻿using Contracts;
-using Microsoft.Extensions.Options;
 using Mongo.Common.Settings;
-using Repositories.Configurations;
 
 namespace Repositories
 {
@@ -26,7 +24,7 @@ namespace Repositories
         private readonly Lazy<IContactRepository> _contactRepository;
         private readonly Lazy<IFaqRepository> _faqRepository;
 
-        public RepositoryManager(IOptions<MongoDbSettings> mongoDbSettings)
+        public RepositoryManager(MongoDbSettings mongoDbSettings)
         {
             _tokenRepository = new Lazy<ITokenRepository>(() => new 
                 TokenRepository(mongoDbSettings));

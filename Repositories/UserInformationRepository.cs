@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class UserInformationRepository : Repository<UserInformation>, IUserInformationRepository
     {
-        public UserInformationRepository(IOptions<MongoDbSettings> options) : base(options)
+        public UserInformationRepository(MongoDbSettings options) : base(options)
         {}
 
         public async Task AddAsync(UserInformation userInformation) => await CreateAsync(userInformation);

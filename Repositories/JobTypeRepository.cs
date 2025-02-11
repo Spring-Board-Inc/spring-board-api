@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class JobTypeRepository : Repository<JobType>, IJobTypeRepository
     {
-        public JobTypeRepository(IOptions<MongoDbSettings> settings) : base(settings)
+        public JobTypeRepository(MongoDbSettings settings) : base(settings)
         {}
 
         public async Task AddAsync(JobType jobType) => 

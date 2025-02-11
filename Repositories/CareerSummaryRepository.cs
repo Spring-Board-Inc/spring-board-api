@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class CareerSummaryRepository : Repository<CareerSummary>, ICareerSummaryRepository
     {
-        public CareerSummaryRepository(IOptions<MongoDbSettings> settings) : base(settings) {}
+        public CareerSummaryRepository(MongoDbSettings settings) : base(settings) {}
 
         public async Task AddAsync(CareerSummary entity) => 
             await CreateAsync(entity);

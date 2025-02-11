@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class UserJobRepository : Repository<UserJob>, IUserJobRepository
     {
-        public UserJobRepository(IOptions<MongoDbSettings> options) : base(options) { }
+        public UserJobRepository(MongoDbSettings options) : base(options) { }
 
         public async Task AddAsync(UserJob userJob) => 
             await CreateAsync(userJob);

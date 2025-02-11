@@ -9,7 +9,7 @@ namespace Repositories
 {
     public class UserSkillRepository : Repository<UserSkill>, IUserSkillRepository
     {
-        public UserSkillRepository(IOptions<MongoDbSettings> options) : base(options)
+        public UserSkillRepository(MongoDbSettings options) : base(options)
         {}
 
         public async Task AddAsync(UserSkill userSkill) => 

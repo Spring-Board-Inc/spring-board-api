@@ -11,7 +11,7 @@ namespace Repositories
 {
     public class SkillsRepository : Repository<Skill>, ISkillsRepository
     {
-        public SkillsRepository(IOptions<MongoDbSettings> mongoDbSettings) 
+        public SkillsRepository(MongoDbSettings mongoDbSettings) 
             : base(mongoDbSettings){}
 
         public async Task AddAsync(Skill skill) => 
